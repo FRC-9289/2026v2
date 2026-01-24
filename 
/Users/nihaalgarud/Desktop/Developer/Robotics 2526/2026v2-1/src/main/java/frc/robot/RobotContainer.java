@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.JoystickConstants;
-import frc.robot.utils.Constants.TurretConstants;
 import frc.robot.controls.*;
 
 public class RobotContainer {
@@ -44,52 +43,60 @@ public class RobotContainer {
     auton_chooser.setDefaultOption("MidReefAuto", new PathPlannerAuto("MidReefAuto"));
     SmartDashboard.putData("Auton Chooser", auton_chooser);
     
-    // Setup turret SmartDashboard
+    // Setup Turret SmartDashboard controls
     setupTurretDashboard();
   }
 
   private void configureBindings() {
+    // Speed multiplier from slider (inverted so up = faster)
     double slider = (-RobotContainer.controller3D.getRawAxis(JoystickConstants.Slider) + 1) / 2.0;
     if (slider == 0)  {
       slider = 0.001;
     }
 
-    double frontSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.X) * slider;
-    double sideSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Y) * slider;
+    // Left joystick - Translation (forward/backward/strafe)
+    // Axis 0 = Left Stick X (side/strafe speed)
+    // Axis 1 = Left Stick Y (front speed)
+    double sideSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.X) * slider;
+    double frontSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Y) * slider;
+    
+    // Right joystick - Rotation (turning)
+    // Axis 2 = Right Stick X / Rotation
     double turnSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Rot) * slider;
 
-    drivetrain.setDefaultCommand(new SwerveDriveCommands(frontSpeed,sideSpeed,turnSpeed));
+    // Set drivetrain default command with joystick inputs
+    drivetrain.setDefaultCommand(new SwerveDriveCommands(frontSpeed, sideSpeed, turnSpeed));
 
+    // Reset heading button (Base RM button)
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
-    //Comment out before driving. Will only let robot turn.
+    // POV-based spec drive (comment out before driving, only allows turning)
     pov = wolfByte.getPOV();
     if (pov != -1) {
       specDrive.setDefaultCommand(new SpecDriveCommands(wolfByte.getPOV()));
     }
-    //specDrive.setDefaultCommand(new SpecDriveCommands2(wolfByte.getRawAxis(0)));
     
-    // === TURRET CONTROLS ===
-    // Start button (8) - Toggle between red/blue origin
-    JoystickButton toggleOrigin = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonStart);
-    toggleOrigin.onTrue(new InstantCommand(turret::toggleOrigin, turret));
-    
-    // Left Bumper (3) - Disable turret
-    JoystickButton turretDisable = new JoystickButton(controller3D, JoystickConstants.LB);
-    turretDisable.onTrue(new InstantCommand(turret::disable, turret));
-    
-    // Right Bumper (4) - Enable turret
+    // Turret control buttons (optional - can be customized)
     JoystickButton turretEnable = new JoystickButton(controller3D, JoystickConstants.RB);
+    JoystickButton turretDisable = new JoystickButton(controller3D, JoystickConstants.LB);
+    
     turretEnable.onTrue(new InstantCommand(turret::enable, turret));
+    turretDisable.onTrue(new InstantCommand(turret::disable, turret));
   }
-  
+
   private void setupTurretDashboard() {
     // Initialize turret SmartDashboard values
-    SmartDashboard.putNumber("Turret/TargetX", TurretConstants.TARGET_X);
-    SmartDashboard.putNumber("Turret/TargetY", TurretConstants.TARGET_Y);
-    SmartDashboard.putBoolean("Turret/TrackingPoint", true);
+    SmartDashboard.putNumber("Turret/TargetAngle", 0.0);
+    SmartDashboard.putNumber("Turret/TargetX", 0.0);
+    SmartDashboard.putNumber("Turret/TargetY", 0.0);
+    SmartDashboard.putBoolean("Turret/TrackingPoint", false);
     SmartDashboard.putBoolean("Turret/Enabled", true);
-    SmartDashboard.putBoolean("Turret/BlueOrigin", turret.isBlueOrigin());
+    
+    // Command buttons for testing
+    SmartDashboard.putData("Turret/SetAngle0", new TurretCommands(0.0));
+    SmartDashboard.putData("Turret/SetAngle90", new TurretCommands(Math.PI / 2));
+    SmartDashboard.putData("Turret/SetAngle180", new TurretCommands(Math.PI));
+    SmartDashboard.putData("Turret/SetAngle270", new TurretCommands(3 * Math.PI / 2));
   }
 
   public Command getAutonomousCommand() {

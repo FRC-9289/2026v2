@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 // import HolonomicPathFollowerConfig;
+import frc.robot.subsystems.Turret;
 
 public final class Constants {
   public static class ModuleIDs {
@@ -125,5 +126,58 @@ public final class Constants {
     public static final int BaseRM = 10;
     public static final int BaseLB = 11;
     public static final int BaseRB = 12;
+  }
+
+  public final class TurretConstants
+  {
+    // Motor and Hardware Constants
+    public static final int MOTOR_ID = 10;
+    public static final boolean MOTOR_INVERTED = false;
+    
+    // Target Coordinate to Track (inches)
+    // Coordinate system: Red origin (0,0) = left corner of red alliance side
+    // When BLUE_ORIGIN = true: (0,0) = left corner of blue alliance side
+    public static final double TARGET_X = 158.32; // X coordinate of target point (inches)
+    public static final double TARGET_Y = 181.56; // Y coordinate of target point (inches)
+    public static final boolean BLUE_ORIGIN = false; // true = blue origin, false = red origin
+    
+    // Field dimensions (inches) - Standard FRC Field
+    public static final double FIELD_LENGTH_X = 651.22; // ~16.46m (54 feet)
+    public static final double FIELD_WIDTH_Y = 317.69;  // ~8.02m (26 feet)
+    
+    // Joystick button to toggle between red/blue origin
+    public static final int ORIGIN_TOGGLE_BUTTON = ControllerConstants.ButtonStart; // Start button
+    
+    // Physical Constants (default values - change for actual robot)
+    public static final double J_TURRET = 0.01; // Moment of inertia (kg*m^2)
+    public static final double GEAR_RATIO = 100.0; // Gear reduction ratio
+    public static final double MAX_CURRENT = 40.0; // Maximum current (amps)
+    
+    // Electrical Constants (NEO motor defaults)
+    public static final double R = 0.098; // Resistance (ohms) - NEO default
+    public static final double KT = 0.00269; // Torque constant (N*m/Amp) - NEO default
+    public static final double KE = 1.5; // Back EMF constant (V/(rad/s)) - NEO default
+    public static final double KS = 0.0; // Static friction compensation (volts)
+    
+    // Position Control PID Constants
+    public static final double KP = 0.5; // Proportional gain
+    public static final double KI = 0.0; // Integral gain
+    public static final double KD = 0.0; // Derivative gain
+    
+    // Motion Limits
+    public static final double MAX_VELOCITY = 5.0; // Max angular velocity (rad/s)
+    public static final double MAX_ACCELERATION = 10.0; // Max angular acceleration (rad/s^2)
+    
+    // Angle Limits (in radians)
+    public static final double MIN_ANGLE = -Math.PI; // Minimum allowed angle
+    public static final double MAX_ANGLE = Math.PI; // Maximum allowed angle
+    public static final double OFFSET = 0.0; // Zero position offset (radians)
+    
+    // Conversion factors
+    public static final double ENCODER_PCONVERSION = 2 * Math.PI / GEAR_RATIO; // Position conversion
+    public static final double ENCODER_VCONVERSION = ENCODER_PCONVERSION / 60.0; // Velocity conversion
+    
+    // Deadband for reaching target
+    public static final double ANGLE_TOLERANCE = 0.05; // Tolerance in radians
   }
 }
