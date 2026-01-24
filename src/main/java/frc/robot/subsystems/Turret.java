@@ -41,6 +41,7 @@ public class Turret extends SubsystemBase {
     
     // Singleton instance references
     private Drivetrain drivetrain = Drivetrain.getInstance();
+    private SwervePoseEstimator poseEstimator = SwervePoseEstimator.getInstance();
     
     /** Creates a new Turret subsystem. */
     private Turret() {
@@ -192,10 +193,11 @@ public class Turret extends SubsystemBase {
     
     /**
      * Updates the target angle based on robot pose and target coordinates.
+     * Uses SwervePoseEstimator (no cameras).
      */
     private void updateTargetAngleFromCoordinates(double pointX, double pointY) {
-        // Get current robot pose (pose estimator uses meters)
-        Pose2d robotPose = drivetrain.getPose();
+        // Get current robot pose from SwervePoseEstimator (no cameras)
+        Pose2d robotPose = poseEstimator.getPose();
         Translation2d robotTranslation = robotPose.getTranslation();
         
         // Convert target coordinates to meters based on current origin
