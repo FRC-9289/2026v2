@@ -126,4 +126,19 @@ public final class Constants {
     public static final int BaseLB = 11;
     public static final int BaseRB = 12;
   }
+
+  public static final class TurretConstants {
+    public static final double HUB_X = 182.11; // in inches
+    public static final double HUB_Y = 158.84; // in inches
+
+    public static final double GEAR_RATIO = 100.0;
+    public static final double J_TURRET = 0.015;
+
+    public static final double R = 0.114;
+    public static final double KT = 0.025;
+    public static final double KE = 0.025;
+    public static final double KS = 0.4;
+
+    public static final double MAX_CURRENT = 40;
+  }
 }

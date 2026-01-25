@@ -19,23 +19,21 @@ public class RobotContainer {
   public static final JoystickButton resetHeading_Start = new JoystickButton(controller3D, Constants.JoystickConstants.BaseRM);
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
+  private final TurretSubsystem turret = new TurretSubsystem(true);
   private final WolfSend wolfSend = WolfSend.getInstance();
   private final WolfPoseEstimator wolfPoseEstimator = WolfPoseEstimator.getInstance();
   private ParallelRaceGroup swerveStopCmd;
   SendableChooser<Command> auton_chooser;
   
   public RobotContainer() {
-    CameraServer.startAutomaticCapture(0); // Start capturing from the first camera
-    CameraServer.startAutomaticCapture(1); // Start capturing from the second camera
-
-    //call to configureBindings() method
+    CameraServer.startAutomaticCapture(0);
+    CameraServer.startAutomaticCapture(1);
+  
     configureBindings();
-
-    // Register swerveStopCmd in Pathplanner to stop robot
+  
     swerveStopCmd = new SwerveDriveCommands(0.0,0.0,0.0).withTimeout(3);
     NamedCommands.registerCommand("Swerve Stop", swerveStopCmd);
-
-    //set up auton commands for the driver
+  
     auton_chooser = new SendableChooser<>();
     auton_chooser.setDefaultOption("MidReefAuto", new PathPlannerAuto("MidReefAuto"));
     SmartDashboard.putData("Auton Chooser", auton_chooser);
@@ -65,5 +63,13 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return auton_chooser.getSelected();
+  }
+
+  public Drivetrain getDrivetrain() {
+    return drivetrain;
+  }
+
+  public TurretSubsystem getTurret() {
+    return turret;
   }
 } //Nice - Wolfram121
