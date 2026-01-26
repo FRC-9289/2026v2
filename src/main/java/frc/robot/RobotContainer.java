@@ -19,7 +19,7 @@ public class RobotContainer {
   public static final JoystickButton resetHeading_Start = new JoystickButton(controller3D, Constants.JoystickConstants.BaseRM);
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
-  private final TurretSubsystem turret = new TurretSubsystem(true);
+  private final TurretSubsystem turret = TurretSubsystem.getInstance();
   private final WolfSend wolfSend = WolfSend.getInstance();
   private final WolfPoseEstimator wolfPoseEstimator = WolfPoseEstimator.getInstance();
   private ParallelRaceGroup swerveStopCmd;
@@ -31,12 +31,12 @@ public class RobotContainer {
   
     configureBindings();
   
-    swerveStopCmd = new SwerveDriveCommands(0.0,0.0,0.0).withTimeout(3);
-    NamedCommands.registerCommand("Swerve Stop", swerveStopCmd);
+    // swerveStopCmd = new SwerveDriveCommands(0.0,0.0,0.0).withTimeout(3);
+    // NamedCommands.registerCommand("Swerve Stop", swerveStopCmd);
   
-    auton_chooser = new SendableChooser<>();
-    auton_chooser.setDefaultOption("MidReefAuto", new PathPlannerAuto("MidReefAuto"));
-    SmartDashboard.putData("Auton Chooser", auton_chooser);
+    // auton_chooser = new SendableChooser<>();
+    // auton_chooser.setDefaultOption("MidReefAuto", new PathPlannerAuto("MidReefAuto"));
+    // SmartDashboard.putData("Auton Chooser", auton_chooser);
   }
 
   private void configureBindings() {
@@ -67,9 +67,5 @@ public class RobotContainer {
 
   public Drivetrain getDrivetrain() {
     return drivetrain;
-  }
-
-  public TurretSubsystem getTurret() {
-    return turret;
   }
 } //Nice - Wolfram121

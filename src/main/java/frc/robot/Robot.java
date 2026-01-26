@@ -5,10 +5,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.utils.TurretMath;
-import frc.robot.utils.Constants.TurretConstants;
-import edu.wpi.first.math.geometry.Pose2d;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -20,7 +16,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private final RobotContainer m_robotContainer;
-  private final TurretSubsystem turret = new TurretSubsystem(true);
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -58,27 +53,6 @@ public class Robot extends TimedRobot {
 public void robotPeriodic() {
     // Run command scheduler
     CommandScheduler.getInstance().run();
-
-    // ---- TURRET CONTROL LOOP ----
-    // 1. Get current robot pose from drivetrain
-    Pose2d pose = m_robotContainer.getDrivetrain().getPose();
-
-    // 2. Compute desired turret angle (radians)
-    double desiredAngle = TurretMath.getAngleToHub(pose);
-
-    // 3. Compute error between target and current turret angle
-    double error = desiredAngle - turret.getAngle();
-
-    // 4. Compute desired velocity (P-controller)
-    double kP = 4.0; // tune this for how fast you want the turret to move
-    double desiredVelocity = kP * error;
-
-    // 5. Compute desired acceleration (change in velocity per loop)
-    double loopPeriod = 0.02; // 20ms, typical FRC loop
-    double desiredAcceleration = (desiredVelocity - turret.getVelocity()) / loopPeriod;
-
-    // 6. Update turret (sim or real hardware)
-    turret.setVoltage(desiredVelocity, desiredAcceleration);
 }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -140,18 +114,5 @@ public void robotPeriodic() {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
-  }
-
-  private double turretPhysics(double w, double a) {
-    return
-      (TurretConstants.J_TURRET
-      * TurretConstants.R)
-      / (TurretConstants.GEAR_RATIO
-      * TurretConstants.KT)
-      * a
-      + (TurretConstants.KE
-      * TurretConstants.GEAR_RATIO)
-      * w
-      + TurretConstants.KS;
   }
 }
