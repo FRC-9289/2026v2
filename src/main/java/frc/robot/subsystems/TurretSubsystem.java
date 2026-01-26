@@ -7,6 +7,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.WolfSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.utils.Constants.TurretConstants;
 import java.lang.Math;
 
@@ -38,9 +42,9 @@ public class TurretSubsystem extends SubsystemBase {
 
     motor = new WolfSparkMax(
       TurretConstants.MOTOR_ID, 
-      null, 
-      null, 
-      0, 
+      MotorType.kBrushless, 
+      IdleMode.kBrake, 
+      TurretConstants.CURRENT_LIMIT, 
       TurretConstants.IS_INVERTED
     );
     encoder = motor.getEncoder();

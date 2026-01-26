@@ -144,5 +144,6 @@ public final class Constants {
     public static final int MAX_VOLTAGE = 12;
     public static final double MAX_VEL = (MAX_VOLTAGE-KS)/(KE*GEAR_RATIO);
     public static final double MAX_ACCEL = ((KT*GEAR_RATIO)/J_TURRET)*((MAX_VOLTAGE-KS)/R);
+    public static final int CURRENT_LIMIT = 40;
   }
 }
