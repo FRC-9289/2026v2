@@ -8,13 +8,12 @@ import frc.robot.controls.TurretSim;
 
 public class TurretSubsystem extends SubsystemBase {
 
-    private final PWMSparkMax motor = new PWMSparkMax(0); // Real motor
-    private final Encoder encoder = new Encoder(0, 1);    // Real encoder
+    private final PWMSparkMax motor = new PWMSparkMax(0);
+    private final Encoder encoder = new Encoder(0, 1);
   
-    // Add the simulation object
     private final TurretSim sim = new TurretSim();
   
-    private final boolean isSim; // Are we in simulation mode?
+    private final boolean isSim; // in simulation mode? - use Aditya's formula
   
     public TurretSubsystem(boolean isSim) {
       this.isSim = isSim;
@@ -32,12 +31,11 @@ public class TurretSubsystem extends SubsystemBase {
       return isSim ? sim.getVelocity() : encoder.getRate();
     }
   
-    // This method now controls either real motor or sim
     public void setVoltage(double volts, double angularAccel) {
       if (isSim) {
-        sim.setVoltage(getVelocity(), angularAccel); // Update sim state
+        sim.setVoltage(getVelocity(), angularAccel);
       } else {
-        motor.setVoltage(volts); // Real motor voltage
+        motor.setVoltage(volts);
       }
     }
   }

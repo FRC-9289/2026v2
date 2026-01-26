@@ -141,17 +141,4 @@ public void robotPeriodic() {
   @Override
   public void simulationPeriodic() {
   }
-
-  private double turretPhysics(double w, double a) {
-    return
-      (TurretConstants.J_TURRET
-      * TurretConstants.R)
-      / (TurretConstants.GEAR_RATIO
-      * TurretConstants.KT)
-      * a
-      + (TurretConstants.KE
-      * TurretConstants.GEAR_RATIO)
-      * w
-      + TurretConstants.KS;
-  }
 }
