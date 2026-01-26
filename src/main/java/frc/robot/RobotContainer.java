@@ -50,12 +50,15 @@ public class RobotContainer {
     double sideSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Y) * slider;
     double turnSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Rot) * slider;
 
-    
+
 
     // While button 3 is held, move turret at 45 deg/s (pi/4 rad/s)
     JoystickButton turretTestButton = new JoystickButton(wolfByte, 3); // Button 3
     turretTestButton.onTrue(
-        new TurretVelocityCommand(turret, Math.PI / 4).withTimeout(4.0)
+        new SequentialCommandGroup(
+          new TurretVelocityCommand(turret, Math.PI / 4).withTimeout(4.0),
+          new TurretVelocityCommand(turret, -Math.PI/4).withTimeout(4.0)
+        )
     );
 
     // Must rotate CCW and revolve once;
