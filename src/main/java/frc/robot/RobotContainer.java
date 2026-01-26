@@ -11,6 +11,7 @@ import frc.robot.subsystems.*;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.JoystickConstants;
 import frc.robot.controls.*;
+import frc.robot.controls.TurretTCs.TurretVelocityCommand;
 
 public class RobotContainer {
   public static final Joystick controller3D = new Joystick(0);
@@ -48,6 +49,16 @@ public class RobotContainer {
     double frontSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.X) * slider;
     double sideSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Y) * slider;
     double turnSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Rot) * slider;
+
+    
+
+    // While button 3 is held, move turret at 45 deg/s (pi/4 rad/s)
+    JoystickButton turretTestButton = new JoystickButton(wolfByte, 3); // Button 3
+    turretTestButton.onTrue(
+        new TurretVelocityCommand(turret, Math.PI / 4).withTimeout(4.0)
+    );
+
+    // Must rotate CCW and revolve once;
 
     drivetrain.setDefaultCommand(new SwerveDriveCommands(frontSpeed,sideSpeed,turnSpeed));
 

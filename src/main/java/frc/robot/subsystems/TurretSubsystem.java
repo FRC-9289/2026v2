@@ -3,11 +3,12 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.WolfSparkMax;
+import com.revrobotics.RelativeEncoder;
 import frc.robot.utils.Constants.TurretConstants;
 import java.lang.Math;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 
 /**
@@ -20,15 +21,17 @@ public class TurretSubsystem extends SubsystemBase {
 
   // motor
   private WolfSparkMax motor;
+  private RelativeEncoder encoder;
 
   // feedforward
   private SimpleMotorFeedforward ff;
 
   // PD Controller
-  private double kP=0.1;
+  private double kP=0;
   private double kD = 0;
   private PIDController pid;
   private double desiredAngularVelocity;
+  private double desiredHeading = 0.0; // rad
   private static final TurretSubsystem turretSubsystem = new TurretSubsystem();
 
   public TurretSubsystem(){
@@ -40,6 +43,7 @@ public class TurretSubsystem extends SubsystemBase {
       0, 
       TurretConstants.IS_INVERTED
     );
+    encoder = motor.getEncoder();
 
 
     // feedforward for calculating voltage
@@ -81,13 +85,13 @@ public class TurretSubsystem extends SubsystemBase {
    * @return double turret angular velocity
    */
   public double getAngularVelocityOfTurret(){
-    double turret_rpm = motor.getEncoder().getVelocity()/TurretConstants.GEAR_RATIO; // Get RPM of motor axle, and divide by gear_ratio to get turret velocity
+    double turret_rpm = -encoder.getVelocity()/TurretConstants.GEAR_RATIO; // Get RPM of motor axle, and divide by gear_ratio to get turret velocity
     double turret_rads = RPMToRadS(turret_rpm); // convert from rpm to rad/s
     return turret_rads;
   }
 
   public double getHeadingOfTurret(){
-    double turret_heading = motor.getEncoder().getPosition()/TurretConstants.GEAR_RATIO; // Get rotation units [0-1.0] and divide by gear_ratio to get turret rotation units
+    double turret_heading = -encoder.getPosition()/TurretConstants.GEAR_RATIO; // Get rotation units [0-1.0] and divide by gear_ratio to get turret rotation units
     double turret_rad = rotationUnitsToRad(turret_heading);
     return turret_rad;
   }
@@ -103,7 +107,6 @@ public class TurretSubsystem extends SubsystemBase {
       desiredAngularVelocity
       );
   }
-
   /**
    * return PID-based feedback
    * @param angularVelocity
@@ -123,6 +126,10 @@ public class TurretSubsystem extends SubsystemBase {
     -TurretConstants.MAX_VOLTAGE, 
     TurretConstants.MAX_VOLTAGE
     );
+
+    SmartDashboard.putNumber("Turret Angle (rad)", getHeadingOfTurret());
+    SmartDashboard.putNumber("Turret Velocity (rad/s)", getAngularVelocityOfTurret());
+    SmartDashboard.putNumber("Turret Desired Velocity (rad/s)", desiredAngularVelocity);
 
     motor.setVoltage(total_volts);
   }
