@@ -128,9 +128,26 @@ public final class Constants {
 
 
   }
+
   public static final class TransferConstants{
     public static final int TRANSFER_MOTOR_ID_1=-1;
     public static final int TRANSFER_MOTOR_ID_2=-1;
 
   }
+
+  public class TurretConstants {
+    public static final double J_TURRET = 0.01;
+    public static final double GEAR_RATIO = 10.0; 
+    public static final double MAX_CURRENT = 40.0;
+    public static final double R = 0.11; 
+    public static final double KT = 0.052;
+    public static final double KE = 0.047;
+    public static final double KS = 0.2;
+
+    public static final double kP = 5.0;
+    public static final double kD = 0.1;
+
+    public static final int TURRET_MOTOR_ID_BOTTOM = 2;
+    public static final int TURRET_MOTOR_ID_LAUNCHER = 3;
+}
 }
