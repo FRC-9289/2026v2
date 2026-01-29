@@ -3,143 +3,151 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.utils.WolfSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+import frc.robot.utils.Constants.NEOMotorConstants;
 import frc.robot.utils.Constants.TurretConstants;
-import java.lang.Math;
 
-
-/**
- * This class represents the Turret Mechanism, key features:
- * Set to desired angular velocity with feedforward voltage + feedback voltage (rad/s)
- * Set to desired angle (rad)
- */
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class TurretSubsystem extends SubsystemBase {
 
-  // motor
-  private WolfSparkMax motor;
-  private RelativeEncoder encoder;
+  private final WolfSparkMax motor;
+  private final RelativeEncoder encoder;
 
-  // feedforward
-  private SimpleMotorFeedforward ff;
+  private final PIDController pid;
+  private final SimpleMotorFeedforward feedforward;
 
-  // PD Controller
-  private double kP=0;
-  private double kD = 0;
-  private PIDController pid;
-  private double desiredAngularVelocity;
-  private double desiredHeading = 0.0; // rad
-  private static final TurretSubsystem turretSubsystem = new TurretSubsystem();
+  private final TrapezoidProfile profile;
+  private final TrapezoidProfile.Constraints constraints;
+  private TrapezoidProfile.State start;
+  private TrapezoidProfile.State goal;
 
-  public TurretSubsystem(){
+  private double timeSeconds = 0.0;
+  private static final double DT = 0.02;
+
+  private double desiredVelocity = 0.0; // for direct velocity commands
+  private boolean usingVelocity = false; // true if last command was velocity
+
+  private static final TurretSubsystem INSTANCE = new TurretSubsystem();
+
+  public static TurretSubsystem getInstance() {
+    return INSTANCE;
+  }
+
+  private TurretSubsystem() {
 
     motor = new WolfSparkMax(
-      TurretConstants.MOTOR_ID, 
-      MotorType.kBrushless, 
-      IdleMode.kBrake, 
-      TurretConstants.CURRENT_LIMIT, 
-      TurretConstants.IS_INVERTED
+        TurretConstants.MOTOR_ID,
+        MotorType.kBrushless,
+        IdleMode.kBrake,
+        NEOMotorConstants.CURRENT_LIMIT,
+        TurretConstants.IS_INVERTED
     );
+
     encoder = motor.getEncoder();
 
-
-    // feedforward for calculating voltage
-    ff = new SimpleMotorFeedforward(
-      TurretConstants.KS, // kS
-      TurretConstants.KE * TurretConstants.GEAR_RATIO, //kV
-      (TurretConstants.J_TURRET * TurretConstants.R)/ (TurretConstants.GEAR_RATIO * TurretConstants.KT) //kA
+    pid = new PIDController(
+        0.0,
+        0.0,
+        0.0
     );
 
-    pid = new PIDController(kP, 0, kD);
+    feedforward = new SimpleMotorFeedforward(
+        TurretConstants.KS,
+        NEOMotorConstants.KE * TurretConstants.GEAR_RATIO,
+        (TurretConstants.J_TURRET * NEOMotorConstants.R)
+            / (TurretConstants.GEAR_RATIO * NEOMotorConstants.KT)
+    );
 
-    desiredAngularVelocity = 0.0;
+    constraints = new TrapezoidProfile.Constraints(
+        TurretConstants.MAX_VEL,
+        TurretConstants.MAX_ACCEL
+    );
 
+    profile = new TrapezoidProfile(constraints);
+
+    start = new TrapezoidProfile.State(0.0, 0.0);
+    goal = new TrapezoidProfile.State(0.0, 0.0);
   }
 
-  /**
-   * Set desired angular velocity of turret
-   * @param velocity
-   */
-  public void setDesiredVelocity(double velocity){
-    this.desiredAngularVelocity = velocity;
+  /** Move turret to a target angle (radians) */
+  public void setDesiredAngle(double angleRad) {
+    timeSeconds = 0.0;
+    usingVelocity = false; // last command is position
+
+    start = new TrapezoidProfile.State(
+        getHeadingRadians(),
+        getAngularVelocityRadPerSec()
+    );
+
+    goal = new TrapezoidProfile.State(angleRad, 0.0);
   }
 
-  /**
-   * Convert RPM to rad/s
-   * @param rpm
-   * @return
-   */
-  public double RPMToRadS(double rpm){
-    return rpm * 2*Math.PI/60;
-  }
+  /** Spin turret at a constant angular velocity (rad/s) */
+  public void setDesiredVelocity(double velocityRadPerSec) {
+    desiredVelocity = velocityRadPerSec;
+    usingVelocity = true; // last command is velocity
 
-  public double rotationUnitsToRad(double rotationUnits){
-    return rotationUnits*2*Math.PI;
-  }
-
-  /**
-   * Returns velocity of turret (rad/s)
-   * @return double turret angular velocity
-   */
-  public double getAngularVelocityOfTurret(){
-    double turret_rpm = -encoder.getVelocity()/TurretConstants.GEAR_RATIO; // Get RPM of motor axle, and divide by gear_ratio to get turret velocity
-    double turret_rads = RPMToRadS(turret_rpm); // convert from rpm to rad/s
-    return turret_rads;
-  }
-
-  public double getHeadingOfTurret(){
-    double turret_heading = -encoder.getPosition()/TurretConstants.GEAR_RATIO; // Get rotation units [0-1.0] and divide by gear_ratio to get turret rotation units
-    double turret_rad = rotationUnitsToRad(turret_heading);
-    return turret_rad;
-  }
-
-  /**
-   * Calculate required voltage to move turret to a specific velocity
-   * @param desiredAngularVelocity
-   * @return double
-   */
-  public double calculateVoltageFeedForward(double desiredAngularVelocity) {
-    return ff.calculateWithVelocities(
-      getAngularVelocityOfTurret(), 
-      desiredAngularVelocity
-      );
-  }
-  /**
-   * return PID-based feedback
-   * @param angularVelocity
-   * @return
-   */
-  public double calculateVoltageFeedback(double angularVelocity){
-    return pid.calculate(getAngularVelocityOfTurret(), angularVelocity);
+    // optional: reset profile start state to avoid jumps if switching later
+    start.velocity = getAngularVelocityRadPerSec();
+    start.position = getHeadingRadians();
+    timeSeconds = 0.0;
   }
 
   @Override
-  public void periodic(){
-    double ff_volts = calculateVoltageFeedForward(this.desiredAngularVelocity);
-    double fb_volts = calculateVoltageFeedback(this.desiredAngularVelocity);
+  public void periodic() {
+    double ffVolts;
+    double fbVolts;
 
-    double total_volts = MathUtil.clamp(
-    ff_volts+fb_volts, /* Total voltage */
-    -TurretConstants.MAX_VOLTAGE, 
-    TurretConstants.MAX_VOLTAGE
+    if (!usingVelocity) {
+      // POSITION MODE
+      timeSeconds += DT;
+
+      TrapezoidProfile.State setpoint =
+          profile.calculate(timeSeconds, start, goal);
+
+      double desiredPosition = setpoint.position;
+      double desiredVel = setpoint.velocity;
+
+      ffVolts = feedforward.calculate(desiredVel);
+      fbVolts = pid.calculate(getHeadingRadians(), desiredPosition);
+
+      SmartDashboard.putNumber("Turret/SetpointPos", desiredPosition);
+      SmartDashboard.putNumber("Turret/SetpointVel", desiredVel);
+
+    } else {
+      // VELOCITY MODE
+      ffVolts = feedforward.calculate(desiredVelocity);
+      fbVolts = pid.calculate(getAngularVelocityRadPerSec(), desiredVelocity);
+
+      SmartDashboard.putNumber("Turret/SetpointVel", desiredVelocity);
+    }
+
+    double totalVolts = MathUtil.clamp(
+        ffVolts + fbVolts,
+        -NEOMotorConstants.MAX_VOLTAGE,
+        NEOMotorConstants.MAX_VOLTAGE
     );
 
-    SmartDashboard.putNumber("Turret Angle (rad)", getHeadingOfTurret());
-    SmartDashboard.putNumber("Turret Velocity (rad/s)", getAngularVelocityOfTurret());
-    SmartDashboard.putNumber("Turret Desired Velocity (rad/s)", desiredAngularVelocity);
+    motor.setVoltage(totalVolts);
 
-    motor.setVoltage(total_volts);
+    SmartDashboard.putNumber("Turret/Position", getHeadingRadians());
+    SmartDashboard.putNumber("Turret/Velocity", getAngularVelocityRadPerSec());
   }
 
-  public static TurretSubsystem getInstance(){
-    return turretSubsystem;
+  public double getHeadingRadians() {
+    double rotations = encoder.getPosition() / TurretConstants.GEAR_RATIO;
+    return rotations * 2.0 * Math.PI;
   }
 
+  public double getAngularVelocityRadPerSec() {
+    double rpm = encoder.getVelocity() / TurretConstants.GEAR_RATIO;
+    return rpm * 2.0 * Math.PI / 60.0;
   }
+}

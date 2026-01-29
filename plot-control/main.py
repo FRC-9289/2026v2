@@ -42,8 +42,8 @@ plt.tight_layout()
 def update(frame):
     current_time = time.time() - start_time
     try:
-        current_vel = sd.getNumber("Turret Velocity (rad/s)", 0.0)
-        desired_vel = sd.getNumber("Turret Desired Velocity (rad/s)", 0.0)
+        current_vel = sd.getNumber("Turret-omega", 0.0)
+        desired_vel = sd.getNumber("Turret-desired-omega", 0.0)
     except Exception as e:
         print("Error reading NetworkTables:", e)
         current_vel, desired_vel = 0.0, 0.0

@@ -52,7 +52,6 @@ public class RobotContainer {
 
 
 
-    // While button 3 is held, move turret at 45 deg/s (pi/4 rad/s)
     JoystickButton turretTestButton = new JoystickButton(wolfByte, 3); // Button 3
     turretTestButton.onTrue(
         new SequentialCommandGroup(
