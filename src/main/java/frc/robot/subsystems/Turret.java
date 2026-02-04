@@ -15,7 +15,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-public class TurretSubsystem extends SubsystemBase {
+public class Turret extends SubsystemBase {
 
   private final WolfSparkMax motor;
   private final RelativeEncoder encoder;
@@ -34,13 +34,13 @@ public class TurretSubsystem extends SubsystemBase {
   private double desiredVelocity = 0.0; // for direct velocity commands
   private boolean usingVelocity = false; // true if last command was velocity
 
-  private static final TurretSubsystem INSTANCE = new TurretSubsystem();
+  private static final Turret instance = new Turret();
 
-  public static TurretSubsystem getInstance() {
-    return INSTANCE;
+  public static Turret getInstance() {
+    return instance;
   }
 
-  private TurretSubsystem() {
+  private Turret() {
 
     motor = new WolfSparkMax(
         TurretConstants.MOTOR_ID,

@@ -20,11 +20,13 @@ public class RobotContainer {
   public static final JoystickButton resetHeading_Start = new JoystickButton(controller3D, Constants.JoystickConstants.BaseRM);
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
-  private final TurretSubsystem turret = TurretSubsystem.getInstance();
+  private final Turret turret = Turret.getInstance();
   private final WolfSend wolfSend = WolfSend.getInstance();
   private final WolfPoseEstimator wolfPoseEstimator = WolfPoseEstimator.getInstance();
   private ParallelRaceGroup swerveStopCmd;
   SendableChooser<Command> auton_chooser;
+
+  private int test_number;
   
   public RobotContainer() {
     CameraServer.startAutomaticCapture(0);
@@ -50,16 +52,6 @@ public class RobotContainer {
     double sideSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Y) * slider;
     double turnSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Rot) * slider;
 
-
-
-    JoystickButton turretTestButton = new JoystickButton(wolfByte, 3); // Button 3
-    turretTestButton.onTrue(
-        new SequentialCommandGroup(
-          new TurretVelocityCommand(turret, Math.PI / 4).withTimeout(4.0),
-          new TurretVelocityCommand(turret, -Math.PI/4).withTimeout(4.0)
-        )
-    );
-
     // Must rotate CCW and revolve once;
 
     drivetrain.setDefaultCommand(new SwerveDriveCommands(frontSpeed,sideSpeed,turnSpeed));
@@ -72,10 +64,30 @@ public class RobotContainer {
       specDrive.setDefaultCommand(new SpecDriveCommands(wolfByte.getPOV()));
     }
     //specDrive.setDefaultCommand(new SpecDriveCommands2(wolfByte.getRawAxis(0)));
+    
+
+    test_number = 1;
   }
 
   public Command getAutonomousCommand() {
-    return auton_chooser.getSelected();
+    // return auton_chooser.getSelected();
+    switch(test_number){
+      case 1:
+        return new SequentialCommandGroup(
+          new TurretVelocityCommand(turret, Math.PI).withTimeout(4.0)
+        );
+      case 2:
+        return new SequentialCommandGroup(
+          new TurretVelocityCommand(turret, Math.PI/4).withTimeout(2.0),
+          new TurretVelocityCommand(turret, -Math.PI/4).withTimeout(2.0)
+        );
+      case 3:
+        return new SequentialCommandGroup(
+          new TurretVelocityCommand(turret, 0.0).withTimeout(2.0),
+          new TurretVelocityCommand(turret, Math.PI).withTimeout(2.0)
+        );
+      default: return new InstantCommand();
+    }
   }
 
   public Drivetrain getDrivetrain() {

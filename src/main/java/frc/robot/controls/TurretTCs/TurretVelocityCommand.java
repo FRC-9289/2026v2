@@ -1,13 +1,13 @@
 package frc.robot.controls.TurretTCs;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.Turret;
 
 public class TurretVelocityCommand extends Command {
-    private final TurretSubsystem turret;
+    private final Turret turret;
     private final double velocity;
 
-    public TurretVelocityCommand(TurretSubsystem turret, double velocity) {
+    public TurretVelocityCommand(Turret turret, double velocity) {
         this.turret = turret;
         this.velocity = velocity;
         addRequirements(turret);
