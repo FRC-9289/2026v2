@@ -125,6 +125,22 @@ public final class Constants {
     public static final int BaseRM = 10;
     public static final int BaseLB = 11;
     public static final int BaseRB = 12;
+
+
+  }
+
+  public static final class TransferConstants{
+    public static final int TRANSFER_MOTOR_ID_1=-1;
+    public static final int TRANSFER_MOTOR_ID_2=-1;
+  }
+
+  public static final class TurretConstants
+  {
+    public static final int LAUNCHER_MOTOR_ID_1 = -1;
+    public static final int LAUNCHER_MOTOR_ID_2 = -1;
+    public static final int TURRET_MOTOR_ID = -1;
+
+    public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
   }
 
   public static final class TurretConstants {
