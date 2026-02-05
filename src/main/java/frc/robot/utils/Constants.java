@@ -10,6 +10,15 @@ import edu.wpi.first.math.util.Units;
 // import HolonomicPathFollowerConfig;
 
 public final class Constants {
+  public static class NEOMotorConstants {
+    public static final int MAX_VOLTAGE = 12;
+    public static final int CURRENT_LIMIT = 40;
+    public static final double KT = 0.0202; // torque-current constant
+    public static final double KE = 0.0202; // Back EMF constant
+    public static final double R = 0.114;
+  }
+
+
   public static class ModuleIDs {
   }
 
@@ -141,20 +150,19 @@ public final class Constants {
     public static final int TURRET_MOTOR_ID = -1;
 
     public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
-  }
 
-  public static final class TurretConstants {
+
     public static final double HUB_X = 182.11; // in inches
     public static final double HUB_Y = 158.84; // in inches
 
-    public static final double GEAR_RATIO = 100.0;
+    public static final double GEAR_RATIO = -1;
     public static final double J_TURRET = 0.015;
 
-    public static final double R = 0.114;
-    public static final double KT = 0.025;
-    public static final double KE = 0.025;
-    public static final double KS = 0.4;
+    public static final double KS = 0; // Static friction constant
 
-    public static final double MAX_CURRENT = 40;
+    public static final int MOTOR_ID = -1;
+    public static final boolean IS_INVERTED =false;
+    public static final double MAX_VEL = (NEOMotorConstants.MAX_VOLTAGE-KS)/(NEOMotorConstants.KE*GEAR_RATIO);
+    public static final double MAX_ACCEL = ((NEOMotorConstants.KT*GEAR_RATIO)/J_TURRET)*((NEOMotorConstants.MAX_VOLTAGE-KS)/NEOMotorConstants.R);
   }
 }
