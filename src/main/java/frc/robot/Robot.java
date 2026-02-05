@@ -1,6 +1,8 @@
-package frc.robot;
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
-import java.util.Optional;
+package frc.robot;
 
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -9,19 +11,14 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.Constants.AutoConstants;
-import frc.robot.util.Constants.DriveConstants;
-import frc.robot.util.Constants.KrakenMotorConstants;
-import frc.robot.util.Constants.LoggingConstants;
-import frc.robot.util.Constants.NeoMotorConstants;
-import frc.robot.util.hardware.phoenix.Kraken;
-import frc.robot.util.hardware.rev.Neo;
-import frc.robot.util.hardware.rev.NeoPhysicsSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -29,178 +26,103 @@ import frc.robot.util.hardware.rev.NeoPhysicsSim;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends LoggedRobot{
+  public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
-    private static Optional<Alliance> alliance = Optional.empty();
-    public static GameMode gameMode = GameMode.DISABLED;
-    public static enum GameMode {
-        DISABLED,
-        AUTONOMOUS,
-        TELEOP,
-        TEST
-    };
+  private Command m_autonomousCommand;
 
-    public static double currentTimestamp = 0;
-    public static double previousTimestamp = 0;
+  private RobotContainer m_robotContainer;
 
-    private Command autonomousCommand;
+  /**
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
+   */
+  @Override
+  public void robotInit() {
+    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // autonomous chooser on the dashboard.
 
-    private RobotContainer robotContainer;
+    Logger.recordMetadata("ProjectName", "TBD"); // Set a metadata value
 
-    @Override
-    public void robotInit() { 
-        // Git metadata for tracking version for AKit
-        Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-        Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-        Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-        Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-        Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-
-        switch (LoggingConstants.getMode()) {
-            case REAL:
-                Logger.addDataReceiver(new WPILOGWriter("/media/sda1/logs")); // Log to a USB stick
-                Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-                break;
-            case REPLAY:
-                String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
-                Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-                Logger.addDataReceiver(new WPILOGWriter(LogFileUtil
-                    .addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
-                    break;
-            case SIM:
-                Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-                break;
-        }
-        
-        Logger.start(); 
-
-        robotContainer = new RobotContainer();
-        DriverStation.silenceJoystickConnectionWarning(true);
-    }
-
-    /**
-     * This function is called every 20 ms, no matter the mode. Used for items like diagnostics
-     * ran during disabled, autonomous, teleoperated and test. :D
-     * <p>
-     * This runs after the mode specific periodic functions, but before LiveWindow and
-     * SmartDashboard integrated updating.
-     */
-    @Override
-    public void robotPeriodic() {
-        Robot.previousTimestamp = Robot.currentTimestamp;
-        Robot.currentTimestamp = Timer.getFPGATimestamp();
-        CommandScheduler.getInstance().run();
-    }
-
-    @Override
-    public void disabledInit() {
-        Robot.gameMode = GameMode.DISABLED;
-        robotContainer.onDisabled();
+    if (isReal()) {
+        Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+        Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+    } else {
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+        Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_actualLog"))); // Save outputs to a new log
     }
     
-    @Override
-    public void disabledPeriodic() {
-        // Now while this may not necessarily be a constant...
-        // it needs to be updated.
-        DriverStation.refreshData();
-        Robot.alliance = DriverStation.getAlliance();
+    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
+
+
+    m_robotContainer = new RobotContainer();
+  }
+
+
+  /**
+   * This function is called every robot packet, no matter the mode. Use this for items like
+   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
+   *
+   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+   * SmartDashboard integrated updating.
+   */
+  @Override
+  public void robotPeriodic() {
+    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    // commands, running already-scheduled commands, removing finished or interrupted commands,
+    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // block in order for anything in the Command-based framework to work.
+    CommandScheduler.getInstance().run();
+  }
+
+  /** This function is called once each time the robot enters Disabled mode. */
+  @Override
+  public void disabledInit() {}
+
+  @Override
+  public void disabledPeriodic() {}
+
+  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  @Override
+  public void autonomousInit() {
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
     }
+  }
 
-    @Override
-    public void disabledExit() {
-        // Shut off NetworkTables broadcasting for most logging calls
-        // if we are at competition
-        RobotContainer.gameModeStart = currentTimestamp;
-        // Monologue.setFileOnly(DriverStation.isFMSAttached());
+  /** This function is called periodically during autonomous. */
+  @Override
+  public void autonomousPeriodic() {}
+
+  @Override
+  public void teleopInit() {
+    // This makes sure that the autonomous stops running when
+    // teleop starts running. If you want the autonomous to
+    // continue until interrupted by another command, remove
+    // this line or comment it out.
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
     }
+  }
 
-    @Override   
-    public void autonomousInit() {
-        DriveConstants.MAX_SPEED_METERS_PER_SECOND = AutoConstants.MAX_SPEED_METERS_PER_SECOND;
-        Robot.gameMode = GameMode.AUTONOMOUS;
-        robotContainer.onEnabled();
-        // We only need to update alliance becuase
-        // sim GUI starts the bot in a "disconnected"
-        // state which won't update the alliance before
-        // we enable...
-        DriverStation.refreshData();
-        Robot.alliance = DriverStation.getAlliance();
+  /** This function is called periodically during operator control. */
+  @Override
+  public void teleopPeriodic() {}
 
-        autonomousCommand = robotContainer.getAutonomousCommand();
+  @Override
+  public void testInit() {
+    // Cancels all running commands at the start of test mode.
+    CommandScheduler.getInstance().cancelAll();
+  }
 
-        if (autonomousCommand != null) {
-            CommandScheduler.getInstance().schedule(autonomousCommand);
-        }
-    }
-
-    @Override
-    public void autonomousPeriodic() {
-    }
-
-    @Override
-    public void autonomousExit() {
-        // Stop our autonomous command if it is still running.
-        System.out.printf(
-            "*** Auto finished in %.2f secs ***%n", Robot.currentTimestamp - RobotContainer.gameModeStart);
-        if (autonomousCommand != null) {
-            autonomousCommand.cancel();
-        }
-    }
-
-    @Override
-    public void teleopInit() {
-        Robot.gameMode = GameMode.TELEOP;
-        robotContainer.onEnabled();
-    }
-
-    @Override
-    public void teleopPeriodic() {
-    }
-
-    @Override
-    public void teleopExit() {}
-
-    @Override
-    public void testInit() {
-        // Cancels all running commands at the start of test mode.
-        Robot.gameMode = GameMode.TEST;
-        CommandScheduler.getInstance().cancelAll();
-        robotContainer.onEnabled();
-    }
-
-    @Override
-    public void testPeriodic() {
-    }
-
-    @Override
-    public void testExit() {
-        // Switch back to the normal button loop!
-        CommandScheduler.getInstance().setActiveButtonLoop(CommandScheduler.getInstance().getDefaultButtonLoop());
-    }
-
-    @Override
-    public void simulationInit() {
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        NeoPhysicsSim.getInstance().run();
-        Robot.alliance = DriverStation.getAlliance();
-
-        for (Neo neo : NeoMotorConstants.NEO_MOTOR_MAP.values()) {
-            neo.tick();
-        }
-
-        for (Kraken kraken : KrakenMotorConstants.KRAKEN_MOTOR_MAP.values()) {
-            kraken.tick();
-        }   
-    }
-
-    public static boolean isRedAlliance() {
-        return alliance.equals(Optional.of(Alliance.Red));
-    }
-
-    public static boolean isBlueAlliance() {
-        return alliance.equals(Optional.of(Alliance.Blue));
-    }
+  /** This function is called periodically during test mode. */
+  @Override
+  public void testPeriodic() {}
 }

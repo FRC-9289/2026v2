@@ -1,282 +1,103 @@
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
+import org.photonvision.PhotonCamera;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.event.EventLoop;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Robot.GameMode;
-import frc.robot.commands.characterization.FeedForwardCharacterization;
-import frc.robot.commands.characterization.StaticCharacterization;
-import frc.robot.commands.characterization.WheelRadiusCharacterization;
-import frc.robot.commands.drive.Drive;
-import frc.robot.commands.logging.NTGainTuner;
-import frc.robot.commands.managers.HDCTuner;
-import frc.robot.subsystems.drive.Swerve;
-import frc.robot.util.Constants.AutoConstants;
-import frc.robot.util.Constants.OIConstants;
-import frc.robot.util.auto.PathPlannerStorage;
-import frc.robot.util.custom.PatriBoxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import frc.robot.autos.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+import frc.robot.subsystems.Vision.Camera;
+import frc.robot.subsystems.Vision.VisionSubsystem;
+
+/**
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and button mappings) should be declared here.
+ */
 public class RobotContainer {
+    /* Controllers */
+    private final Joystick driver = new Joystick(0);
 
-    private PowerDistribution pdh;
+     /* When viewed from behind the bot */ //OFFSETS NEED TO BE REDONE I HAVE NO CLUE WHAT BOT THESE ARE FROM
+    private final Camera leftFrontCam = new Camera(new PhotonCamera("Left_Forward"), 
+        new Transform3d(new Translation3d(0.206, 0.265, 0.208), //TODO re-do offsets
+        new Rotation3d(0, -1.08, 0.524)));
+        
+    private final Camera rightFrontCam = new Camera(new PhotonCamera("Right_Forward"), 
+        new Transform3d(new Translation3d(0.206, -0.265, 0.208), //TODO re-do offsets
+        new Rotation3d(0, -1.08, -0.524)));
 
-    private EventLoop testButtonBindingLoop = new EventLoop();
+    private final Camera rightRearCam = new Camera(new PhotonCamera("Right_Rear"), 
+        new Transform3d(new Translation3d(-0.374, -0.262, 0.195), //TODO re-do offsets
+        new Rotation3d(0, 0, -3.88)));
+        
+    private final Camera leftRearCam = new Camera(new PhotonCamera("Left_Rear"), 
+        new Transform3d(new Translation3d(-0.374, 0.262, 0.195), //TODO re-do offsets
+        new Rotation3d(0, 0, 3.88)));
 
-    private final PatriBoxController driver;
-    @SuppressWarnings("unused")
-    private final PatriBoxController operator;
+    //private final Camera LLCam = new Camera(new PhotonCamera("LLCam"), new Transform3d(new Translation3d(0.135, 0, 0.204), new Rotation3d(0, -1.04, 0)));*/
 
-    private boolean fieldRelativeToggle = true;
-    private final BooleanSupplier robotRelativeSupplier;
+    /* Drive Controls */
+    private final int translationAxis = XboxController.Axis.kLeftY.value;
+    private final int strafeAxis = XboxController.Axis.kLeftX.value;
+    private final int rotationAxis = XboxController.Axis.kRightX.value;
 
-    private final Swerve swerve;
+    /* Driver Buttons */
+    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
-    public static Field2d field2d = new Field2d();
+    /* Subsystems */
+    
+    private final VisionSubsystem s_VisionSubystem = new VisionSubsystem(
+            new Camera[]{rightFrontCam, leftFrontCam, rightRearCam, leftRearCam});
 
-    private PathPlannerStorage pathPlannerStorage;
-    private static HDCTuner HDCTuner;
+    private final Swerve s_Swerve = new Swerve(s_VisionSubystem);
 
-    // Draggables
-    @AutoLogOutput(key = "Draggables/FreshCode")
-    public static boolean freshCode = true;
-    @AutoLogOutput(key = "Draggables/RobotPose2d")
-    public static Pose2d robotPose2d = new Pose2d();
-    @AutoLogOutput(key = "Draggables/RobotPose3d")
-    public static Pose3d robotPose3d = new Pose3d();
-    @AutoLogOutput(key = "Draggables/SwerveMeasuredStates")
-    public static SwerveModuleState[] swerveMeasuredStates;
-    @AutoLogOutput(key = "Draggables/SwerveDesiredStates")
-    public static SwerveModuleState[] swerveDesiredStates;
-    @AutoLogOutput(key = "Draggables/GameModeStart")
-    public static double gameModeStart = 0;
 
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-
-        System.out.println("Constructing Robot Container...");
-
-        driver = new PatriBoxController(OIConstants.DRIVER_CONTROLLER_PORT, OIConstants.DRIVER_DEADBAND);
-        operator = new PatriBoxController(OIConstants.OPERATOR_CONTROLLER_PORT, OIConstants.OPERATOR_DEADBAND);
-
-        pdh = new PowerDistribution(30, ModuleType.kRev);
-        pdh.setSwitchableChannel(false);
-
-        swerve = new Swerve();
-
-        SmartDashboard.putData(field2d);
-
-        driver.back().toggleOnTrue(
-                Commands.runOnce(() -> fieldRelativeToggle = !fieldRelativeToggle)
+        s_Swerve.setDefaultCommand(
+            new TeleopSwerve(
+                s_Swerve, 
+                () -> -driver.getRawAxis(translationAxis), 
+                () -> -driver.getRawAxis(strafeAxis), 
+                () -> -driver.getRawAxis(rotationAxis), 
+                () -> robotCentric.getAsBoolean()
+            )
         );
-        robotRelativeSupplier = () -> fieldRelativeToggle;
 
-        swerve.setDefaultCommand(new Drive(
-                swerve,
-                driver::getLeftY,
-                driver::getLeftX,
-                () -> -driver.getRightX() / 1.6,
-                robotRelativeSupplier,
-                () -> (robotRelativeSupplier.getAsBoolean() && Robot.isRedAlliance())
-        ));
-
-        HDCTuner = new HDCTuner(
-                AutoConstants.HDC.getXController(),
-                AutoConstants.HDC.getThetaController());
-
+        // Configure the button bindings
         configureButtonBindings();
-        configureTimedEvents();
-
-        pathPlannerStorage = new PathPlannerStorage();
-
-        pathPlannerStorage.configureAutoChooser();
-        pathPlannerStorage.getAutoChooser().addOption("WheelRadiusCharacterization",
-                swerve.setWheelsOCommand()
-                        .andThen(Commands.waitSeconds(0.5))
-                        .andThen(new WheelRadiusCharacterization(swerve)));
-        pathPlannerStorage.getAutoChooser().addOption("DriveFeedForwardCharacterization",
-                new FeedForwardCharacterization(
-                        swerve,
-                        swerve::runDriveCharacterization,
-                        swerve::getDriveCharacterizationVelocity));
-        pathPlannerStorage.getAutoChooser().addOption("TurnStaticCharacterization",
-                new StaticCharacterization(
-                        swerve,
-                        swerve::runTurnCharacterization,
-                        swerve::getTurnCharacterizationVelocity));
-
-        CommandScheduler.getInstance().schedule(new NTGainTuner());
-
-        prepareNamedCommands();
-
     }
 
+    /**
+     * Use this method to define your button->command mappings. Buttons can be created by
+     * instantiating a {@link GenericHID} or one of its subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
     private void configureButtonBindings() {
-        configureDriverBindings(driver);
-        configureOperatorBindings(operator);
+        /* Driver Buttons */
+        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     }
 
-    private void configureTimedEvents() {
-    }
-
-    private void configureDriverBindings(PatriBoxController controller) {
-
-        controller.start().onTrue(
-                Commands.runOnce(() -> swerve.resetOdometry(
-                new Pose2d(
-                        swerve.getPose().getTranslation(),
-                        Rotation2d.fromDegrees(
-                                Robot.isRedAlliance()
-                                ? 0
-                                : 180))
-        ), swerve)
-        );
-
-        controller.leftBumper().whileTrue(swerve.getSetWheelsX());
-        controller.rightBumper().whileTrue(swerve.getSetWheelsO());
-        controller.b().whileTrue(swerve.driveCharacterization());
-        controller.y().whileTrue(swerve.getSetWheelsZero());
-    }
-
-    private void configureOperatorBindings(PatriBoxController controller) {
-
-        // controller.povUp()
-        //     .whileTrue(krakenTest.setPosition(() -> krakenTest.getPosition() + 0.2));
-        // controller.povDown()
-        //     .whileTrue(krakenTest.setPosition(() -> krakenTest.getPosition() - 0.2));
-        // controller.a()
-        //     .onTrue(krakenTest.setPosition(() -> 0));
-        // controller.b()
-        //     .whileTrue(krakenTest.setVelocity(() -> 500)
-        //         .finallyDo(() -> krakenTest.setVelocity(() -> 0)));
-        // controller.x()
-        //     .whileTrue(krakenTest.setVelocity(() -> -500)
-        //         .finallyDo(() -> krakenTest.setVelocity(() -> 0)));
-        // controller.rightTrigger()
-        //     .whileTrue(krakenTest.setPercent(controller::getRightY)
-        //         .finallyDo(() -> krakenTest.setPercent(() -> 0)));
-    }
-
-    public void updateNTGains() {
-        double PPHDCP = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/0-P").getDouble(-1);
-        double PPHDCI = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/1-I").getDouble(-1);
-        double PPHDCD = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/2-D").getDouble(-1);
-        double PPHDCP2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/0-P").getDouble(-1);
-        double PPHDCI2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/1-I").getDouble(-1);
-        double PPHDCD2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/2-D").getDouble(-1);
-
-        double HDCP = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/0-P").getDouble(-1);
-        double HDCI = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/1-I").getDouble(-1);
-        double HDCD = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/2-D").getDouble(-1);
-        double HDCP2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/0-P").getDouble(-1);
-        double HDCI2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/1-I").getDouble(-1);
-        double HDCD2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/2-D").getDouble(-1);
-
-        if (PPHDCP == -1 || PPHDCI == -1 || PPHDCD == -1 || PPHDCP2 == -1 || PPHDCI2 == -1 || PPHDCD2 == -1
-                || HDCP == -1 || HDCI == -1 || HDCD == -1 || HDCP2 == -1 || HDCI2 == -1 || HDCD2 == -1) {
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/0-P").setDouble(AutoConstants.XY_CORRECTION_P);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/1-I").setDouble(AutoConstants.XY_CORRECTION_I);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/2-D").setDouble(AutoConstants.XY_CORRECTION_D);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/0-P").setDouble(AutoConstants.ROTATION_CORRECTION_P);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/1-I").setDouble(AutoConstants.ROTATION_CORRECTION_I);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/2-D").setDouble(AutoConstants.ROTATION_CORRECTION_D);
-
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/0-P").setDouble(AutoConstants.XY_CORRECTION_P);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/1-I").setDouble(AutoConstants.XY_CORRECTION_I);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/2-D").setDouble(AutoConstants.XY_CORRECTION_D);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/0-P").setDouble(AutoConstants.ROTATION_CORRECTION_P);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/1-I").setDouble(AutoConstants.ROTATION_CORRECTION_I);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/2-D").setDouble(AutoConstants.ROTATION_CORRECTION_D);
-            return;
-        } else {
-            AutoConstants.PPHDC = new PPHolonomicDriveController(
-                    new PIDConstants(
-                            PPHDCP,
-                            PPHDCI,
-                            PPHDCD),
-                    new PIDConstants(
-                            PPHDCP2,
-                            PPHDCI2,
-                            PPHDCD2));
-
-            AutoConstants.XY_PID.setP(HDCP);
-            AutoConstants.XY_PID.setI(HDCI);
-            AutoConstants.XY_PID.setD(HDCD);
-            AutoConstants.THETA_PID.setP(HDCP2);
-            AutoConstants.THETA_PID.setI(HDCI2);
-            AutoConstants.THETA_PID.setD(HDCD2);
-
-        }
-    }
-
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
     public Command getAutonomousCommand() {
-        return pathPlannerStorage.getSelectedAuto();
+        // An ExampleCommand will run in autonomous
+        return new exampleAuto(s_Swerve);
     }
-
-    private void configureHDCBindings(PatriBoxController controller) {
-        controller.pov(0, 270, testButtonBindingLoop)
-                .onTrue(HDCTuner.controllerDecrementCommand());
-
-        controller.pov(0, 90, testButtonBindingLoop)
-                .onTrue(HDCTuner.controllerIncrementCommand());
-
-        controller.pov(0, 0, testButtonBindingLoop)
-                .onTrue(HDCTuner.increaseCurrentConstantCommand(.1));
-
-        controller.pov(0, 180, testButtonBindingLoop)
-                .onTrue(HDCTuner.increaseCurrentConstantCommand(-.1));
-
-        controller.rightBumper(testButtonBindingLoop)
-                .onTrue(HDCTuner.constantIncrementCommand());
-
-        controller.leftBumper(testButtonBindingLoop)
-                .onTrue(HDCTuner.constantDecrementCommand());
-
-        controller.a(testButtonBindingLoop)
-                .onTrue(HDCTuner.logCommand());
-
-        controller.x(testButtonBindingLoop)
-                .onTrue(HDCTuner.multiplyPIDCommand(2));
-
-        controller.b(testButtonBindingLoop)
-                .onTrue(HDCTuner.multiplyPIDCommand(.5));
-    }
-
-    public void onDisabled() {
-        swerve.stopDriving();
-        CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
-        pathPlannerStorage.configureAutoChooser();
-
-        // TODO: Extract this into a command file
-        CommandScheduler.getInstance().schedule(
-                Commands.run(this::updateNTGains)
-                .until(() -> Robot.gameMode != GameMode.DISABLED)
-                .ignoringDisable(true)
-                );
-    }
-
-    public void onEnabled() {
-        gameModeStart = Robot.currentTimestamp;
-        CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
-        freshCode = false;
-    }
-
-    private void prepareNamedCommands() {
-    }
-
 }
