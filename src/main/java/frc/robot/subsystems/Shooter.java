@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.Constants;
+import frc.robot.utils.Constants.NEOMotorConstants;
 import frc.robot.utils.Constants.TurretConstants;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -33,10 +34,9 @@ public class Shooter extends SubsystemBase {
         launcher2 = new SparkMax(Constants.TurretConstants.LAUNCHER_MOTOR_ID_2, MotorType.kBrushless);
 
         pid = new PIDController(
-            TurretConstants.SHOOTER_kP,
-            TurretConstants.SHOOTER_kI,
-            TurretConstants.SHOOTER_kD
-        );
+                TurretConstants.SHOOTER_kP,
+                TurretConstants.SHOOTER_kI,
+                TurretConstants.SHOOTER_kD);
 
         encoder = launcher1.getEncoder();
 
@@ -63,14 +63,15 @@ public class Shooter extends SubsystemBase {
 
         SmartDashboard.putNumber("Shooter - Calculated Distance", calculatedDistance);
         SmartDashboard.putNumber("Shooter - Speed of Launcher", speedLauncher);
-        SmartDashboard.putNumber("Shooter - Target Voltage", MathUtil.clamp(ffVoltage + fbVoltage, -12, 12));
+        SmartDashboard.putNumber("Shooter - Target Voltage",
+                MathUtil.clamp(ffVoltage + fbVoltage, -NEOMotorConstants.MAX_VOLTAGE, NEOMotorConstants.MAX_VOLTAGE));
     }
 
     public void shoot() {
         targetVoltage = MathUtil.clamp(
                 ffVoltage + fbVoltage,
-                -12.0,
-                12.0);
+                -NEOMotorConstants.MAX_VOLTAGE,
+                NEOMotorConstants.MAX_VOLTAGE);
 
         launcher1.setVoltage(targetVoltage);
         launcher2.setVoltage(-targetVoltage);
