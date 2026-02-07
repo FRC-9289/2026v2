@@ -59,7 +59,7 @@ public class Turret extends SubsystemBase {
     );
 
     feedforward = new SimpleMotorFeedforward(
-        TurretConstants.KS,
+        TurretConstants.kS,
         NEOMotorConstants.KE * TurretConstants.GEAR_RATIO,
         (TurretConstants.J_TURRET * NEOMotorConstants.R)
             / (TurretConstants.GEAR_RATIO * NEOMotorConstants.KT)

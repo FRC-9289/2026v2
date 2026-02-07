@@ -152,12 +152,16 @@ public final class Constants {
     public static final double kV = 2.1;
     public static final double kA = 0.3;
 
-    public static final double GEAR_RATIO = -1;
+    public static final double GEAR_RATIO = 5;
+    public static final double J_TURRET = (1.0/2.0)*(0.200)*(8.5*8.5+12.5*12.5);
 
     public static final double SHOOTER_kP = 0.002;
     public static final double SHOOTER_kI = 0.0;
     public static final double SHOOTER_kD = 0.0;
 
     public static final double WHEEL_RADIUS = 2;
+    public static final boolean IS_INVERTED =false;
+    public static final double MAX_VEL = (NEOMotorConstants.MAX_VOLTAGE-kS)/(NEOMotorConstants.KE*GEAR_RATIO);
+    public static final double MAX_ACCEL = ((NEOMotorConstants.KT*GEAR_RATIO)/J_TURRET)*((NEOMotorConstants.MAX_VOLTAGE-kS)/NEOMotorConstants.R);
   }
 }
