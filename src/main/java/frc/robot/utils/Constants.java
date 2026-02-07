@@ -143,5 +143,11 @@ public final class Constants {
     public static final double kS = 0.25;
     public static final double kV = 2.1;
     public static final double kA = 0.3;
+
+    public static final double GEAR_RATIO = -1;
+
+    public static final double SHOOTER_kP = 0.002;
+    public static final double SHOOTER_kI = 0.0;
+    public static final double SHOOTER_kD = 0.0;
   }
 }
