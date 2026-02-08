@@ -156,7 +156,7 @@ public class Drivetrain extends SubsystemBase {
 
     SmartDashboard.putNumber("Robot Angle", getHeading());
     SmartDashboard.putString("Angular Speed",
-        new DecimalFormat("#.00").format((-gyro.getRate() / 180)) + "pi rad/s"
+        new DecimalFormat("#.00").format((-gyro.getAngularVelocityZWorld().getValueAsDouble() / 180)) + "pi rad/s"
     );
 
     posePublisher.set(poseEstimator.getEstimatedPosition()); //Publish estimated pose to logging
