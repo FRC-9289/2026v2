@@ -2,7 +2,7 @@ package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.MathUtil;
-import frc.robot.utils.Constants.TurretConstants;
+import frc.robot.subsystems.Turret.TurretConstants;
 
 public class TurretMath {
 

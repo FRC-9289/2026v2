@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Turret;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.WolfSparkMax;
 import frc.robot.utils.Constants.NEOMotorConstants;
-import frc.robot.utils.Constants.TurretConstants;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -120,6 +119,8 @@ public class Turret extends SubsystemBase {
 
       SmartDashboard.putNumber("Turret/SetpointPos", desiredPosition);
       SmartDashboard.putNumber("Turret/SetpointVel", desiredVel);
+      SmartDashboard.putNumber("Turret/CurrPos", getHeadingRadians());
+      SmartDashboard.putNumber("Turret/CurrVel", getAngularVelocityRadPerSec());
 
     } else {
       // VELOCITY MODE
