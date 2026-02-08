@@ -73,7 +73,7 @@ public class SwerveModule {
 
     public void resetToAbsolute(){
         double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
-        mAngleMotor.setPosition(absolutePosition);
+        mAngleMotor.setPosition(45);
     }
 
     public SwerveModuleState getState(){
@@ -87,6 +87,24 @@ public class SwerveModule {
         return new SwerveModulePosition(
             Conversions.rotationsToMeters(mDriveMotor.getPosition().getValueAsDouble(), Constants.Swerve.wheelCircumference), 
             Rotation2d.fromRotations(mAngleMotor.getPosition().getValueAsDouble())
+        );
+    }
+
+    public void setDriveVoltage(double volts) {
+        mDriveMotor.setVoltage(volts);
+    }
+    
+    public double getDrivePositionMeters() {
+        return Conversions.rotationsToMeters(
+            mDriveMotor.getPosition().getValueAsDouble(),
+            Constants.Swerve.wheelCircumference
+        );
+    }
+    
+    public double getDriveVelocityMetersPerSec() {
+        return Conversions.RPSToMPS(
+            mDriveMotor.getVelocity().getValueAsDouble(),
+            Constants.Swerve.wheelCircumference
         );
     }
 }

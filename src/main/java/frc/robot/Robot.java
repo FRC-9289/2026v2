@@ -14,9 +14,12 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -60,6 +63,28 @@ public class Robot extends LoggedRobot{
 
 
     m_robotContainer = new RobotContainer();
+
+    SwerveModuleState[] states = m_robotContainer.s_Swerve.getModuleStates();
+
+    // Constants.Swerve.Mod0.angleOffset = Rotation2d.fromDegrees(states[0].angle.getDegrees());
+    // Constants.Swerve.Mod1.angleOffset = Rotation2d.fromDegrees(states[1].angle.getDegrees());
+    // Constants.Swerve.Mod2.angleOffset = Rotation2d.fromDegrees(states[2].angle.getDegrees());
+    // Constants.Swerve.Mod3.angleOffset = Rotation2d.fromDegrees(states[3].angle.getDegrees());
+
+    // SmartDashboard.putNumber("Initial 0", states[0].angle.getDegrees());
+    // SmartDashboard.putNumber("Initial 1", states[1].angle.getDegrees());
+    // SmartDashboard.putNumber("Initial 2", states[2].angle.getDegrees());
+    // SmartDashboard.putNumber("Initial 3", states[3].angle.getDegrees());
+
+    // Constants.Swerve.Mod0.angleOffset = Rotation2d.fromDegrees(states[0].angle.getDegrees());
+    // Constants.Swerve.Mod1.angleOffset = Rotation2d.fromDegrees(states[1].angle.getDegrees());
+    // Constants.Swerve.Mod2.angleOffset = Rotation2d.fromDegrees(states[2].angle.getDegrees());
+    // Constants.Swerve.Mod3.angleOffset = Rotation2d.fromDegrees(states[3].angle.getDegrees());
+
+    // SmartDashboard.putNumber("After 0", states[0].angle.getDegrees());
+    // SmartDashboard.putNumber("After 1", states[1].angle.getDegrees());
+    // SmartDashboard.putNumber("After 2", states[2].angle.getDegrees());
+    // SmartDashboard.putNumber("After 3", states[3].angle.getDegrees());
   }
 
 
@@ -84,7 +109,9 @@ public class Robot extends LoggedRobot{
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override

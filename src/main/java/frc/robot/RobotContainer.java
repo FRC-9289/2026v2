@@ -25,25 +25,26 @@ import frc.robot.subsystems.Vision.VisionSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    
     /* Controllers */
     private final Joystick driver = new Joystick(0);
 
      /* When viewed from behind the bot */ //OFFSETS NEED TO BE REDONE I HAVE NO CLUE WHAT BOT THESE ARE FROM
-    private final Camera leftFrontCam = new Camera(new PhotonCamera("Left_Forward"), 
-        new Transform3d(new Translation3d(0.206, 0.265, 0.208), //TODO re-do offsets
-        new Rotation3d(0, -1.08, 0.524)));
+    // private final Camera leftFrontCam = new Camera(new PhotonCamera("Left_Forward"), 
+    //     new Transform3d(new Translation3d(0.206, 0.265, 0.208), //TODO re-do offsets
+    //     new Rotation3d(0, -1.08, 0.524)));
         
-    private final Camera rightFrontCam = new Camera(new PhotonCamera("Right_Forward"), 
-        new Transform3d(new Translation3d(0.206, -0.265, 0.208), //TODO re-do offsets
-        new Rotation3d(0, -1.08, -0.524)));
+    // private final Camera rightFrontCam = new Camera(new PhotonCamera("Right_Forward"), 
+    //     new Transform3d(new Translation3d(0.206, -0.265, 0.208), //TODO re-do offsets
+    //     new Rotation3d(0, -1.08, -0.524)));
 
-    private final Camera rightRearCam = new Camera(new PhotonCamera("Right_Rear"), 
-        new Transform3d(new Translation3d(-0.374, -0.262, 0.195), //TODO re-do offsets
-        new Rotation3d(0, 0, -3.88)));
+    // private final Camera rightRearCam = new Camera(new PhotonCamera("Right_Rear"), 
+    //     new Transform3d(new Translation3d(-0.374, -0.262, 0.195), //TODO re-do offsets
+    //     new Rotation3d(0, 0, -3.88)));
         
-    private final Camera leftRearCam = new Camera(new PhotonCamera("Left_Rear"), 
-        new Transform3d(new Translation3d(-0.374, 0.262, 0.195), //TODO re-do offsets
-        new Rotation3d(0, 0, 3.88)));
+    // private final Camera leftRearCam = new Camera(new PhotonCamera("Left_Rear"), 
+    //     new Transform3d(new Translation3d(-0.374, 0.262, 0.195), //TODO re-do offsets
+    //     new Rotation3d(0, 0, 3.88)));
 
     //private final Camera LLCam = new Camera(new PhotonCamera("LLCam"), new Transform3d(new Translation3d(0.135, 0, 0.204), new Rotation3d(0, -1.04, 0)));*/
 
@@ -58,10 +59,10 @@ public class RobotContainer {
 
     /* Subsystems */
     
-    private final VisionSubsystem s_VisionSubystem = new VisionSubsystem(
-            new Camera[]{rightFrontCam, leftFrontCam, rightRearCam, leftRearCam});
+    // private final VisionSubsystem s_VisionSubystem = new VisionSubsystem(
+    //         new Camera[]{rightFrontCam, leftFrontCam, rightRearCam, leftRearCam});
 
-    private final Swerve s_Swerve = new Swerve(s_VisionSubystem);
+    public static final Swerve s_Swerve = new Swerve();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -70,11 +71,12 @@ public class RobotContainer {
             new TeleopSwerve(
                 s_Swerve, 
                 () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
+                () -> driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
                 () -> robotCentric.getAsBoolean()
             )
         );
+
 
         // Configure the button bindings
         configureButtonBindings();
@@ -88,7 +90,8 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+
+        // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
     }
 
     /**
@@ -98,6 +101,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new exampleAuto(s_Swerve);
+        return new MoveForward(s_Swerve);
     }
 }

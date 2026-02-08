@@ -3,6 +3,8 @@ package frc.robot;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public final class CTREConfigs {
     public TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
     public TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
@@ -31,6 +33,16 @@ public final class CTREConfigs {
         swerveAngleFXConfig.Slot0.kP = Constants.Swerve.angleKP;
         swerveAngleFXConfig.Slot0.kI = Constants.Swerve.angleKI;
         swerveAngleFXConfig.Slot0.kD = Constants.Swerve.angleKD;
+
+        SmartDashboard.putNumber("Angle kP", Constants.Swerve.angleKP);
+        SmartDashboard.putNumber("Angle kI", Constants.Swerve.angleKI);
+        SmartDashboard.putNumber("Angle kD", Constants.Swerve.angleKD);
+
+        SmartDashboard.putNumber("Drive kP", Constants.Swerve.driveKP);
+        SmartDashboard.putNumber("Angle kI", Constants.Swerve.driveKI);
+        SmartDashboard.putNumber("Angle kD", Constants.Swerve.driveKD);
+        SmartDashboard.putNumber("Angle kF", Constants.Swerve.driveKF);
+        
 
         /** Swerve Drive Motor Configuration */
         /* Motor Inverts and Neutral Mode */
