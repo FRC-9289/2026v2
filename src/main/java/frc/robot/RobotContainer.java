@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Vision.Camera;
 import frc.robot.subsystems.Vision.VisionSubsystem;
 
@@ -62,7 +63,7 @@ public class RobotContainer {
     // private final VisionSubsystem s_VisionSubystem = new VisionSubsystem(
     //         new Camera[]{rightFrontCam, leftFrontCam, rightRearCam, leftRearCam});
 
-    public static final Swerve s_Swerve = new Swerve();
+    public final Swerve s_Swerve = new Swerve();
 
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -101,6 +102,6 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new MoveForward(s_Swerve);
+        return new TeleopSwerve(s_Swerve, () -> 0, () -> 0, () -> 0, () -> false);
     }
 }
