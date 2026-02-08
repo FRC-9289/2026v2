@@ -19,6 +19,7 @@ public class RobotContainer {
   public static double pov;
   public static final JoystickButton resetHeading_Start = new JoystickButton(controller3D, Constants.JoystickConstants.BaseRM);
   private final Drivetrain drivetrain = Drivetrain.getInstance();
+  private final Shooter shooter = new Shooter(drivetrain);
   private final SpecDrive specDrive = SpecDrive.getInstance();
   private final Turret turret = Turret.getInstance();
   private final WolfSend wolfSend = WolfSend.getInstance();
@@ -55,6 +56,12 @@ public class RobotContainer {
     // Must rotate CCW and revolve once;
 
     drivetrain.setDefaultCommand(new SwerveDriveCommands(frontSpeed,sideSpeed,turnSpeed));
+
+    JoystickButton shootButton =
+        new JoystickButton(controller3D, 4); // choose button based on driver preference
+
+    shootButton.whileTrue(new RunCommand(shooter::shoot, shooter));
+    shootButton.onFalse(new InstantCommand(shooter::stop, shooter));
 
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
