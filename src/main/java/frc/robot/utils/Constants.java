@@ -134,20 +134,33 @@ public final class Constants {
     public static final int BaseRM = 10;
     public static final int BaseLB = 11;
     public static final int BaseRB = 12;
+
+
   }
 
-  public static final class TurretConstants {
+  public static final class TransferConstants{
+    public static final int TRANSFER_MOTOR_ID_1=-1;
+    public static final int TRANSFER_MOTOR_ID_2=-1;
+  }
+
+  public static final class TurretConstants
+  {
+    public static final int LAUNCHER_MOTOR_ID_1 = -1;
+    public static final int LAUNCHER_MOTOR_ID_2 = -1;
+    public static final int TURRET_MOTOR_ID = -1;
+
+    public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
 
 
     public static final double HUB_X = 182.11; // in inches
     public static final double HUB_Y = 158.84; // in inches
 
-    public static final double GEAR_RATIO = -1;
-    public static final double J_TURRET = 0.015;
+    public static final double GEAR_RATIO = 5;
+    public static final double J_TURRET = (1.0/2.0)*(0.200)*(8.5*8.5+12.5*12.5);
 
     public static final double KS = 0; // Static friction constant
 
-    public static final int MOTOR_ID = -1;
+    public static final int MOTOR_ID = 13;
     public static final boolean IS_INVERTED =false;
     public static final double MAX_VEL = (NEOMotorConstants.MAX_VOLTAGE-KS)/(NEOMotorConstants.KE*GEAR_RATIO);
     public static final double MAX_ACCEL = ((NEOMotorConstants.KT*GEAR_RATIO)/J_TURRET)*((NEOMotorConstants.MAX_VOLTAGE-KS)/NEOMotorConstants.R);
