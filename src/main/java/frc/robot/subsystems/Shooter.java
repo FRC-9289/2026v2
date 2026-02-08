@@ -11,36 +11,46 @@ import frc.robot.utils.Constants.TurretConstants;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
-
-    private final SparkMax launcher1;
-    private final SparkMax launcher2;
-    private final RelativeEncoder encoder;
-
-    public static double calculatedDistance; // needs to be dynamically updated with pose
-
-    private double speedLauncher;
-    private double ffVoltage; // store the voltage calculated
-    private double fbVoltage;
-    private double targetVoltage;
-
-    private final SimpleMotorFeedforward launcherFeedForward;
-    private final PIDController pid;
-
-    public Shooter() {
-        launcher1 = new SparkMax(Constants.TurretConstants.LAUNCHER_MOTOR_ID_1, MotorType.kBrushless);
-        launcher2 = new SparkMax(Constants.TurretConstants.LAUNCHER_MOTOR_ID_2, MotorType.kBrushless);
-
-        pid = new PIDController(
-                TurretConstants.SHOOTER_kP,
-                TurretConstants.SHOOTER_kI,
-                TurretConstants.SHOOTER_kD);
-
-        encoder = launcher1.getEncoder();
-
-        launcherFeedForward = new SimpleMotorFeedforward(TurretConstants.kS, TurretConstants.kV, TurretConstants.kA);
+        private Drivetrain drivetrain = new Drivetrain();
+    
+        Pose2d robotPose = drivetrain.getPose();
+        private final Translation2d hubPos = new Translation2d(8.23, 4.11); // in meters, placement of hub from top left corner of field
+    
+        double distanceMeters = robotPose.getTranslation().getDistance(hubPos);
+    
+        private final SparkMax launcher1;
+        private final SparkMax launcher2;
+        private final RelativeEncoder encoder;
+    
+        public static double calculatedDistance; // needs to be dynamically updated with pose
+    
+        private double speedLauncher;
+        private double ffVoltage; // store the voltage calculated
+        private double fbVoltage;
+        private double targetVoltage;
+    
+        private final SimpleMotorFeedforward launcherFeedForward;
+        private final PIDController pid;
+    
+        public Shooter(Drivetrain drivetrain) {
+            launcher1 = new SparkMax(Constants.TurretConstants.LAUNCHER_MOTOR_ID_1, MotorType.kBrushless);
+            launcher2 = new SparkMax(Constants.TurretConstants.LAUNCHER_MOTOR_ID_2, MotorType.kBrushless);
+    
+            pid = new PIDController(
+                    TurretConstants.SHOOTER_kP,
+                    TurretConstants.SHOOTER_kI,
+                    TurretConstants.SHOOTER_kD);
+    
+            encoder = launcher1.getEncoder();
+    
+            launcherFeedForward = new SimpleMotorFeedforward(TurretConstants.kS, TurretConstants.kV, TurretConstants.kA);
+    
+            this.drivetrain = drivetrain;
     }
 
     public static double calculateVelocityFromDistanceToHub(double distance) { // in cm input, converted to m at end of
@@ -56,11 +66,17 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        Pose2d robotPose = drivetrain.getPose();
+        double distanceMeters =
+            robotPose.getTranslation().getDistance(hubPos);
+    
+        calculatedDistance = distanceMeters * 100; // convert to cm for method
+    
         speedLauncher = calculateVelocityFromDistanceToHub(calculatedDistance);
-
-        ffVoltage = velocityToVoltage(speedLauncher); // not sending voltage to shooting motors yet
+    
+        ffVoltage = velocityToVoltage(speedLauncher);
         fbVoltage = pid.calculate(encoder.getVelocity(), speedLauncher);
-
+    
         SmartDashboard.putNumber("Shooter - Calculated Distance", calculatedDistance);
         SmartDashboard.putNumber("Shooter - Speed of Launcher", speedLauncher);
         SmartDashboard.putNumber("Shooter - Target Voltage",
