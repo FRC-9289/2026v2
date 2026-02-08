@@ -38,13 +38,11 @@ public class Swerve extends SubsystemBase {
     public SwerveDrivePoseEstimator poseEstimator;
     public SwerveDriveKinematics swerveDriveKinematics;
 
-    public final Pose2d rt = new Pose2d( /* r(t) = desired position at time t */
-        new Translation2d(0.0,1.0), // desired position
-        Rotation2d.fromDegrees(0) // desired heading
-    );
+    public Pose2d rt;
 
 
-    public Swerve() {
+    public Swerve(Pose2d rt) {
+        this.rt = rt;
         RobotConfig config;
         try{
             config = RobotConfig.fromGUISettings();
