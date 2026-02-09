@@ -12,7 +12,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static class ModuleIDs {
   }
-  
+
   public static class NEOMotorConstants {
     public static final int MAX_VOLTAGE = 12;
     public static final int CURRENT_LIMIT = 40;
@@ -144,8 +144,6 @@ public final class Constants {
 
   public static final class TurretConstants
   {
-    public static final int LAUNCHER_MOTOR_ID_1 = -1;
-    public static final int LAUNCHER_MOTOR_ID_2 = -1;
     public static final int TURRET_MOTOR_ID = -1;
 
     public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
@@ -157,19 +155,31 @@ public final class Constants {
     public static final double GEAR_RATIO = 5;
     public static final double J_TURRET = (1.0/2.0)*(0.200)*(8.5*8.5+12.5*12.5);
     
-    public static final double kS = 0.25;
     public static final double kV = 2.1;
     public static final double kA = 0.3;
+
+    public static final int MOTOR_ID = 13;
+    public static final boolean IS_INVERTED =false;
+    public static final double MAX_VEL = (NEOMotorConstants.MAX_VOLTAGE)/(NEOMotorConstants.KE*GEAR_RATIO);
+    public static final double MAX_ACCEL = ((NEOMotorConstants.KT*GEAR_RATIO)/J_TURRET)*((NEOMotorConstants.MAX_VOLTAGE)/NEOMotorConstants.R);
+  }
+
+  public static final class ShooterConstants
+  {
+    public static final int LAUNCHER_MOTOR_ID_1 = -1;
+    public static final int LAUNCHER_MOTOR_ID_2 = -1;
+
+    public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
 
     public static final double SHOOTER_kP = 0.002;
     public static final double SHOOTER_kI = 0.0;
     public static final double SHOOTER_kD = 0.0;
 
-    public static final double WHEEL_RADIUS = 2;
+    public static final double kV = 0.10;
+    public static final double kA = 0.01;
 
-    public static final int MOTOR_ID = 13;
-    public static final boolean IS_INVERTED =false;
-    public static final double MAX_VEL = (NEOMotorConstants.MAX_VOLTAGE-kS)/(NEOMotorConstants.KE*GEAR_RATIO);
-    public static final double MAX_ACCEL = ((NEOMotorConstants.KT*GEAR_RATIO)/J_TURRET)*((NEOMotorConstants.MAX_VOLTAGE-kS)/NEOMotorConstants.R);
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
+
+    public static final double SHOOTER_ANGLE_RAD = 0.349066; // in radians, based on launcher in a box page
   }
 }
