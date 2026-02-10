@@ -11,6 +11,7 @@ import frc.robot.subsystems.*;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.JoystickConstants;
 import frc.robot.controls.*;
+import frc.robot.controls.TurretTCs.TurretPositionCommand;
 import frc.robot.controls.TurretTCs.TurretVelocityCommand;
 
 public class RobotContainer {
@@ -31,6 +32,9 @@ public class RobotContainer {
   public RobotContainer() {
     CameraServer.startAutomaticCapture(0);
     CameraServer.startAutomaticCapture(1);
+
+    //turret.resetHeading();
+
   
     configureBindings();
   
@@ -71,23 +75,9 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return auton_chooser.getSelected();
-    switch(test_number){
-      case 1:
-        return new SequentialCommandGroup(
-          new TurretVelocityCommand(turret, Math.PI).withTimeout(4.0)
-        );
-      case 2:
-        return new SequentialCommandGroup(
-          new TurretVelocityCommand(turret, Math.PI/4).withTimeout(2.0),
-          new TurretVelocityCommand(turret, -Math.PI/4).withTimeout(2.0)
-        );
-      case 3:
-        return new SequentialCommandGroup(
-          new TurretVelocityCommand(turret, 0.0).withTimeout(2.0),
-          new TurretVelocityCommand(turret, Math.PI).withTimeout(2.0)
-        );
-      default: return new InstantCommand();
-    }
+    double targetAngle = Math.toRadians(90); // 45° CCW
+
+    return new TurretPositionCommand(turret, targetAngle);
   }
 
   public Drivetrain getDrivetrain() {

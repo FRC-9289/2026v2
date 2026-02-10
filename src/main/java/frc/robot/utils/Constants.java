@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.MathUtil;
+
 // import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 // import com.pathplanner.lib.util.PIDConstants;
 // import com.pathplanner.lib.util.ReplanningConfig;
@@ -155,14 +157,21 @@ public final class Constants {
     public static final double HUB_X = 182.11; // in inches
     public static final double HUB_Y = 158.84; // in inches
 
-    public static final double GEAR_RATIO = 5;
+    public static final double GEAR_RATIO = 5*(200/25);
     public static final double J_TURRET = (1.0/2.0)*(0.200)*(8.5*8.5+12.5*12.5);
 
     public static final double KS = 0; // Static friction constant
 
     public static final int MOTOR_ID = 13;
     public static final boolean IS_INVERTED =false;
-    public static final double MAX_VEL = (NEOMotorConstants.MAX_VOLTAGE-KS)/(NEOMotorConstants.KE*GEAR_RATIO);
-    public static final double MAX_ACCEL = ((NEOMotorConstants.KT*GEAR_RATIO)/J_TURRET)*((NEOMotorConstants.MAX_VOLTAGE-KS)/NEOMotorConstants.R);
+    public static final double MAX_VEL = Math.toRadians(720.0);
+    public static final double MAX_ACCEL = Math.toRadians(720.0);
+
+    public static final double kP = 0.5;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final double angleOffset = 1.381944; //rad
+
   }
 }

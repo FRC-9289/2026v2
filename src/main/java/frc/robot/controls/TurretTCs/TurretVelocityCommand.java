@@ -4,33 +4,33 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Turret;
 
 public class TurretVelocityCommand extends Command {
-    private final Turret turret;
-    private final double velocity;
 
-    public TurretVelocityCommand(Turret turret, double velocity) {
-        this.turret = turret;
-        this.velocity = velocity;
-        addRequirements(turret);
-    }
+  private final Turret turret;
+  private final double targetVelocityRadPerSec;
 
-    @Override
-    public void initialize() {
-        turret.setDesiredVelocity(velocity); // rad/s
-    }
+  public TurretVelocityCommand(Turret turret, double targetVelocityRadPerSec) {
+    this.turret = turret;
+    this.targetVelocityRadPerSec = targetVelocityRadPerSec;
+    addRequirements(turret);
+  }
 
-    @Override
-    public void execute() {
-        // velocity is continuously applied via subsystem periodic()
-    }
+  @Override
+  public void initialize() {
+    turret.setDesiredVelocity(targetVelocityRadPerSec);
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-        turret.setDesiredVelocity(0.0); // stop turret
-    }
+  @Override
+  public void execute() {
+    turret.setDesiredVelocity(targetVelocityRadPerSec);
+  }
 
-    @Override
-    public boolean isFinished() {
-        return false; // run until interrupted
-    }
+  @Override
+  public void end(boolean interrupted) {
+    turret.setDesiredVelocity(0.0);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return false; // runs until interrupted
+  }
 }
-
