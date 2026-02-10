@@ -1,7 +1,7 @@
 package frc.robot.controls.TurretTCs;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Turret.Turret;
 import frc.robot.utils.Constants.TurretConstants;
 
 public class TurretPositionCommand extends Command {

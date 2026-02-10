@@ -20,10 +20,6 @@ public final class Constants {
     public static final double R = 0.114;
   }
 
-
-  public static class ModuleIDs {
-  }
-
   public static class SwerveIDs {
     public static final int LFD = 4;
     public static final int LFT = 1;

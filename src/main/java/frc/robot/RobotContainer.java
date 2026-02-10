@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Turret.Turret;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.JoystickConstants;
 import frc.robot.controls.*;
@@ -77,7 +78,7 @@ public class RobotContainer {
     // return auton_chooser.getSelected();
     double targetAngle = Math.toRadians(90); // 45° CCW
 
-    return new TurretPositionCommand(turret, targetAngle);
+    return new TurretPositionCommand(null, targetAngle);
   }
 
   public Drivetrain getDrivetrain() {
