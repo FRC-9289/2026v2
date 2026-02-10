@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.JoystickConstants;
 import frc.robot.controls.*;

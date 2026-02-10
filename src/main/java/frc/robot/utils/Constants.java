@@ -145,11 +145,7 @@ public final class Constants {
 
   public static final class TurretConstants
   {
-    public static final int LAUNCHER_MOTOR_ID_1 = -1;
-    public static final int LAUNCHER_MOTOR_ID_2 = -1;
     public static final int TURRET_MOTOR_ID = -1;
-
-    public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
 
 
     public static final double HUB_X = 182.11; // in inches
@@ -161,10 +157,6 @@ public final class Constants {
     public static final double kS = 0.25;
     public static final double kV = 2.1;
     public static final double kA = 0.3;
-
-    public static final double SHOOTER_kP = 0.002;
-    public static final double SHOOTER_kI = 0.0;
-    public static final double SHOOTER_kD = 0.0;
 
     public static final double WHEEL_RADIUS = 2;
 
