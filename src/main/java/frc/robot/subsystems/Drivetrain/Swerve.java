@@ -12,16 +12,15 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.Voltage;
+
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
 
 import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -34,7 +33,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
-    public SwerveDrivePoseEstimator odometry;
+    public SwerveDrivePoseEstimator poseEstimator;
     public RobotConfig config;
 
 
@@ -86,7 +85,7 @@ public class Swerve extends SubsystemBase {
         };
 
         // Odometry
-        odometry = new SwerveDrivePoseEstimator(
+        poseEstimator = new SwerveDrivePoseEstimator(
             new SwerveDriveKinematics(
                 new Translation2d(-0.347,0.347),
                 new Translation2d(0.347,0.347),
@@ -99,12 +98,6 @@ public class Swerve extends SubsystemBase {
         );
 
         // resetModulesToAbsolute();
-    }
-
-    private void applySysIdVoltage(Measure<VoltageUnit> volts) {
-        for (SwerveModule mod : mSwerveMods) {
-            mod.setDriveVoltage(volts.in(Units.Volts));
-        }
     }
         
 
@@ -197,24 +190,25 @@ public class Swerve extends SubsystemBase {
 
     /** Get robot pose from odometry */
     public Pose2d getPose() {
-        return odometry.getEstimatedPosition();
+        return poseEstimator.getEstimatedPosition();
     }
 
     /** Reset odometry to specific pose */
     public void setPose(Pose2d pose) {
-        odometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
+        poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
     @Override
     public void periodic() {
-        odometry.update(getGyroYaw(), getModulePositions());
+        poseEstimator.update(getGyroYaw(), getModulePositions());
 
         Pose2d pose = getPose();
-        SmartDashboard.putNumber("Pose (X)", pose.getX());
-        SmartDashboard.putNumber("Pose (Y)", pose.getY());
-        SmartDashboard.putNumber("Pose rotation", pose.getRotation().getDegrees());
-        SmartDashboard.putNumber("Gyro heading", -gyro.getYaw().getValueAsDouble());
-
+        SmartDashboard.putNumber("Pose X", pose.getX());
+        SmartDashboard.putNumber("Pose Y", pose.getY());
+        SmartDashboard.putNumber("Heading", pose.getRotation().getDegrees());
+        SmartDashboard.putNumber("Desired X", poseEstimator.getEstimatedPosition().getX());
+        SmartDashboard.putNumber("Desired Y", poseEstimator.getEstimatedPosition().getY());
+        SmartDashboard.putNumber("Desired Heading", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
     }
 }
 

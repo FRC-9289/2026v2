@@ -79,6 +79,16 @@ public final class Constants {
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
+        /* PathPlanner translational PID Values */
+        public static final double PPtranslationkP = 0.0;
+        public static final double PPtranslationkI = 0.0;
+        public static final double PPtranslationkD = 0.0;
+
+        /* PathPlanner rotational PID Values */
+        public static final double PProtationalkP = 0.0;
+        public static final double PProtationalkI = 0.0;
+        public static final double PProtationalkD = 0.0;
+
         /* Drive Motor Characterization Values From SYSID */
         public static final double driveKS = 0.32; //TODO: This must be tuned to specific robot
         public static final double driveKV = 1.51;
