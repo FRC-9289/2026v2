@@ -1,13 +1,13 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Shooter;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.NEOMotorConstants;
-import frc.robot.utils.Constants.ShooterConstants;
 import frc.robot.utils.Constants.TurretConstants;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -23,23 +23,28 @@ public class Shooter extends SubsystemBase {
                                                                         // corner of field
 
     private final SparkMax launcher1;
-    private final SparkMax launcher2;
     private final RelativeEncoder encoder;
 
     // public static double calculatedDistance; // needs to be dynamically updated
     // with pose
 
     private double speedLauncher;
+    private double distanceMeters;
     private double ffVoltage; // store the voltage calculated
     private double fbVoltage;
     private double targetVoltage;
+
+    private static Shooter instance;
+    public static Shooter getInstance(){
+        return instance;
+    }
 
     private final SimpleMotorFeedforward launcherFeedForward;
     private final PIDController pid;
 
     public Shooter(Drivetrain drivetrain) {
-        launcher1 = new SparkMax(Constants.ShooterConstants.LAUNCHER_MOTOR_ID_1, MotorType.kBrushless);
-        launcher2 = new SparkMax(Constants.ShooterConstants.LAUNCHER_MOTOR_ID_2, MotorType.kBrushless);
+        distanceMeters=0;
+        launcher1 = new SparkMax(ShooterConstants.LAUNCHER_MOTOR_ID_1, MotorType.kBrushless);
 
         pid = new PIDController(
                 ShooterConstants.SHOOTER_kP,
@@ -50,7 +55,8 @@ public class Shooter extends SubsystemBase {
 
         launcherFeedForward = new SimpleMotorFeedforward(0, ShooterConstants.kV, ShooterConstants.kA);
 
-        this.drivetrain = drivetrain;
+        this.drivetrain = Drivetrain.getInstance();
+        instance = this;
     }
 
     public static double calculateVelocityFromDistanceToHub(double distanceMeters) {
@@ -68,8 +74,12 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         Pose2d robotPose = drivetrain.getPose();
-        double distanceMeters = robotPose.getTranslation().getDistance(hubPos);
+        distanceMeters = robotPose.getTranslation().getDistance(hubPos);
 
+        SmartDashboard.putNumber("Shooter Distance (m)", distanceMeters);
+    }
+
+    public void shoot() {
         double ballVelocity = calculateVelocityFromDistanceToHub(distanceMeters);
         double wheelRadPerSec = ballVelocity / ShooterConstants.WHEEL_RADIUS;
 
@@ -79,25 +89,21 @@ public class Shooter extends SubsystemBase {
         ffVoltage = launcherFeedForward.calculate(motorRadPerSec);
         fbVoltage = pid.calculate(encoderRadPerSec, motorRadPerSec);
 
-        SmartDashboard.putNumber("Shooter Distance (m)", distanceMeters);
-        SmartDashboard.putNumber("Shooter Ball Vel (m/s)", ballVelocity);
-        SmartDashboard.putNumber("Shooter Motor Vel (rad/s)", motorRadPerSec);
-        SmartDashboard.putNumber("Shooter Voltage",
-                MathUtil.clamp(ffVoltage + fbVoltage, -12, 12));
-    }
 
-    public void shoot() {
         targetVoltage = MathUtil.clamp(
                 ffVoltage + fbVoltage,
                 -NEOMotorConstants.MAX_VOLTAGE,
                 NEOMotorConstants.MAX_VOLTAGE);
 
         launcher1.setVoltage(targetVoltage);
-        launcher2.setVoltage(-targetVoltage);
+
+        SmartDashboard.putNumber("Shooter Ball Vel (m/s)", ballVelocity);
+        SmartDashboard.putNumber("Shooter Motor Vel (rad/s)", motorRadPerSec);
+        SmartDashboard.putNumber("Shooter Voltage",
+        MathUtil.clamp(ffVoltage + fbVoltage, -12, 12));
     }
 
     public void stop() {
         launcher1.stopMotor();
-        launcher2.stopMotor();
     }
 }
