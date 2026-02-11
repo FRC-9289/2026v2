@@ -166,8 +166,7 @@ public final class Constants {
 
   public static final class ShooterConstants
   {
-    public static final int LAUNCHER_MOTOR_ID_1 = -1;
-    public static final int LAUNCHER_MOTOR_ID_2 = -1;
+    public static final int LAUNCHER_MOTOR_ID_1 = 6;
 
     public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
 
