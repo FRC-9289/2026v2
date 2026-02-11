@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Vision;
+package frc.robot.subsystems.Drivetrain.Vision;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +27,9 @@ import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
-import frc.robot.FieldLayout;
-import frc.robot.subsystems.Vision.VisionSubsystem.PoseAndTimestampAndDev;
+import frc.robot.subsystems.Drivetrain.Constants;
+import frc.robot.subsystems.Drivetrain.FieldLayout;
+import frc.robot.subsystems.Drivetrain.Vision.VisionSubsystem.PoseAndTimestampAndDev;
 
 public class Camera {
     private PhotonCamera cam;

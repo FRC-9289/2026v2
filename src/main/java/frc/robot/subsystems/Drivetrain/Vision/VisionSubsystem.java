@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Vision;
+package frc.robot.subsystems.Drivetrain.Vision;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
