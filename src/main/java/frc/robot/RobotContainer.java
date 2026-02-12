@@ -76,9 +76,9 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return auton_chooser.getSelected();
-    double targetAngle = Math.toRadians(90); // 45° CCW
+    double targetAngle = Math.toRadians(- 0); // 45° CCW
 
-    return new TurretPositionCommand(null, targetAngle);
+    return new TurretPositionCommand(turret, targetAngle);
   }
 
   public Drivetrain getDrivetrain() {
