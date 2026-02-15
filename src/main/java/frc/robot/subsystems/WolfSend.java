@@ -6,6 +6,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Drivetrain.Swerve;
 
 public class WolfSend extends SubsystemBase {
     private final NetworkTable t;
@@ -17,16 +19,12 @@ public class WolfSend extends SubsystemBase {
     private final NetworkTableEntry LBR1;
     private final NetworkTableEntry RBR1;
     private final NetworkTableEntry RFR1;
-    private final NetworkTableEntry LFR2;
-    private final NetworkTableEntry LBR2;
-    private final NetworkTableEntry RBR2;
-    private final NetworkTableEntry RFR2;
     private final NetworkTableEntry POS_X;
     private final NetworkTableEntry POS_Y;
     private final NetworkTableEntry ANGLE;
     private final NetworkTableEntry statusText;
 
-    private Drivetrain drivetrain = Drivetrain.getInstance();
+    private final Swerve swerve = RobotContainer.getSwerve();
     SwerveModulePosition[] positions = new SwerveModulePosition[4];
     SwerveModuleState[] states = new SwerveModuleState[4];
     double[] desiredAngles = new double[4];
@@ -43,10 +41,6 @@ public class WolfSend extends SubsystemBase {
         LBR1 = t.getEntry("LBR1");
         RBR1 = t.getEntry("RBR1");
         RFR1 = t.getEntry("RFR1");
-        LFR2 = t.getEntry("LFR2");
-        LBR2 = t.getEntry("LBR2");
-        RBR2 = t.getEntry("RBR2");
-        RFR2 = t.getEntry("RFR2");
         POS_X = t.getEntry("POS_X");
         POS_Y = t.getEntry("POS_Y");
         ANGLE = t.getEntry("ANGLE");
@@ -55,9 +49,8 @@ public class WolfSend extends SubsystemBase {
 
     @Override
     public void periodic() {
-        states = drivetrain.getModuleStates();
-        positions = drivetrain.getModulePositions();
-        desiredAngles = drivetrain.getModuleDesiredAngles();
+        states = swerve.getModuleStates();
+        positions = swerve.getModulePositions();
 
         LFD.setDouble(states[0].speedMetersPerSecond);
         LBD.setDouble(states[1].speedMetersPerSecond);
@@ -67,17 +60,13 @@ public class WolfSend extends SubsystemBase {
         LBR1.setDouble(positions[1].angle.getDegrees());
         RBR1.setDouble(positions[2].angle.getDegrees());
         RFR1.setDouble(positions[3].angle.getDegrees());
-        LFR2.setDouble(desiredAngles[0]);
-        LBR2.setDouble(desiredAngles[1]);
-        RBR2.setDouble(desiredAngles[2]);
-        RFR2.setDouble(desiredAngles[3]);
-        POS_X.setDouble(drivetrain.getPose().getX());
-        POS_Y.setDouble(drivetrain.getPose().getY());
-        ANGLE.setDouble(drivetrain.getPose().getRotation().getDegrees());
+        POS_X.setDouble(swerve.getPose().getX());
+        POS_Y.setDouble(swerve.getPose().getY());
+        ANGLE.setDouble(swerve.getPose().getRotation().getDegrees());
         statusText.setString("Transmission Active");
     }
 
-    public static WolfSend getInstance() {
+    public static WolfSend get() {
         return wolfSend;
     }
 }
