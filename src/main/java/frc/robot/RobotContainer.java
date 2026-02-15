@@ -9,10 +9,12 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Shooter.Shooter;
+import frc.robot.subsystems.Turret.Turret;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.JoystickConstants;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.controls.*;
+import frc.robot.controls.TurretTCs.TurretPositionCommand;
 
 public class RobotContainer {
   public static final Joystick controller3D = new Joystick(0);
@@ -21,11 +23,13 @@ public class RobotContainer {
   public static final JoystickButton resetHeading_Start = new JoystickButton(controller3D, Constants.JoystickConstants.BaseRM);
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final Shooter shooter = Shooter.getInstance();
+  private final Turret turret = Turret.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
   private final WolfSend wolfSend = WolfSend.getInstance();
   private final WolfPoseEstimator wolfPoseEstimator = WolfPoseEstimator.getInstance();
   private ParallelRaceGroup swerveStopCmd;
   SendableChooser<Command> auton_chooser;
+  double targetAngle = Math.toRadians(- 0); // 45° CCW
   
   public RobotContainer() {
     CameraServer.startAutomaticCapture(0); // Start capturing from the first camera
@@ -62,6 +66,15 @@ public class RobotContainer {
     shootButton.whileTrue(new RunCommand(shooter::shoot, shooter));
     shootButton.onFalse(new InstantCommand(shooter::stop, shooter));
 
+    // solely for testing
+    JoystickButton turretLeftButton = new JoystickButton(controller3D, 5);
+    turretLeftButton.whileTrue(new RunCommand(turret::turnLeft, turret));
+    turretLeftButton.onFalse(new InstantCommand(turret::stopLeft, turret));
+    
+    JoystickButton turretRightButton = new JoystickButton(controller3D, 6);
+    turretRightButton.whileTrue(new RunCommand(turret::turnRight, turret));
+    turretRightButton.onFalse(new InstantCommand(turret::stopRight, turret));
+
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
     //Comment out before driving. Will only let robot turn.
@@ -73,6 +86,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new ShooterCommand(shooter);
+    // return new ShooterCommand(shooter);
+    // return auton_chooser.getSelected();
+    return new TurretPositionCommand(turret, targetAngle);
   }
 } //Nice - Wolfram121
