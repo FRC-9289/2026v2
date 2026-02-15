@@ -103,6 +103,12 @@ public class Shooter extends SubsystemBase {
         MathUtil.clamp(ffVoltage + fbVoltage, -12, 12));
     }
 
+    // just for testing
+    public void shootTest()
+    {
+        launcher1.set(10);
+    }
+
     public void stop() {
         launcher1.stopMotor();
     }
