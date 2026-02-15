@@ -28,20 +28,16 @@ public class Intake extends SubsystemBase {
         sto = new WolfSparkMax((int) (Math.random() * 15), true, false);
     }
     
-    public void rot(double speed) {
-        rot.set(speed);
+    public void rot(double vel) {
+        rot.set(vel);
     }
 
-    public void wheel(double speed) {
-        wheel.set(speed);
+    public void wheel(double vel) {
+        wheel.set(vel);
     }
 
-    public void sto(double speed) {
-        sto.set(speed);
-    }
-
-    public static Intake get() {
-        return intake;
+    public void sto(double vel) {
+        sto.set(vel);
     }
 
     public void rotPos(double pos) {

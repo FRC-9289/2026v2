@@ -9,9 +9,10 @@ import frc.robot.utils.WolfSparkMax;
 
 public class Outtake extends SubsystemBase {
     private static final Outtake outtake = new Outtake();
+    private WolfSparkMax pull;
+    private WolfSparkMax carry;
     private WolfSparkMax rot;
     private WolfSparkMax wheel;
-    private WolfSparkMax carry;
 
     public Outtake() {
         this.rot = new WolfSparkMax(13, true, false);
@@ -24,20 +25,21 @@ public class Outtake extends SubsystemBase {
         cfg.softLimit.reverseSoftLimitEnabled(true);
         rot.configure(cfg, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
 
-        this.wheel = new WolfSparkMax(12, false, false);
+        this.pull = new WolfSparkMax((int) (Math.random() * 15), false, false);
         this.carry = new WolfSparkMax((int) (Math.random() * 15), false, false); //fix
+        this.wheel = new WolfSparkMax(12, false, false);
     }
 
-    public void wheel(double speed) {
-        wheel.set(speed);
+    public void pull(double vel) {
+        pull.set(vel);
     }
 
-    public void carry(double speed) {
-        carry.set(speed);
+    public void carry(double vel) {
+        carry.set(vel);
     }
 
-    public static Outtake get() {
-        return outtake;
+    public void wheel(double vel) {
+        wheel.set(vel);
     }
 
     public void rotPos(double pos) {
