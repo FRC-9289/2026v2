@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Hang.HangSubsystem;
 import frc.robot.subsystems.Hopper.Hopper;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Kicker.Kicker;
@@ -31,6 +32,7 @@ public class RobotContainer {
   private final Hopper hopper = Hopper.getInstance();
   private final Intake intake = Intake.getInstance();
   private final Kicker kicker = Kicker.getInstance();
+  private final HangSubsystem hang = HangSubsystem.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
   private final WolfSend wolfSend = WolfSend.getInstance();
   private final WolfPoseEstimator wolfPoseEstimator = WolfPoseEstimator.getInstance();
@@ -67,23 +69,32 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(new SwerveDriveCommands(frontSpeed, sideSpeed, turnSpeed));
 
-    JoystickButton shootButton = new JoystickButton(controller3D, 4); // choose button based on driver preference
+    JoystickButton shootButton = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonX);
     shootButton.toggleOnTrue(new RunCommand(shooter::shootTest, shooter));
 
     // solely for testing
-    JoystickButton turretLeftButton = new JoystickButton(controller3D, 5);
+    JoystickButton turretLeftButton = new JoystickButton(controller3D, Constants.ControllerConstants.AxisLeftTrigger);
     turretLeftButton.whileTrue(new RunCommand(turret::turnLeft, turret));
     turretLeftButton.onFalse(new InstantCommand(turret::stopLeft, turret));
 
-    JoystickButton turretRightButton = new JoystickButton(controller3D, 6);
+    JoystickButton turretRightButton = new JoystickButton(controller3D, Constants.ControllerConstants.AxisRightTrigger);
     turretRightButton.whileTrue(new RunCommand(turret::turnRight, turret));
     turretRightButton.onFalse(new InstantCommand(turret::stopRight, turret));
 
-    // button to completely gather fuel by enabling all necessary subsystems - hopper, intake, kicker
-    JoystickButton gatherButton = new JoystickButton(controller3D, 1);
+    // button to completely gather fuel by enabling all necessary subsystems -
+    // hopper, intake, kicker
+    JoystickButton gatherButton = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonY);
     gatherButton.toggleOnTrue(new RunCommand(hopper::pullIn, hopper));
     gatherButton.toggleOnTrue(new RunCommand(intake::pullIn, intake));
     gatherButton.toggleOnTrue(new RunCommand(kicker::goUp, kicker));
+
+    JoystickButton hangExtendButton = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonShoulderL);
+    hangExtendButton.whileTrue(new RunCommand(hang::extend, hang));
+    hangExtendButton.onFalse(new InstantCommand(hang::stop, hang));
+
+    JoystickButton hangRetractButton = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonShoulderR);
+    hangRetractButton.whileTrue(new RunCommand(hang::retract, hang));
+    hangRetractButton.onFalse(new InstantCommand(hang::stop, hang));
 
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
