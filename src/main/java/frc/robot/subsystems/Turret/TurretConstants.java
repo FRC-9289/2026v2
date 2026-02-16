@@ -14,7 +14,7 @@ public class TurretConstants
     public static final double HUB_Y = 158.84; // in inches
 
     public static final double GEAR_RATIO = 5*(200/25);
-    public static final double J_TURRET = (1.0/2.0)*(0.200)*(8.5*8.5+12.5*12.5);
+    public static final double J_TURRET = (1.0/2.0)*(3.3)*(8.5*8.5+12.5*12.5);
 
     public static final double KS = 0; // Static friction constant
 

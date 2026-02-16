@@ -41,6 +41,9 @@ public class RobotContainer {
     auton_chooser = new SendableChooser<>();
     auton_chooser.setDefaultOption("MidReefAuto", new PathPlannerAuto("MidReefAuto"));
     SmartDashboard.putData("Auton Chooser", auton_chooser);
+
+    // reset turret heading to 0
+    turret.resetHeading();
   }
 
   private void configureBindings() {
