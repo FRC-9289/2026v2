@@ -9,8 +9,10 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Shooter.Shooter;
+import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.JoystickConstants;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.controls.*;
 import frc.robot.controls.TurretTCs.TurretVelocityCommand;
 
@@ -20,7 +22,7 @@ public class RobotContainer {
   public static double pov;
   public static final JoystickButton resetHeading_Start = new JoystickButton(controller3D, Constants.JoystickConstants.BaseRM);
   private final Drivetrain drivetrain = Drivetrain.getInstance();
-  private final Shooter shooter = new Shooter(drivetrain);
+  private final Shooter shooter = Shooter.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
   private final Turret turret = Turret.getInstance();
   private final WolfSend wolfSend = WolfSend.getInstance();

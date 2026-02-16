@@ -1,21 +1,24 @@
 package frc.robot.subsystems.Shooter;
 
-public class ShooterConstants {
+import edu.wpi.first.math.util.Units;
+import frc.robot.utils.Constants.NEOMotorConstants;
 
-    public static final int LAUNCHER_MOTOR_ID_1 = -1;
-    public static final int LAUNCHER_MOTOR_ID_2 = -1;    
-    // PID constants for the launcher
-    public static final double SHOOTER_kP = 0.001;
+public class ShooterConstants {
+    public static final int LAUNCHER_MOTOR_ID_1 = 6;
+
+    public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
+
+    public static final double SHOOTER_kP = 0.0;
     public static final double SHOOTER_kI = 0.0;
     public static final double SHOOTER_kD = 0.0;
 
-    // Feedforward constants (tune experimentally)
-    public static final double kS = 0.0;
-    public static final double kV = 0.0;
-    public static final double kA = 0.01;
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
 
-    // Shooter geometry
-    public static final double CHANGE_IN_HEIGHT = 0.8; // meters (hub height - shooter exit height)
-    public static final double LAUNCH_ANGLE_DEGREES = 45.0; // degrees
-    public static final double ROLLER_RADIUS = 0.051; // m
+    public static final double SHOOTER_ANGLE_RAD = 0.349066; // in radians, based on launcher in a box page
+
+    public static final double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
+    public static double J_SHOOTER = (1.0/2.0)*(0.200)*(WHEEL_RADIUS)*(WHEEL_RADIUS); // moment of inertia of the shooter, based on launcher in a box page
+
+    public static final double kA = (J_SHOOTER * NEOMotorConstants.R)/(NEOMotorConstants.KT*WHEEL_RADIUS*GEAR_RATIO);
+    public static final double kV = NEOMotorConstants.KE/WHEEL_RADIUS;
 }
