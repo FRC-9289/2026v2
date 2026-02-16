@@ -30,4 +30,9 @@ public class Transfer extends SubsystemBase {
         transfer1.stopMotor();
         transfer2.stopMotor();
     }
+
+    private static Transfer instance;
+    public static Transfer getInstance(){
+        return instance;
+    }
 }

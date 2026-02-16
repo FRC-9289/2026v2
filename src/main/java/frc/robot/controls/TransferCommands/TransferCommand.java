@@ -3,11 +3,11 @@ package frc.robot.controls;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Transfer.Transfer;
 
-public class TransferCommand extends Command{
+public class TransferCommand extends Command
+{
     private Transfer transfer;
     private String direction;
         
-    
     public TransferCommand(Transfer transfer, String direction){
         this.transfer = transfer;
         this.direction = direction;
