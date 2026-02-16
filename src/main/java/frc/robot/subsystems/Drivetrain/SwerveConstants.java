@@ -12,7 +12,7 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
-public final class Constants {
+public final class SwerveConstants {
     public static final double stickDeadband = 0.01;
 
     public final class PoseFilter {
@@ -155,6 +155,9 @@ public final class Constants {
         public static final double kPXController = 1;
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
+
+        public static final double setpointTheta = 0.0;
+        public static final Translation2d setPointTranslation = new Translation2d(0.0, 1.0);
     
         /* Constraint for the motion profilied robot angle controller */
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
