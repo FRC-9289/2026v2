@@ -34,8 +34,6 @@ public class RobotContainer {
   private final Kicker kicker = Kicker.getInstance();
   private final HangSubsystem hang = HangSubsystem.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
-  private final WolfSend wolfSend = WolfSend.getInstance();
-  private final WolfPoseEstimator wolfPoseEstimator = WolfPoseEstimator.getInstance();
   private ParallelRaceGroup swerveStopCmd;
   SendableChooser<Command> auton_chooser;
   double targetAngle = Math.toRadians(-0); // 45° CCW
