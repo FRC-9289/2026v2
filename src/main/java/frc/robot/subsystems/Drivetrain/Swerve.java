@@ -220,6 +220,7 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Setpoint (X)", SwerveConstants.AutoConstants.setPointTranslation.getX());
         Logger.recordOutput("Setpoint (Y)", SwerveConstants.AutoConstants.setPointTranslation.getY());
         Logger.recordOutput("Setpoint (Rotation)", SwerveConstants.AutoConstants.setpointTheta);
+        Logger.recordOutput("RobotPose", pose);  
     }
 }
 
