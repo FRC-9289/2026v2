@@ -1,120 +1,77 @@
 package frc.robot;
 
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import org.photonvision.PhotonCamera;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
 import frc.auton.RunTest;
-import frc.robot.commands.TeleopSwerve;
-import frc.robot.commands.SwerveCommand;
+import frc.robot.autos.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.subsystems.Drivetrain.Swerve;
+import frc.robot.subsystems.Intake.Intake;
 
 public class RobotContainer {
-
-    /* Driver joystick */
+    
     private final Joystick driver = new Joystick(0);
 
-    /* Axis mappings */
-    private final int translationAxis = 1; // forward/back
-    private final int strafeAxis = 0;      // left/right
-    private final int rotationAxis = 2;    // twist
+    /* Subsystems */
+    public static Swerve swerve;
+    public static Intake intake;
 
-    /* Buttons */
-    private final JoystickButton zeroGyro =
-        new JoystickButton(driver, 1);
-
-    private final JoystickButton robotCentric =
-        new JoystickButton(driver, 2);
-
-    /* Subsystem */
-    public final Swerve s_Swerve;
-
-    /* Auton chooser */
-    private final SendableChooser<Command> autonChooser =
-        new SendableChooser<>();
-
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        String test = "MF1m";
+        Pose2d rt;
+        //Test poses for auto testing, will be replaced with actual auto paths later
+        switch (test) {
+            case "MF1m":
+                rt = new Pose2d(new Translation2d(0.0, 1.0), Rotation2d.fromDegrees(0));
+                break;
+            case "MF2m":
+                rt = new Pose2d(new Translation2d(0.0, 2.0), Rotation2d.fromDegrees(0));
+                break;
+            case "R90":
+                rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(90));
+                break;
+            case "R180":
+                rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(180));
+                break;
+            default:
+                rt = new Pose2d(); // default pose at origin
+        }
 
-        /* Start cameras */
-        CameraServer.startAutomaticCapture(0);
-        CameraServer.startAutomaticCapture(1);
+        // Initialize drivetrain with target pose
+        swerve = new Swerve();
+        swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(0) * .3, () -> driver.getRawAxis(1) * .3, () -> -driver.getRawAxis(2) * .2, () -> true));
 
-        /* Create drivetrain */
-        s_Swerve = new Swerve();
+        intake = new Intake();
+        intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawButton(1)));
 
-        /* Default drive command */
-        s_Swerve.setDefaultCommand(
-            new TeleopSwerve(
-                s_Swerve,
-                () -> -Math.pow(driver.getRawAxis(translationAxis),2),
-                () -> Math.pow(driver.getRawAxis(strafeAxis),2),
-                () -> -Math.pow(driver.getRawAxis(rotationAxis),2),
-                () -> robotCentric.getAsBoolean()
-            )
-        );
-
-        /* Register PathPlanner stop command */
-        NamedCommands.registerCommand(
-            "Swerve Stop",
-            new SwerveCommand(s_Swerve,
-            new Translation2d(0.0,0.0),
-            0.0,robotCentric.getAsBoolean(),
-            true)
-            .withTimeout(3)
-        );
-
-        /* Setup auton chooser */
-        autonChooser.setDefaultOption(
-            "RunTest MF1m",
-            new RunTest("MF1m")
-        );
-
-        autonChooser.addOption(
-            "RunTest MF2m",
-            new RunTest("MF2m")
-        );
-
-        autonChooser.addOption(
-            "RunTest R90",
-            new RunTest("R90")
-        );
-
-        autonChooser.addOption(
-            "RunTest R180",
-            new RunTest("R180")
-        );
-
-        autonChooser.addOption(
-            "PathPlanner MidReefAuto",
-            new PathPlannerAuto("MidReefAuto")
-        );
-
-        SmartDashboard.putData("Auton Chooser", autonChooser);
-
-        configureBindings();
+        configureButtonBindings();
     }
 
-  private void configureBindings() {
+    private void configureButtonBindings() {
+        /* Driver Buttons */
 
-    /* Zero gyro */
-    zeroGyro.onTrue(
-        new InstantCommand(() -> s_Swerve.zeroHeading())
-    );
-  }
+        // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
+    }
+    public Command getAutonomousCommand() {
+        // An ExampleCommand will run in autonomous
+        String test = "MF1m";
+        return new RunTest(test);
+    }
 
-  public Command getAutonomousCommand() {
-      return autonChooser.getSelected();
-  }
+    public static Swerve getSwerve() {
+        return swerve;
+    }
 }
