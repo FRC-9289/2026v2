@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.Transfer;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -9,8 +9,7 @@ public class Transfer extends SubsystemBase {
 
     private SparkMax transfer1;
     private SparkMax transfer2;
-    private double speedB =-0.6;
-    private double speedF =0.6;
+    private double speed = 1.0;
 
     public Transfer() {
 
@@ -20,12 +19,12 @@ public class Transfer extends SubsystemBase {
     }
 
     public void movingForward() {
-            transfer1.set(speedF); 
-            transfer2.set(-speedF);
+            transfer1.set(speed); 
+            transfer2.set(-speed);
     }
     public void movingBackward() {
-            transfer1.set(speedB); 
-            transfer2.set(-speedB);
+            transfer1.set(-speed); 
+            transfer2.set(speed);
     }
     public void stop() {
         transfer1.stopMotor();
