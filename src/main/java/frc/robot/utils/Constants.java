@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.utils;
 
 // import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 // import com.pathplanner.lib.util.PIDConstants;
@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   public static class ModuleIDs {
+    public static final int[] intake = {8, 9, 10};
   }
 
   public static class SwerveIDs {
@@ -54,8 +55,8 @@ public final class Constants {
     public static final double DRIVETRAIN_MAX_ANGULAR_SPEED = 3 * Math.PI;
 
     // Swerve Kinematics
-    public static final double TRACK_WIDTH = Units.inchesToMeters(27);
-    public static final double WHEEL_BASE = Units.inchesToMeters(27);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(20.75);
+    public static final double WHEEL_BASE = Units.inchesToMeters(20.75);
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(TRACK_WIDTH, 2) + Math.pow(WHEEL_BASE, 2)) / 2.0;
 
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
@@ -125,12 +126,5 @@ public final class Constants {
     public static final int BaseRM = 10;
     public static final int BaseLB = 11;
     public static final int BaseRB = 12;
-
-
-  }
-  public static final class TransferConstants{
-    public static final int TRANSFER_MOTOR_ID_1=-1;
-    public static final int TRANSFER_MOTOR_ID_2=-1;
-
   }
 }

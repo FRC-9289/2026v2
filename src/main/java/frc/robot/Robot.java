@@ -22,36 +22,31 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Drivetrain.CTREConfigs;
 
 import frc.robot.subsystems.Drivetrain.CTREConfigs;
 import frc.robot.subsystems.Drivetrain.Swerve;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
-public class Robot extends TimedRobot{
+public class Robot extends LoggedRobot{
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-
     Logger.recordMetadata("ProjectName", "TBD"); // Set a metadata value
-    Logger.addDataReceiver(new WPILOGWriter()); // Record to a WPILOG file
-    Logger.addDataReceiver(new NT4Publisher());
+
+    if (isReal()) {
+        Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+        Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+    } else {
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+        Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_actualLog"))); // Save outputs to a new log
+    }
+    
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
@@ -59,7 +54,7 @@ public class Robot extends TimedRobot{
 
     m_robotContainer = new RobotContainer();
 
-    SwerveModuleState[] states = m_robotContainer.s_Swerve.getModuleStates();
+    SwerveModuleState[] states = m_robotContainer.swerve.getModuleStates();
 
     // Constants.Swerve.Mod0.angleOffset = Rotation2d.fromDegrees(states[0].angle.getDegrees());
     // Constants.Swerve.Mod1.angleOffset = Rotation2d.fromDegrees(states[1].angle.getDegrees());
@@ -125,10 +120,6 @@ public class Robot extends TimedRobot{
 
   @Override
   public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
