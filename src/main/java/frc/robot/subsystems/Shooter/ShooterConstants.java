@@ -12,6 +12,8 @@ public class ShooterConstants {
     public static final double SHOOTER_kI = 0.0;
     public static final double SHOOTER_kD = 0.0;
 
+    public static final boolean IS_INVERTED = false;
+
     public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
 
     public static final double SHOOTER_ANGLE_RAD = 0.349066; // in radians, based on launcher in a box page
