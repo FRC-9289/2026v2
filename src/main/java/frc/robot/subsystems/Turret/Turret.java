@@ -41,12 +41,11 @@ public class Turret extends SubsystemBase {
     resetHeading();
   }
 
-  public double getHeadingRadians() {
-    double rotations = encoder.getPosition() / TurretConstants.GEAR_RATIO;
-    double angle = rotations * 2.0 * Math.PI;
-    angle -= TurretConstants.angleOffset;
-    return MathUtil.angleModulus(angle);
-  }
+public double getAbsoluteHeadingRadians() {
+  double motorRotations = encoder.getPosition();
+  double turretRotations = motorRotations / TurretConstants.GEAR_RATIO;
+  return turretRotations * 2.0 * Math.PI;
+}
 
   public double getAngularVelocityRadPerSec() {
     double rpm = encoder.getVelocity() / TurretConstants.GEAR_RATIO;
@@ -58,14 +57,28 @@ public class Turret extends SubsystemBase {
   }
 
   public void setDesiredAngle(double angleRad) {
-    double rotations =
-        (MathUtil.angleModulus(angleRad) + TurretConstants.angleOffset)
-        / (2.0 * Math.PI);
+      double current = getAbsoluteHeadingRadians();
+      double target = angleRad;
 
-    motor
-      .getClosedLoopController()
-      .setSetpoint(rotations * TurretConstants.GEAR_RATIO, ControlType.kPosition);
+      // Determine direction
+      double error = target - current;
+
+      // Prevent moving past CCW limit
+      if (error < 0 && current <= TurretConstants.limitCCW) {
+          return; // stop, can't go further CCW
+      }
+
+      // Prevent moving past CW limit
+      if (error > 0 && current >= TurretConstants.limitCW) {
+          return; // stop, can't go further CW
+      }
+
+      // Command the motor
+      double motorRotations = target / (2.0 * Math.PI) * TurretConstants.GEAR_RATIO;
+      motor.getClosedLoopController()
+          .setSetpoint(motorRotations, ControlType.kPosition);
   }
+
 
   public void setDesiredVelocity(double velocityRadPerSec) {
     double rpm = velocityRadPerSec * 60.0 / (2.0 * Math.PI);

@@ -27,6 +27,7 @@ public class TurretConstants
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
-    public static final double angleOffset = 1.381944; //rad
+    public static final double limitCW = -1;
+    public static final double limitCCW = -1;
 
 }
