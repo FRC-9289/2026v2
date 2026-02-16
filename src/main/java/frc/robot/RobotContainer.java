@@ -8,9 +8,12 @@ import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.JoystickConstants;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.controls.*;
+
 
 public class RobotContainer {
   public static final Joystick controller3D = new Joystick(0);
@@ -18,26 +21,26 @@ public class RobotContainer {
   public static double pov;
   public static final JoystickButton resetHeading_Start = new JoystickButton(controller3D, Constants.JoystickConstants.BaseRM);
   private final Drivetrain drivetrain = Drivetrain.getInstance();
+  private final Shooter shooter = Shooter.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
   private final WolfPoseEstimator wolfPoseEstimator = WolfPoseEstimator.getInstance();
   private ParallelRaceGroup swerveStopCmd;
   SendableChooser<Command> auton_chooser;
+
+  private int test_number;
   
   public RobotContainer() {
-    CameraServer.startAutomaticCapture(0); // Start capturing from the first camera
-    CameraServer.startAutomaticCapture(1); // Start capturing from the second camera
-
-    //call to configureBindings() method
+    CameraServer.startAutomaticCapture(0);
+    CameraServer.startAutomaticCapture(1);
+  
     configureBindings();
-
-    // Register swerveStopCmd in Pathplanner to stop robot
-    swerveStopCmd = new SwerveDriveCommands(0.0,0.0,0.0).withTimeout(3);
-    NamedCommands.registerCommand("Swerve Stop", swerveStopCmd);
-
-    //set up auton commands for the driver
-    auton_chooser = new SendableChooser<>();
-    auton_chooser.setDefaultOption("MidReefAuto", new PathPlannerAuto("MidReefAuto"));
-    SmartDashboard.putData("Auton Chooser", auton_chooser);
+  
+    // swerveStopCmd = new SwerveDriveCommands(0.0,0.0,0.0).withTimeout(3);
+    // NamedCommands.registerCommand("Swerve Stop", swerveStopCmd);
+  
+    // auton_chooser = new SendableChooser<>();
+    // auton_chooser.setDefaultOption("MidReefAuto", new PathPlannerAuto("MidReefAuto"));
+    // SmartDashboard.putData("Auton Chooser", auton_chooser);
   }
 
   private void configureBindings() {
@@ -50,7 +53,15 @@ public class RobotContainer {
     double sideSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Y) * slider;
     double turnSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Rot) * slider;
 
+    // Must rotate CCW and revolve once;
+
     drivetrain.setDefaultCommand(new SwerveDriveCommands(frontSpeed,sideSpeed,turnSpeed));
+
+    JoystickButton shootButton =
+        new JoystickButton(controller3D, 4); // choose button based on driver preference
+
+    shootButton.whileTrue(new RunCommand(shooter::shoot, shooter));
+    shootButton.onFalse(new InstantCommand(shooter::stop, shooter));
 
     resetHeading_Start.onTrue(new InstantCommand(drivetrain::zeroHeading, drivetrain));
 
@@ -60,9 +71,17 @@ public class RobotContainer {
       specDrive.setDefaultCommand(new SpecDriveCommands(wolfByte.getPOV()));
     }
     //specDrive.setDefaultCommand(new SpecDriveCommands2(wolfByte.getRawAxis(0)));
+    
+
+    test_number = 1;
   }
 
   public Command getAutonomousCommand() {
-    return auton_chooser.getSelected();
+    // return auton_chooser.getSelected()
+    return new ShooterCommand(shooter);
+  }
+
+  public Drivetrain getDrivetrain() {
+    return drivetrain;
   }
 } //Nice - Wolfram121
