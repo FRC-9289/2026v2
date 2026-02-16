@@ -69,25 +69,15 @@ public final class SwerveConstants {
         public static final double closedLoopRamp = 0.0;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = 100.0;
-        public static final double angleKI = chosenModule.angleKI;
-        public static final double angleKD = chosenModule.angleKD;
+        public static final double angleKP = 50.0;
+        public static final double angleKI = 0;
+        public static final double angleKD = 0;
 
         /* Drive Motor PID Values */
         public static final double driveKP = 1; //TODO: This must be tuned to specific robot
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
-
-        /* PathPlanner translational PID Values */
-        public static final double PPtranslationkP = 0.0;
-        public static final double PPtranslationkI = 0.0;
-        public static final double PPtranslationkD = 0.0;
-
-        /* PathPlanner rotational PID Values */
-        public static final double PProtationalkP = 0.0;
-        public static final double PProtationalkI = 0.0;
-        public static final double PProtationalkD = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
         public static final double driveKS = 0.32; //TODO: This must be tuned to specific robot
@@ -163,6 +153,16 @@ public final class SwerveConstants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+        
+                /* PathPlanner translational PID Values */
+        public static final double PPtranslationkP = 0.0;
+        public static final double PPtranslationkI = 0.0;
+        public static final double PPtranslationkD = 0.0;
+
+        /* PathPlanner rotational PID Values */
+        public static final double PProtationalkP = 0.0;
+        public static final double PProtationalkI = 0.0;
+        public static final double PProtationalkD = 0.0;
     }
 }
 
