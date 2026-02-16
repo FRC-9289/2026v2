@@ -12,7 +12,7 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
-public final class Constants {
+public final class SwerveConstants {
     public static final double stickDeadband = 0.01;
 
     public final class PoseFilter {
