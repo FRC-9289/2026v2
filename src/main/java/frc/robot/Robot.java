@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,7 +46,7 @@ public class Robot extends TimedRobot {
 
 
     Logger.addDataReceiver(new NT4Publisher());
-    Logger.addDataReceiver(new WPILOGWriter());
+    Logger.addDataReceiver(new WPILOGWriter(Filesystem.getOperatingDirectory().getAbsolutePath() + "/logs"));
     Logger.start();
   }
 

@@ -99,5 +99,6 @@ public double getAbsoluteHeadingRadians() {
 
     Logger.recordOutput("Turret Position (rad)", getAbsoluteHeadingRadians());
     Logger.recordOutput("Turret Velocity (rad/s)", getAngularVelocityRadPerSec());
+    Logger.recordOutput("Turret Setpoint", motor.getClosedLoopController().getSetpoint());
   }
 }
