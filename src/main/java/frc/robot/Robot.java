@@ -1,5 +1,9 @@
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -39,10 +43,10 @@ public class Robot extends TimedRobot {
     // Record Driver Station data (mode, alliance, etc.)
     DriverStation.startDataLog(DataLogManager.getLog());
 
-    SmartDashboard.putNumber("Turret-Position", 0.0);
-    SmartDashboard.putNumber("Turret-Velocity", 0.0);
-    SmartDashboard.putNumber("Turret-SetpointPos", 0.0);
-    SmartDashboard.putNumber("Turret-SetpointVel", 0.0);
+
+    Logger.addDataReceiver(new NT4Publisher());
+    Logger.addDataReceiver(new WPILOGWriter());
+    Logger.start();
   }
 
   /**
