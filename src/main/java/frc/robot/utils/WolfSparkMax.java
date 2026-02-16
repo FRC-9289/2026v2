@@ -38,7 +38,7 @@ public class WolfSparkMax extends SparkMax {
     }
 
     public WolfSparkMax(int deviceId, MotorType m, IdleMode mode, int limit, boolean inverted,
-            double kP, double kI, double kD, double minOutput, double maxOutput) {
+            double kP, double kI, double kD) {
         super(deviceId, m);
 
         SparkMaxConfig config = new SparkMaxConfig();
