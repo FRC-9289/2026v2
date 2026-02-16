@@ -8,6 +8,9 @@ import frc.robot.utils.WolfSparkMax;
 
 import frc.robot.utils.Constants.NEOMotorConstants;
 
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.LoggedRobot;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -91,7 +94,10 @@ public double getAbsoluteHeadingRadians() {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Turret-Position", getHeadingRadians());
+    SmartDashboard.putNumber("Turret-Position", getAbsoluteHeadingRadians());
     SmartDashboard.putNumber("Turret-Velocity", getAngularVelocityRadPerSec());
+
+    Logger.recordOutput("Turret Position (rad)", getAbsoluteHeadingRadians());
+    Logger.recordOutput("Turret Velocity (rad/s)", getAngularVelocityRadPerSec());
   }
 }

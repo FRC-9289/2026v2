@@ -1,5 +1,7 @@
 package frc.robot.controls.TurretTCs;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.utils.Constants.TurretConstants;
@@ -18,16 +20,24 @@ public class TurretPositionCommand extends Command {
 
   @Override
   public void initialize() {
+  }
+
+  @Override
+  public void execute() {
     turret.setDesiredAngle(targetAngleRad);
+    Logger.recordOutput("Setpoint Angle (rad)", targetAngleRad);
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    double error = Math.abs(
+        turret.getAbsoluteHeadingRadians() - targetAngleRad
+    );
+    return error < TOLERANCE;
   }
 
   @Override
   public void end(boolean interrupted) {
-    turret.setDesiredVelocity(0.0);
+    // do nothing, SparkMax holds position
   }
 }
