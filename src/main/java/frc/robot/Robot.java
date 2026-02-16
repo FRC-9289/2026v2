@@ -33,7 +33,7 @@ import frc.robot.subsystems.Drivetrain.Swerve;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot{
+public class Robot extends TimedRobot{
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
   private Command m_autonomousCommand;
@@ -50,16 +50,7 @@ public class Robot extends LoggedRobot{
     // autonomous chooser on the dashboard.
 
     Logger.recordMetadata("ProjectName", "TBD"); // Set a metadata value
-
-    if (isReal()) {
-        Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
-        Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-    } else {
-        setUseTiming(false); // Run as fast as possible
-        String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
-        Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_actualLog"))); // Save outputs to a new log
-    }
+    Logger.addDataReceiver(new WPILOGWriter()); // Record to a WPILOG file
     Logger.addDataReceiver(new NT4Publisher());
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
     DataLogManager.start();
