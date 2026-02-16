@@ -58,9 +58,9 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve,
-                () -> -driver.getRawAxis(translationAxis) * 0.3,
-                () -> driver.getRawAxis(strafeAxis) * 0.3,
-                () -> -driver.getRawAxis(rotationAxis) * 0.2,
+                () -> -Math.pow(driver.getRawAxis(translationAxis),2),
+                () -> Math.pow(driver.getRawAxis(strafeAxis),2),
+                () -> -Math.pow(driver.getRawAxis(rotationAxis),2),
                 () -> robotCentric.getAsBoolean()
             )
         );
@@ -68,7 +68,11 @@ public class RobotContainer {
         /* Register PathPlanner stop command */
         NamedCommands.registerCommand(
             "Swerve Stop",
-            new SwerveCommand(s_Swerve,new Translation2d(0.0,0.0),0.0,false,false).withTimeout(3)
+            new SwerveCommand(s_Swerve,
+            new Translation2d(0.0,0.0),
+            0.0,robotCentric.getAsBoolean(),
+            true)
+            .withTimeout(3)
         );
 
         /* Setup auton chooser */
@@ -102,17 +106,15 @@ public class RobotContainer {
         configureBindings();
     }
 
-    private void configureBindings() {
+  private void configureBindings() {
 
-        /* Zero gyro */
-        zeroGyro.onTrue(
-            new InstantCommand(() -> s_Swerve.zeroHeading())
-        );
-    }
+    /* Zero gyro */
+    zeroGyro.onTrue(
+        new InstantCommand(() -> s_Swerve.zeroHeading())
+    );
+  }
 
-    public Command getAutonomousCommand() {
-        return autonChooser.getSelected();
-    }
-
-    /* Optional test pose helper */
+  public Command getAutonomousCommand() {
+      return autonChooser.getSelected();
+  }
 }

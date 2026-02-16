@@ -30,6 +30,10 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.LoggedPowerDistribution;
+
 public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
@@ -71,8 +75,13 @@ public class Swerve extends SubsystemBase {
     );
         // Gyro setup
         gyro = new Pigeon2(SwerveConstants.Swerve.pigeonID, "Drivetrain");
-        gyro.getConfigurator().apply(new Pigeon2Configuration()
-                .withMountPose(new MountPoseConfigs().withMountPoseYaw(180)));
+        gyro
+            .getConfigurator()
+            .apply(
+                new Pigeon2Configuration()
+                .withMountPose(new MountPoseConfigs().withMountPoseYaw(180)
+                                )
+                );
         gyro.setYaw(0);
         Timer.delay(1);
 
@@ -204,6 +213,13 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Desired X", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Desired Y", poseEstimator.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Desired Heading", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+
+        Logger.recordOutput("Pose (X)", pose.getX());
+        Logger.recordOutput("Pose (Y)", pose.getY());
+        Logger.recordOutput("Pose (Rotation)", pose.getRotation().getDegrees());
+        Logger.recordOutput("Setpoint (X)", SwerveConstants.AutoConstants.setPointTranslation.getX());
+        Logger.recordOutput("Setpoint (Y)", SwerveConstants.AutoConstants.setPointTranslation.getY());
+        Logger.recordOutput("Setpoint (Rotation)", SwerveConstants.AutoConstants.setpointTheta);
     }
 }
 
