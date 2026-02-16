@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -37,6 +38,10 @@ public class Robot extends TimedRobot {
 
     // Record Driver Station data (mode, alliance, etc.)
     DriverStation.startDataLog(DataLogManager.getLog());
+
+    Logger.addDataReceiver(new NT4Publisher());
+    Logger.addDataReceiver(new WPILOGWriter());
+    Logger.start();
   }
 
   /**

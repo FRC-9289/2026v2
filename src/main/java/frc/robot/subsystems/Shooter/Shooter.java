@@ -95,6 +95,10 @@ public class Shooter extends SubsystemBase {
         "Shooter Encoder RPM",
         encoder.getVelocity()
     );
+
+    Logger.recordOutput("Shooter/DistanceMeters", distanceMeters);
+    Logger.recordOutput("Shooter/BallVelocity", ballVelocity);
+    Logger.recordOutput("Shooter/TargetRPM", targetRPM);
   }
 
   public void stop() {
