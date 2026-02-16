@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,7 +51,7 @@ public class Robot extends TimedRobot{
     // autonomous chooser on the dashboard.
 
     Logger.recordMetadata("ProjectName", "TBD"); // Set a metadata value
-    Logger.addDataReceiver(new WPILOGWriter()); // Record to a WPILOG file
+    Logger.addDataReceiver(new WPILOGWriter(Filesystem.getOperatingDirectory().getAbsolutePath() + "/logs")); // Record to a WPILOG file
     Logger.addDataReceiver(new NT4Publisher());
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
     DataLogManager.start();
