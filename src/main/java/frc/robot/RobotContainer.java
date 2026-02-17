@@ -61,8 +61,6 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(new SwerveDriveCommands(frontSpeed, sideSpeed, turnSpeed));
 
-    // button to completely gather fuel by enabling all necessary subsystems -
-    // hopper, intake, kicker
     JoystickButton transferForwardButton = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonShoulderL);
     JoystickButton transferBackwardButton = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonShoulderR);
 
