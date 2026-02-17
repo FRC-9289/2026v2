@@ -56,10 +56,10 @@ public class RobotContainer {
         swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(0) * .3, () -> driver.getRawAxis(1) * .3, () -> -driver.getRawAxis(2) * .2, () -> true));
 
         intake = new Intake();
-        intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawButton(1)));
+        intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawButton(3), () -> driver.getRawAxis(3)));
 
         outtake = new Outtake();
-        outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () -> driver.getRawButton(0)));
+        outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () -> driver.getRawButton(4)));
 
         configureButtonBindings();
     }
