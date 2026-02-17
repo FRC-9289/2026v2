@@ -29,16 +29,16 @@ public class OuttakeCommand extends Command {
         if (active) {
             this.module.pull(1);
             this.module.carry(1);
-            this.module.rotPos(30 * (Math.atan2(blueHub.getY() - this.swerve.getPose().getY(), blueHub.getX() - this.swerve.getPose().getX()) * 180 / Math.PI - this.swerve.getGyroYaw().getDegrees()));
+            this.module.turretPos(30 * (Math.atan2(blueHub.getY() - this.swerve.getPose().getY(), blueHub.getX() - this.swerve.getPose().getX()) * 180 / Math.PI - this.swerve.getGyroYaw().getDegrees()));
             // this.module.wheel(blueHub.getDistance(this.swerve.getPose().getTranslation()) / blueHub.getDistance(new Translation2d(0, 0)));
 
             /*Table of true scores:
              * 115 in, .92
             */
-            this.module.wheel(blueHub.getDistance(this.swerve.getPose().getTranslation()) * 0.314960629921259);
+            this.module.launcher(blueHub.getDistance(this.swerve.getPose().getTranslation()) * 0.314960629921259); //.3 is slope
         } else {
             this.module.carry(0);
-            this.module.rotPos(0);
+            this.module.turretPos(0);
             this.module.wheel(0);
         }
     }

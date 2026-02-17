@@ -11,11 +11,11 @@ public class Outtake extends SubsystemBase {
     private static final Outtake outtake = new Outtake();
     private WolfSparkMax pull;
     private WolfSparkMax carry;
-    private WolfSparkMax rot;
-    private WolfSparkMax wheel;
+    private WolfSparkMax turret;
+    private WolfSparkMax launcher;
 
     public Outtake() {
-        this.rot = new WolfSparkMax(13, true, false);
+        this.turret = new WolfSparkMax(13, true, false);
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.closedLoop.pid(.1, 0, .1);
         cfg.encoder.positionConversionFactor(360);
@@ -23,11 +23,11 @@ public class Outtake extends SubsystemBase {
         cfg.softLimit.reverseSoftLimit(-5400);
         cfg.softLimit.forwardSoftLimitEnabled(true);
         cfg.softLimit.reverseSoftLimitEnabled(true);
-        rot.configure(cfg, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        turret.configure(cfg, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
 
         this.pull = new WolfSparkMax((int) (Math.random() * 15), false, false);
         this.carry = new WolfSparkMax((int) (Math.random() * 15), false, false); //fix
-        this.wheel = new WolfSparkMax(12, false, false);
+        this.launcher = new WolfSparkMax(12, false, false);
     }
 
     public void pull(double vel) {
@@ -38,12 +38,12 @@ public class Outtake extends SubsystemBase {
         carry.set(vel);
     }
 
-    public void wheel(double vel) {
-        wheel.set(vel);
+    public void launcher(double vel) {
+        launcher.set(vel);
     }
 
-    public void rotPos(double pos) {
-        this.rot.getClosedLoopController().setSetpoint(MathUtil.clamp(pos, -5400, 5400), ControlType.kPosition);
+    public void turretPos(double pos) {
+        this.turret.getClosedLoopController().setSetpoint(MathUtil.clamp(pos, -5400, 5400), ControlType.kPosition);
     }
 }
 //Wolfram121
