@@ -16,9 +16,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.auton.RunTest;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
+import frc.robot.commands.Turret.TurretPositionCommand;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Drivetrain.Swerve;
-import frc.robot.subsystems.Outtake.Outtake;
+import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.Intake.Intake;
 
 public class RobotContainer {
@@ -27,7 +28,7 @@ public class RobotContainer {
 
     /* Subsystems */
     public static Swerve swerve;
-    public static Outtake outtake;
+    public static Turret turret;
     public static Intake intake;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -59,8 +60,8 @@ public class RobotContainer {
         intake = new Intake();
         intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawButton(3), () -> driver.getRawAxis(3)));
 
-        outtake = new Outtake();
-        outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () -> driver.getRawButton(4)));
+        turret = new Turret();
+        turret.setDefaultCommand(new TurretPositionCommand(turret, 0.0));
 
         configureButtonBindings();
     }

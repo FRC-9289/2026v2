@@ -25,7 +25,7 @@ public class Turret extends SubsystemBase {
     return instance;
   }
 
-  private Turret() {
+  public Turret() {
     motor = new WolfSparkMax(
         TurretConstants.MOTOR_ID,
         true,
@@ -52,28 +52,41 @@ public double getAbsoluteHeadingRadians() {
     encoder.setPosition(0.0);
   }
 
-  public void setDesiredAngle(double angleRad) {
-      double current = getAbsoluteHeadingRadians();
-      double target = angleRad;
+public void setDesiredAngle(double angleRad) {
 
-      // Determine direction
-      double error = target - current;
+    double current = getAbsoluteHeadingRadians();
 
-      // Prevent moving past CCW limit
-      if (error < 0 && current <= TurretConstants.limitCCW) {
-          return; // stop, can't go further CCW
-      }
+    double[] candidates = {
+        angleRad,
+        angleRad + 2.0 * Math.PI,
+        angleRad - 2.0 * Math.PI
+    };
 
-      // Prevent moving past CW limit
-      if (error > 0 && current >= TurretConstants.limitCW) {
-          return; // stop, can't go further CW
-      }
+    double bestTarget = current;
+    double smallestError = Double.POSITIVE_INFINITY;
 
-      // Command the motor
-      double motorRotations = target / (2.0 * Math.PI) * TurretConstants.GEAR_RATIO;
-      motor.getClosedLoopController()
-          .setSetpoint(motorRotations, ControlType.kPosition);
-  }
+    for (double candidate : candidates) {
+
+        if (candidate < TurretConstants.limitCCW ||
+            candidate > TurretConstants.limitCW) {
+            continue;
+        }
+
+        double error = Math.abs(candidate - current);
+
+        if (error < smallestError) {
+            smallestError = error;
+            bestTarget = candidate;
+        }
+    }
+
+    double motorRotations =
+        bestTarget / (2.0 * Math.PI) * TurretConstants.GEAR_RATIO;
+
+    motor.getClosedLoopController()
+        .setSetpoint(motorRotations, ControlType.kPosition);
+}
+
 
 
   public void setDesiredVelocity(double velocityRadPerSec) {
