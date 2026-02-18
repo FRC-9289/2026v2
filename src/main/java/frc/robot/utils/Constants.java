@@ -12,12 +12,8 @@ import edu.wpi.first.math.util.Units;
 // import HolonomicPathFollowerConfig;
 
 public final class Constants {
-  public static class NEOMotorConstants {
-    public static final int MAX_VOLTAGE = 12;
-    public static final int CURRENT_LIMIT = 40;
-    public static final double KT = 0.0202; // torque-current constant
-    public static final double KE = 0.0202; // Back EMF constant
-    public static final double R = 0.114;
+  public static class ModuleIDs {
+    public static final int[] intake = {8, 9, 10};
   }
 
   public static class SwerveIDs {

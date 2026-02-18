@@ -30,13 +30,8 @@ public class Turret extends SubsystemBase {
   private Turret() {
     motor = new WolfSparkMax(
         TurretConstants.MOTOR_ID,
-        MotorType.kBrushless,
-        IdleMode.kBrake,
-        40,
-        TurretConstants.IS_INVERTED,
-        TurretConstants.kP,
-        TurretConstants.kI,
-        TurretConstants.kD
+        true,
+        false
     );
 
     encoder = motor.getEncoder();
