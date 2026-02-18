@@ -3,6 +3,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Intake.Intake;
 import frc.robot.utils.Constants;
 
 public class Transfer extends SubsystemBase {
@@ -30,5 +31,10 @@ public class Transfer extends SubsystemBase {
     public void stop() {
         transfer1.stopMotor();
         transfer2.stopMotor();
+    }
+
+    private static Transfer instance;
+    public static Transfer getInstance(){
+        return instance;
     }
 }

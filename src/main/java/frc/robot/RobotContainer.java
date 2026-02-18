@@ -9,15 +9,16 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Hang.HangSubsystem;
-import frc.robot.subsystems.Hopper.Hopper;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Kicker.Kicker;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.JoystickConstants;
+import frc.robot.commands.GatherFuelCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.controls.*;
+import frc.robot.controls.TransferCommands.DirectionTransfer;
 import frc.robot.controls.TurretTCs.TurretPositionCommand;
 
 public class RobotContainer {
@@ -29,14 +30,15 @@ public class RobotContainer {
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final Shooter shooter = Shooter.getInstance();
   private final Turret turret = Turret.getInstance();
-  private final Hopper hopper = Hopper.getInstance();
   private final Intake intake = Intake.getInstance();
   private final Kicker kicker = Kicker.getInstance();
+  private final Transfer transfer = Transfer.getInstance();
   private final HangSubsystem hang = HangSubsystem.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
   private ParallelRaceGroup swerveStopCmd;
   SendableChooser<Command> auton_chooser;
   double targetAngle = Math.toRadians(-0); // 45° CCW
+  private DirectionTransfer direction = DirectionTransfer.FORWARD;
 
   public RobotContainer() {
     CameraServer.startAutomaticCapture(0); // Start capturing from the first camera
@@ -82,9 +84,7 @@ public class RobotContainer {
     // button to completely gather fuel by enabling all necessary subsystems -
     // hopper, intake, kicker
     JoystickButton gatherButton = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonY);
-    gatherButton.toggleOnTrue(new RunCommand(hopper::pullIn, hopper));
-    gatherButton.toggleOnTrue(new RunCommand(intake::pullIn, intake));
-    gatherButton.toggleOnTrue(new RunCommand(kicker::goUp, kicker));
+    gatherButton.toggleOnTrue(new GatherFuelCommand(intake, kicker, transfer, () -> direction));
 
     JoystickButton hangExtendButton = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonShoulderL);
     hangExtendButton.whileTrue(new RunCommand(hang::extend, hang));
