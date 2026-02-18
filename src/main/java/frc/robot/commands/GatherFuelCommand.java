@@ -4,8 +4,9 @@ import frc.robot.controls.TransferCommands.DirectionTransfer;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Kicker.Kicker;
 import frc.robot.subsystems.Transfer;
-import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.Supplier;
+
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class GatherFuelCommand extends Command {
 
@@ -24,7 +25,7 @@ public class GatherFuelCommand extends Command {
         this.kicker = kicker;
         this.transfer = transfer;
         this.direction = direction;
-        addRequirements(intake, kicker, transfer);
+        addRequirements(intake, kicker, transfer); // only if supported
     }
 
     @Override
@@ -32,9 +33,10 @@ public class GatherFuelCommand extends Command {
         intake.pullIn();
         kicker.goUp();
 
-        if (direction.get() == DirectionTransfer.FORWARD) {
+        DirectionTransfer dir = direction.get();
+        if (dir == DirectionTransfer.FORWARD) {
             transfer.movingForward();
-        } else if (direction.get() == DirectionTransfer.BACKWARD) {
+        } else if (dir == DirectionTransfer.BACKWARD) {
             transfer.movingBackward();
         }
     }
@@ -44,5 +46,10 @@ public class GatherFuelCommand extends Command {
         intake.stop();
         kicker.stop();
         transfer.stop();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false; // run until cancelled
     }
 }

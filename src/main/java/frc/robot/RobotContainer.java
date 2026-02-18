@@ -33,7 +33,7 @@ public class RobotContainer {
   private final Intake intake = Intake.getInstance();
   private final Kicker kicker = Kicker.getInstance();
   private final Transfer transfer = Transfer.getInstance();
-  private final HangSubsystem hang = HangSubsystem.getInstance();
+  private final HangSubsystem hang = new HangSubsystem();
   private final SpecDrive specDrive = SpecDrive.getInstance();
   private ParallelRaceGroup swerveStopCmd;
   SendableChooser<Command> auton_chooser;
