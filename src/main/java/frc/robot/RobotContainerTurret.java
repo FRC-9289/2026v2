@@ -14,7 +14,7 @@ import frc.robot.utils.Constants.JoystickConstants;
 import frc.robot.controls.*;
 import frc.robot.controls.TurretTCs.TurretPositionCommand;
 
-public class RobotContainer {
+public class RobotContainerTurret {
   public static final Joystick controller3D = new Joystick(0);
   public static final Joystick wolfByte = new Joystick(1);
   public static double pov;
@@ -22,11 +22,10 @@ public class RobotContainer {
   private final Drivetrain drivetrain = Drivetrain.getInstance();
   private final SpecDrive specDrive = SpecDrive.getInstance();
   private final Turret turret = Turret.getInstance();
-  private final WolfPoseEstimator wolfPoseEstimator = WolfPoseEstimator.getInstance();
   private ParallelRaceGroup swerveStopCmd;
   SendableChooser<Command> auton_chooser;
   
-  public RobotContainer() {
+  public RobotContainerTurret() {
     CameraServer.startAutomaticCapture(0); // Start capturing from the first camera
     CameraServer.startAutomaticCapture(1); // Start capturing from the second camera
 
@@ -47,14 +46,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    double slider = (-RobotContainer.controller3D.getRawAxis(JoystickConstants.Slider) + 1) / 2.0;
+    double slider = (-RobotContainerTurret.controller3D.getRawAxis(JoystickConstants.Slider) + 1) / 2.0;
     if (slider == 0)  {
       slider = 0.001;
     }
 
-    double frontSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.X) * slider;
-    double sideSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Y) * slider;
-    double turnSpeed = RobotContainer.controller3D.getRawAxis(JoystickConstants.Rot) * slider;
+    double frontSpeed = RobotContainerTurret.controller3D.getRawAxis(JoystickConstants.X) * slider;
+    double sideSpeed = RobotContainerTurret.controller3D.getRawAxis(JoystickConstants.Y) * slider;
+    double turnSpeed = RobotContainerTurret.controller3D.getRawAxis(JoystickConstants.Rot) * slider;
 
     drivetrain.setDefaultCommand(new SwerveDriveCommands(frontSpeed,sideSpeed,turnSpeed));
 
