@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.WolfSparkMax;
 
-import frc.robot.utils.Constants.NEOMotorConstants;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.LoggedRobot;
 

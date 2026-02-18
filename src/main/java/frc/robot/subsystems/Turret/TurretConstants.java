@@ -1,5 +1,4 @@
 package frc.robot.subsystems.Turret;
-import frc.robot.utils.Constants.NEOMotorConstants;
 
 public class TurretConstants
 {
