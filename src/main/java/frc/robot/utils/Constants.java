@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
   public static class ModuleIDs {
+    public static final int[] intake = {8, 9, 10};
   }
 
   public static class SwerveIDs {
@@ -125,12 +126,5 @@ public final class Constants {
     public static final int BaseRM = 10;
     public static final int BaseLB = 11;
     public static final int BaseRB = 12;
-
-
-  }
-  public static final class TransferConstants{
-    public static final int TRANSFER_MOTOR_ID_1=-1;
-    public static final int TRANSFER_MOTOR_ID_2=-1;
-
   }
 }

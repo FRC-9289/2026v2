@@ -2,7 +2,7 @@
 Joystick_ Joystick(
   JOYSTICK_DEFAULT_REPORT_ID, 
   JOYSTICK_TYPE_GAMEPAD, 
-  0, // button count
+  1, // button count
   1, // hat switch count
   true,  // X axis
   false,  // Y axis
@@ -53,18 +53,24 @@ void setup() {
 }
 
 void loop() {
-  pos = wrap(pos, 1.0);
-  if (abs(pos) < 0.01) {
-    pos = 0.0;
-  }
-  Joystick.setXAxis(int((pos + 1.0) * 511.5));
+  // pos = wrap(pos, 1.0);
+  // if (abs(pos) < 0.01) {
+  //   pos = 0.0;
+  // }
+  // Joystick.setXAxis(int((pos + 1.0) * 511.5));
 
-  int a = -1; // Default to -1 (no direction)
-  for (int x = 2; x <= 9; x++) {
-    if (digitalRead(x) == LOW) { // Check if the pin is LOW (connected to GND)
-      a = x - 2; // Map pin 2 to North (0), pin 3 to NE (1), etc.
-      break; // Stop checking once a pin is found
-    }
+  // int a = -1; // Default to -1 (no direction)
+  // for (int x = 2; x <= 9; x++) {
+  //   if (digitalRead(x) == LOW) { // Check if the pin is LOW (connected to GND)
+  //     a = x - 2; // Map pin 2 to North (0), pin 3 to NE (1), etc.
+  //     break; // Stop checking once a pin is found
+  //   }
+  // }
+  // Joystick.setHatSwitch(0, a * 45); // Set the hat switch direction
+
+  if (digitalRead(2)) {
+    Joystick.setButton(0, 0);
+  } else {
+    Joystick.setButton(0, 1);
   }
-  Joystick.setHatSwitch(0, a * 45); // Set the hat switch direction
 }
