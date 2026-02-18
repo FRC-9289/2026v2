@@ -25,7 +25,7 @@ public class TurretPositionCommand extends Command {
   public boolean isFinished() {
     double error = targetAngleRad - turret.getHeadingRadians();
 
-    // wrap error to (-π, π]
+    // wrap error to (-π, π] - wrap error
     error = Math.atan2(Math.sin(error), Math.cos(error));
 
     return Math.abs(error) < TOLERANCE;
