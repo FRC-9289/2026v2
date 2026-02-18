@@ -19,9 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Shooter extends SubsystemBase {
     private Drivetrain drivetrain;
 
-    private final Translation2d hubPos = new Translation2d(8.23, 4.11); // in meters, placement of hub from top left
-                                                                        // corner of field
-
     private final SparkMax launcher1;
     private final RelativeEncoder encoder;
 
@@ -74,7 +71,7 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         Pose2d robotPose = drivetrain.getPose();
-        distanceMeters = robotPose.getTranslation().getDistance(hubPos);
+        distanceMeters = robotPose.getTranslation().getDistance(Constants.FieldConstants.HUB_POS);
 
         SmartDashboard.putNumber("Shooter Distance (m)", distanceMeters);
     }
@@ -106,7 +103,7 @@ public class Shooter extends SubsystemBase {
     // just for testing
     public void shootTest()
     {
-        launcher1.set(10);
+        launcher1.setVoltage(10);
     }
 
     public void stop() {

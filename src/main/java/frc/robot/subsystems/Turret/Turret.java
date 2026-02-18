@@ -6,7 +6,10 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.utils.Constants;
 import frc.robot.utils.Constants.NEOMotorConstants;
 
 import com.revrobotics.RelativeEncoder;
@@ -34,6 +37,8 @@ public class Turret extends SubsystemBase {
 
   private static final Turret instance = new Turret();
 
+  private Drivetrain drivetrain = Drivetrain.getInstance();
+
   public static Turret getInstance() {
     return instance;
   }
@@ -45,20 +50,17 @@ public class Turret extends SubsystemBase {
     pid = new PIDController(
         TurretConstants.kP,
         TurretConstants.kI,
-        TurretConstants.kD
-    );
+        TurretConstants.kD);
 
     feedforward = new SimpleMotorFeedforward(
         TurretConstants.KS,
         NEOMotorConstants.KE * TurretConstants.GEAR_RATIO,
         (TurretConstants.J_TURRET * NEOMotorConstants.R)
-            / (TurretConstants.GEAR_RATIO * NEOMotorConstants.KT)
-    );
+            / (TurretConstants.GEAR_RATIO * NEOMotorConstants.KT));
 
     constraints = new TrapezoidProfile.Constraints(
         TurretConstants.MAX_VEL,
-        TurretConstants.MAX_ACCEL
-    );
+        TurretConstants.MAX_ACCEL);
 
     profile = new TrapezoidProfile(constraints);
 
@@ -73,7 +75,7 @@ public class Turret extends SubsystemBase {
    * CCW positive angle
    * (No negative sign here)
    */
-public double getHeadingRadians() {
+  public double getHeadingRadians() {
     double rotations = encoder.getPosition() / TurretConstants.GEAR_RATIO;
     double angle = rotations * 2.0 * Math.PI;
 
@@ -82,15 +84,14 @@ public double getHeadingRadians() {
 
     angle -= TurretConstants.angleOffset;
     return MathUtil.angleModulus(angle);
-}
-
+  }
 
   public double getAngularVelocityRadPerSec() {
     double rpm = encoder.getVelocity() / TurretConstants.GEAR_RATIO;
-    return rpm * 2.0 * Math.PI / 60.0;  // CCW positive
+    return rpm * 2.0 * Math.PI / 60.0; // CCW positive
   }
 
-  public void resetHeading(){
+  public void resetHeading() {
     encoder.setPosition(0.0);
   }
 
@@ -119,25 +120,41 @@ public double getHeadingRadians() {
     timeSeconds = 0.0;
   }
 
-  public void turnLeft()
-  {
+  public void turnLeft() {
     motor.set(3); // hardcoded for now for testing
   }
 
-  public void stopLeft()
-  {
+  public void stopLeft() {
     motor.stopMotor();
   }
 
-  public void turnRight()
-  {
+  public void turnRight() {
     motor.set(-3);
   }
 
-  public void stopRight()
-  {
+  public void stopRight() {
     motor.stopMotor();
   }
+
+  public void aimAtHub() {
+
+    Pose2d robotPose = drivetrain.getPose();
+
+    Translation2d robotPos = robotPose.getTranslation();
+
+    // Vector from robot → hub
+    double dx = Constants.FieldConstants.HUB_POS.getX() - robotPos.getX();
+    double dy = Constants.FieldConstants.HUB_POS.getY() - robotPos.getY();
+
+    // Field-relative angle
+    double fieldAngle = Math.atan2(dy, dx);
+
+    // Convert to turret-relative angle
+    double robotHeading = robotPose.getRotation().getRadians();
+    double turretTarget = MathUtil.angleModulus(fieldAngle - robotHeading); // change to smoother heading/aiming changes
+
+    setDesiredAngle(turretTarget);
+}
 
   @Override
   public void periodic() {
@@ -161,10 +178,9 @@ public double getHeadingRadians() {
       // wrap angle error
       double error = Math.atan2(
           Math.sin(desiredPosition - getHeadingRadians()),
-          Math.cos(desiredPosition - getHeadingRadians())
-      );
+          Math.cos(desiredPosition - getHeadingRadians()));
 
-      fbVolts = pid.calculate(0, error);  // PID drives error to 0
+      fbVolts = pid.calculate(0, error); // PID drives error to 0
     } else {
       // VELOCITY MODE
       desiredVel = desiredVelocity;
@@ -175,8 +191,7 @@ public double getHeadingRadians() {
     double totalVolts = MathUtil.clamp(
         ffVolts + fbVolts,
         -NEOMotorConstants.MAX_VOLTAGE,
-        NEOMotorConstants.MAX_VOLTAGE
-    );
+        NEOMotorConstants.MAX_VOLTAGE);
 
     motor.setVoltage(totalVolts);
 

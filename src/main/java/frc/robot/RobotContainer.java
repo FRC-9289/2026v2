@@ -72,6 +72,24 @@ public class RobotContainer {
     JoystickButton shootButton = new JoystickButton(controller3D, Constants.ControllerConstants.ButtonX);
     shootButton.toggleOnTrue(new RunCommand(shooter::shootTest, shooter));
 
+    new JoystickButton(controller3D, Constants.ControllerConstants.ButtonA)
+    .whileTrue(
+        new RunCommand(
+            () -> {
+                Turret.getInstance().aimAtHub();
+                Shooter.getInstance().shoot();
+            },
+            Turret.getInstance(),
+            Shooter.getInstance()
+        )
+    )
+    .onFalse(
+        new InstantCommand(() -> {
+            Turret.getInstance().setDesiredVelocity(0);
+            Shooter.getInstance().stop();
+        })
+    );
+
     // solely for testing
     JoystickButton turretLeftButton = new JoystickButton(controller3D, Constants.ControllerConstants.AxisLeftTrigger);
     turretLeftButton.whileTrue(new RunCommand(turret::turnLeft, turret));
