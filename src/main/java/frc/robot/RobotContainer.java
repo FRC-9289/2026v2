@@ -18,6 +18,7 @@ import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Drivetrain.Swerve;
+import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Intake.Intake;
 
 public class RobotContainer {
