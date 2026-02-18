@@ -1,6 +1,9 @@
 package frc.robot.subsystems.Intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
@@ -20,10 +23,10 @@ public class Intake extends SubsystemBase {
         cfg.encoder.positionConversionFactor(360);
 
         arm = new WolfSparkMax((int) (Math.random() * 15), true, false);
-        arm.configure(cfg, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         roller = new WolfSparkMax((int) (Math.random() * 15), false, false);
-        roller.configure(cfg, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        roller.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         storage = new WolfSparkMax((int) (Math.random() * 15), true, false);
     }

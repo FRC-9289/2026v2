@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.ResetMode;
+import com.revrobotics.PersistMode;
 
 import frc.robot.utils.WolfSparkMax;
 
@@ -23,7 +25,7 @@ public class Outtake extends SubsystemBase {
         cfg.softLimit.reverseSoftLimit(-5400);
         cfg.softLimit.forwardSoftLimitEnabled(true);
         cfg.softLimit.reverseSoftLimitEnabled(true);
-        turret.configure(cfg, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
+        turret.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         this.pull = new WolfSparkMax((int) (Math.random() * 15), false, false);
         this.carry = new WolfSparkMax((int) (Math.random() * 15), false, false); //fix
