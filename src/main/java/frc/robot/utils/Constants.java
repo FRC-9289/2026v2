@@ -174,5 +174,5 @@ public final class Constants {
   public class FieldConstants {
     public static final Translation2d HUB_POS =
         new Translation2d(8.23, 4.11);  // in meters, placement of hub from top left corner of field
-}
+  }
 }
