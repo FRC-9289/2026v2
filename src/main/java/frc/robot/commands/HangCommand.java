@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hang.Hang;
+import frc.robot.subsystems.Hang.HangConstants;
 
 import java.util.function.BooleanSupplier;
 
@@ -13,9 +14,6 @@ public class HangCommand extends Command {
     private double targetPos = 0.0;
     private boolean lastButtonState = false;
     private boolean currentState = false;
-
-    private static final double MIN_POSITION = 0.0;
-    private static final double MAX_POSITION = 10.0;
 
     public HangCommand(Hang hang, BooleanSupplier toggleButton) {
         this.hang = hang;
@@ -35,7 +33,7 @@ public void execute() {
 
     lastButtonState = pressed;
 
-    targetPos = currentState ? MAX_POSITION : MIN_POSITION;
+    targetPos = currentState ? HangConstants.MAX_POSITION : HangConstants.MIN_POSITION;
 
     hang.move(targetPos);
 }
