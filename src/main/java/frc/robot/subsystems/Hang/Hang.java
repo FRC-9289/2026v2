@@ -31,6 +31,8 @@ public class Hang extends SubsystemBase {
 
         hangMotor = new WolfSparkMax(10, true, false);
 
+        hangMotor.getEncoder().setPosition(0);
+
         hangMotor.configure(
             cfg,
             ResetMode.kResetSafeParameters,

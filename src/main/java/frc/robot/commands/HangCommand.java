@@ -12,6 +12,7 @@ public class HangCommand extends Command {
 
     private double targetPos = 0.0;
     private boolean lastButtonState = false;
+    private boolean currentState = false;
 
     private static final double MIN_POSITION = 0.0;
     private static final double MAX_POSITION = 10.0;
@@ -24,18 +25,20 @@ public class HangCommand extends Command {
     }
 
     @Override
-    public void execute() {
+public void execute() {
 
-        if (toggleButton.getAsBoolean()) {
-            currentState = !currentState;
-        }
+    boolean pressed = toggleButton.getAsBoolean();
 
-        targetPos = (currentState) ? MAX_POSITION : MIN_POSITION;
-
-        lastButtonState = currentState;
-
-        hang.move(targetPos);
+    if (pressed && !lastButtonState) {
+        currentState = !currentState;
     }
+
+    lastButtonState = pressed;
+
+    targetPos = currentState ? MAX_POSITION : MIN_POSITION;
+
+    hang.move(targetPos);
+}
 
     @Override
     public boolean isFinished() {
