@@ -38,7 +38,7 @@ public class Hang extends SubsystemBase {
     }
 
     public void move(double pos) {
-        double clampedPos = MathUtil.clamp(pos, MIN_POSITION, MAX_POSITION);
+        double clampedPos = MathUtil.clamp(pos,HangConstants.MIN_POSITION, HangConstants.MAX_POSITION);
 
         hangMotor
             .getClosedLoopController()
@@ -46,6 +46,6 @@ public class Hang extends SubsystemBase {
     }
 
     public boolean atSetpoint() {
-        return hangMotor.isAtSetpoint();
+        return hangMotor.getClosedLoopController().isAtSetpoint();
     }
 }

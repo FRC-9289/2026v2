@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.auton.RunTest;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
-import frc.robot.subsystems.*;
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Hang.Hang;
 import frc.robot.utils.Constants;
+import frc.robot.utils.Constants.ControllerConstants;
 
 public class RobotContainer {
     
