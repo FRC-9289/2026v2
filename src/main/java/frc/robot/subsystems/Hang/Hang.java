@@ -29,7 +29,7 @@ public class Hang extends SubsystemBase {
         cfg.softLimit.forwardSoftLimitEnabled(true);
         cfg.softLimit.reverseSoftLimitEnabled(true);
 
-        hangMotor = new WolfSparkMax(10, true, false);
+        hangMotor = new WolfSparkMax(29, true, false);
 
         hangMotor.getEncoder().setPosition(0);
 
