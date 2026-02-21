@@ -15,21 +15,18 @@ public class Hang extends SubsystemBase {
 
     private WolfSparkMax hangMotor;
 
-    private static final double MIN_POSITION = 0.0;
-    private static final double MAX_POSITION = 10.0;
-
     public Hang() {
 
         SparkMaxConfig cfg = new SparkMaxConfig();
 
-        cfg.closedLoop.pid(0.1, 0.0, 0.1);
+        cfg.closedLoop.pid(HangConstants.kP, HangConstants.kI, HangConstants.kD);
 
-        cfg.softLimit.forwardSoftLimit(MAX_POSITION);
-        cfg.softLimit.reverseSoftLimit(MIN_POSITION);
+        cfg.softLimit.forwardSoftLimit(HangConstants.MAX_POSITION);
+        cfg.softLimit.reverseSoftLimit(HangConstants.MIN_POSITION);
         cfg.softLimit.forwardSoftLimitEnabled(true);
         cfg.softLimit.reverseSoftLimitEnabled(true);
 
-        hangMotor = new WolfSparkMax(29, true, false);
+        hangMotor = new WolfSparkMax(HangConstants.MOTOR_ID, true, false);
 
         hangMotor.getEncoder().setPosition(0);
 
