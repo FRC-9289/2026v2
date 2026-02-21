@@ -14,10 +14,11 @@ public class Outtake extends SubsystemBase {
     private WolfSparkMax pull;
     private WolfSparkMax carry;
     private WolfSparkMax turret;
-    private WolfSparkMax launcher;
+    private WolfSparkMax launcher1;
+    private WolfSparkMax launcher2;
 
     public Outtake() {
-        this.turret = new WolfSparkMax(13, true, false);
+        this.turret = new WolfSparkMax(26, true, false);
         SparkMaxConfig cfg = new SparkMaxConfig();
         cfg.closedLoop.pid(.1, 0, .1);
         cfg.encoder.positionConversionFactor(360);
@@ -27,9 +28,10 @@ public class Outtake extends SubsystemBase {
         cfg.softLimit.reverseSoftLimitEnabled(true);
         turret.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        this.pull = new WolfSparkMax((int) (Math.random() * 15), false, false);
-        this.carry = new WolfSparkMax((int) (Math.random() * 15), false, false); //fix
-        this.launcher = new WolfSparkMax(12, false, false);
+        this.pull = new WolfSparkMax(24, false, false);
+        this.carry = new WolfSparkMax(25, false, false);
+        this.launcher1 = new WolfSparkMax(27, false, false);
+        this.launcher2 = new WolfSparkMax(28, false, false);
     }
 
     public void pull(double vel) {
@@ -41,7 +43,8 @@ public class Outtake extends SubsystemBase {
     }
 
     public void launcher(double vel) {
-        launcher.set(vel);
+        launcher1.set(vel);
+        launcher2.set(-vel);
     }
 
     public void turret(double pos) {

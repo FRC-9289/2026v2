@@ -22,13 +22,13 @@ public class Intake extends SubsystemBase {
         cfg.closedLoop.pid(.1, 0, .1);
         cfg.encoder.positionConversionFactor(360);
 
-        arm = new WolfSparkMax((int) (Math.random() * 15), true, false);
+        arm = new WolfSparkMax(21, true, false);
         arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        roller = new WolfSparkMax((int) (Math.random() * 15), false, false);
+        roller = new WolfSparkMax(22, false, false);
         roller.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        storage = new WolfSparkMax((int) (Math.random() * 15), true, false);
+        storage = new WolfSparkMax(23, true, false);
     }
 
     public void roller(double vel) {
