@@ -20,6 +20,8 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Hang.Hang;
+import frc.robot.utils.Constants;
 
 public class RobotContainer {
     
@@ -57,10 +59,13 @@ public class RobotContainer {
         swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(0) * .3, () -> driver.getRawAxis(1) * .3, () -> -driver.getRawAxis(2) * .2, () -> true));
 
         intake = new Intake();
-        intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawButton(3), () -> driver.getRawAxis(3)));
+        intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawButton(ControllerConstants.ButtonLeft), () -> driver.getRawAxis(ControllerConstants.AxisRightTrigger)));
 
         outtake = new Outtake();
-        outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () -> driver.getRawButton(4)));
+        outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () -> driver.getRawButton(ControllerConstants.ButtonTop)));
+
+        hang = new Hang();
+        hang.setDefaultCommand(new HangCommand(hang, () -> driver.getRawButton(ControllerConstants.ButtonRight)));
 
         configureButtonBindings();
     }

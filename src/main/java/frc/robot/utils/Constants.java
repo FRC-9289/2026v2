@@ -93,10 +93,10 @@ public final class Constants {
     public static final int PovLeft = 270;
 
     // Gamepad buttons
-    public static final int ButtonA = 1; // Bottom Button
-    public static final int ButtonB = 2; // Right Button
-    public static final int ButtonX = 3; // Left Button
-    public static final int ButtonY = 4; // Top Button
+    public static final int ButtonBottom = 1; // Bottom Button
+    public static final int ButtonRight = 2; // Right Button
+    public static final int ButtonLeft = 3; // Left Button
+    public static final int ButtonTop = 4; // Top Button
     public static final int ButtonShoulderL = 5;
     public static final int ButtonShoulderR = 6;
     public static final int ButtonBack = 7;
