@@ -1,4 +1,4 @@
-package frc.robot.controls.TurretTCs;
+package frc.robot.commands.TurretTCs;
 
 import org.littletonrobotics.junction.Logger;
 

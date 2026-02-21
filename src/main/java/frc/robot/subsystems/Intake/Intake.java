@@ -19,7 +19,7 @@ public class Intake extends SubsystemBase {
     public Intake() {
 
         SparkMaxConfig cfg = new SparkMaxConfig();
-        cfg.closedLoop.pid(.1, 0, .1);
+        cfg.closedLoop.pid(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
         cfg.encoder.positionConversionFactor(360);
 
         arm = new WolfSparkMax(21, true, false);
@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
         roller = new WolfSparkMax(22, false, false);
         roller.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        storage = new WolfSparkMax(23, true, false);
+        storage = new WolfSparkMax(IntakeConstants.MOTOR_ID, true, false);
     }
 
     public void roller(double vel) {
