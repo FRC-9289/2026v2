@@ -31,6 +31,7 @@ public class RobotContainer {
     public static Swerve swerve;
     public static Outtake outtake;
     public static Intake intake;
+    public static Hang hang;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
