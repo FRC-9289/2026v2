@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
 
   private final Drivetrain drivetrain;
 
-  private final Translation2d hubPos = new Translation2d(8.23, 4.11);
+  private final Translation2d hubPos = new Translation2d(4.625594, 4.02336);
 
   private final SparkMax launcher1;
   private final RelativeEncoder encoder;
