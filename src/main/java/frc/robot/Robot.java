@@ -4,13 +4,6 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -23,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drivetrain.CTREConfigs;
 import frc.robot.subsystems.Drivetrain.Swerve;
 
-public class Robot extends LoggedRobot{
+public class Robot extends TimedRobot{
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
   private Command m_autonomousCommand;
@@ -32,14 +25,7 @@ public class Robot extends LoggedRobot{
 
   @Override
   public void robotInit() {
-    Logger.recordMetadata("ProjectName", "TBD"); // Set a metadata value
-
-    String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
-    Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-    Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_actualLog")));
-    
-    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
-    DataLogManager.start();
+ // Start logging! No more data receivers, replay sources, or metadata values may be added.
     DriverStation.startDataLog(DataLogManager.getLog());
 
 

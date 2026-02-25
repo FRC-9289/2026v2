@@ -57,16 +57,16 @@ public class RobotContainer {
 
         // Initialize drivetrain with target pose
         swerve = new Swerve();
-        swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(0) * .3, () -> driver.getRawAxis(1) * .3, () -> -driver.getRawAxis(2) * .2, () -> true));
+        swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(1) * -0.3, () -> driver.getRawAxis(0) * .3, () -> driver.getRawAxis(4) * .5, () -> true));
 
         intake = new Intake();
-        intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawButton(ControllerConstants.ButtonLeft), () -> driver.getRawAxis(ControllerConstants.AxisRightTrigger)));
+        new JoystickButton(driver, 3).whileTrue(new IntakeCommand(intake));
 
         outtake = new Outtake();
-        outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () -> driver.getRawButton(ControllerConstants.ButtonTop)));
+        outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () -> driver.getRawButton(3)));
 
         hang = new Hang();
-        hang.setDefaultCommand(new HangCommand(hang, () -> driver.getRawButton(ControllerConstants.ButtonRight)));
+        hang.setDefaultCommand(new HangCommand(hang, () -> driver.getRawButton(2)));
 
         configureButtonBindings();
     }

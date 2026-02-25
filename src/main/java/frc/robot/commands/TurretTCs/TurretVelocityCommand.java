@@ -1,7 +1,5 @@
 package frc.robot.commands.TurretTCs;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Turret.Turret;
 
@@ -23,7 +21,6 @@ public class TurretVelocityCommand extends Command {
   @Override
   public void execute() {
     turret.setDesiredVelocity(targetVelocityRadPerSec);
-    Logger.recordOutput("Setpoint Velocity (rad)", targetVelocityRadPerSec);
   }
 
   @Override

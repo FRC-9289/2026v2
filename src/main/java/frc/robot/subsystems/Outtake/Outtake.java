@@ -10,23 +10,22 @@ import com.revrobotics.PersistMode;
 import frc.robot.utils.WolfSparkMax;
 
 public class Outtake extends SubsystemBase {
-    private static final Outtake outtake = new Outtake();
     private WolfSparkMax pull;
     private WolfSparkMax carry;
-    private WolfSparkMax turret;
+    // private WolfSparkMax turret;
     private WolfSparkMax launcher1;
     private WolfSparkMax launcher2;
 
     public Outtake() {
-        this.turret = new WolfSparkMax(26, true, false);
-        SparkMaxConfig cfg = new SparkMaxConfig();
-        cfg.closedLoop.pid(OuttakeConstants.kP, OuttakeConstants.kI, OuttakeConstants.kD);
-        cfg.encoder.positionConversionFactor(360);
-        cfg.softLimit.forwardSoftLimit(5400);
-        cfg.softLimit.reverseSoftLimit(-5400);
-        cfg.softLimit.forwardSoftLimitEnabled(true);
-        cfg.softLimit.reverseSoftLimitEnabled(true);
-        turret.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // this.turret = new WolfSparkMax(26, true, false);
+        // SparkMaxConfig cfg = new SparkMaxConfig();
+        // cfg.closedLoop.pid(OuttakeConstants.kP, OuttakeConstants.kI, OuttakeConstants.kD);
+        // cfg.encoder.positionConversionFactor(360);
+        // cfg.softLimit.forwardSoftLimit(5400);
+        // cfg.softLimit.reverseSoftLimit(-5400);
+        // cfg.softLimit.forwardSoftLimitEnabled(true);
+        // cfg.softLimit.reverseSoftLimitEnabled(true);
+        // turret.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         this.pull = new WolfSparkMax(OuttakeConstants.PULL_MOTOR_ID, false, false);
         this.carry = new WolfSparkMax(OuttakeConstants.CARRY_MOTOR_ID, false, false);
@@ -47,8 +46,8 @@ public class Outtake extends SubsystemBase {
         launcher2.set(-vel);
     }
 
-    public void turret(double pos) {
-        this.turret.getClosedLoopController().setSetpoint(MathUtil.clamp(pos, -5400, 5400), ControlType.kPosition);
-    }
+    // public void turret(double pos) {
+    //     this.turret.getClosedLoopController().setSetpoint(MathUtil.clamp(pos, -5400, 5400), ControlType.kPosition);
+    // }
 }
 //Wolfram121

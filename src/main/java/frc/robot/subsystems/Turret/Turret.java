@@ -6,9 +6,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.WolfSparkMax;
 
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.LoggedRobot;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -89,9 +86,5 @@ public double getAbsoluteHeadingRadians() {
   public void periodic() {
     SmartDashboard.putNumber("Turret-Position", getAbsoluteHeadingRadians());
     SmartDashboard.putNumber("Turret-Velocity", getAngularVelocityRadPerSec());
-
-    Logger.recordOutput("Turret Position (rad)", getAbsoluteHeadingRadians());
-    Logger.recordOutput("Turret Velocity (rad/s)", getAngularVelocityRadPerSec());
-    Logger.recordOutput("Turret Setpoint", motor.getClosedLoopController().getSetpoint());
   }
 }

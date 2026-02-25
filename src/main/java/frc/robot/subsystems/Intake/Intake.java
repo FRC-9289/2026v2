@@ -11,7 +11,6 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.utils.WolfSparkMax;
 
 public class Intake extends SubsystemBase {
-    private static final Intake intake = new Intake();
     private WolfSparkMax arm;
     private WolfSparkMax roller;
     private WolfSparkMax storage;
@@ -22,7 +21,7 @@ public class Intake extends SubsystemBase {
         cfg.closedLoop.pid(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
         cfg.encoder.positionConversionFactor(360);
 
-        arm = new WolfSparkMax(21, true, false);
+        arm = new WolfSparkMax(29, true, false);
         arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         roller = new WolfSparkMax(22, false, false);

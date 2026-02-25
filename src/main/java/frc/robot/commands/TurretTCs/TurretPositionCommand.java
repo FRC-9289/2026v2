@@ -1,6 +1,5 @@
 package frc.robot.commands.TurretTCs;
 
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Turret.Turret;
@@ -25,7 +24,6 @@ public class TurretPositionCommand extends Command {
   @Override
   public void execute() {
     turret.setDesiredAngle(targetAngleRad);
-    Logger.recordOutput("Setpoint Angle (rad)", targetAngleRad);
   }
 
   @Override
