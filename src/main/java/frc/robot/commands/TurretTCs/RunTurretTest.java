@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Turret.Turret;
 
-public class RunTest extends Command{
+public class RunTurretTest extends Command{
     private Joystick j;
     private Turret turret;
     
-        public RunTest(Turret turret, Joystick j){
+        public RunTurretTest(Turret turret, Joystick j){
             this.j=j;
             this.turret=turret;
         addRequirements(turret);
