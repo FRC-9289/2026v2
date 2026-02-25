@@ -21,8 +21,8 @@ public class Intake extends SubsystemBase {
         cfg.closedLoop.pid(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
         cfg.encoder.positionConversionFactor(360);
 
-        arm = new WolfSparkMax(29, true, false);
-        arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        //arm = new WolfSparkMax(50, true, false);
+        //arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         roller = new WolfSparkMax(22, false, false);
         roller.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

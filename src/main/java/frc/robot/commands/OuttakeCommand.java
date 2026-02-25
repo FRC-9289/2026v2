@@ -25,9 +25,9 @@ public class OuttakeCommand extends Command {
 
     @Override
     public void execute() {
-        if (this.activeSup.getAsBoolean()) {
-            this.active = !this.active;
-        }
+        // if (this.activeSup.getAsBoolean()) {
+        //     this.active = !this.active;
+        // }
 
         if (active) {
             this.module.
@@ -39,11 +39,11 @@ public class OuttakeCommand extends Command {
             /*Table of true scores:
              * 115 in, .92
             */
-            this.module.launcher(blueHub.getDistance(this.swerve.getPose().getTranslation()) * 0.314960629921259); //.3 is slope
+            // this.module.launcher(blueHub.getDistance(this.swerve.getPose().getTranslation()) * 0.314960629921259); //.3 is slope
         } else {
             this.module.carry(0);
             // this.module.turret(0);
-            this.module.launcher(0);
+            // this.module.launcher(0);
         }
     }
 }

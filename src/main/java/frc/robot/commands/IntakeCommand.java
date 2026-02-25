@@ -1,44 +1,33 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Roller.Roller;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class IntakeCommand extends Command {
-    private Intake module;
-    private BooleanSupplier toggle;
-    private DoubleSupplier speedSup;
+    private final Roller module;
+    private final double speed = 1.0;
+    private final Joystick d;
 
-    private static double armPos = 0;
-    private static double storagePos = 0;
-
-    public IntakeCommand(Intake module, BooleanSupplier toggle, DoubleSupplier speedSup) {
+    public IntakeCommand(Roller module, Joystick d) {
         this.module = module;
-        this.toggle = toggle;
-        this.speedSup = speedSup;
+        this.d= d;
         addRequirements(module);
     }
 
     @Override
-    public void initialize() {
-        if (toggle.getAsBoolean()) {
-            if (armPos == 0 && storagePos == 0) {
-                armPos = 360;
-                storagePos = 720;
-            } else {
-                armPos = 0;
-                storagePos = 0;
-            }
-        }
-    }
-
-    @Override
     public void execute() {
-        module.arm(armPos);
-        module.storage(storagePos);
-        module.roller(1);
+        if(d.getRawButton(3)){
+         module.roller(-1);
+
+        }
+        else{
+            module.roller(0);
+        }
     }
 
     @Override
@@ -48,6 +37,6 @@ public class IntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return false; // Button will control when it ends
     }
 }

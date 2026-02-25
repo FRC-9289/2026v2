@@ -29,8 +29,8 @@ public class Outtake extends SubsystemBase {
 
         this.pull = new WolfSparkMax(OuttakeConstants.PULL_MOTOR_ID, false, false);
         this.carry = new WolfSparkMax(OuttakeConstants.CARRY_MOTOR_ID, false, false);
-        this.launcher1 = new WolfSparkMax(OuttakeConstants.LAUNCHER_MOTOR_1_ID, false, false);
-        this.launcher2 = new WolfSparkMax(OuttakeConstants.LAUNCHER_MOTOR_2_ID, false, false);
+        // this.launcher1 = new WolfSparkMax(OuttakeConstants.LAUNCHER_MOTOR_1_ID, false, false);
+        // this.launcher2 = new WolfSparkMax(OuttakeConstants.LAUNCHER_MOTOR_2_ID, false, false);
     }
 
     public void pull(double vel) {
@@ -41,10 +41,10 @@ public class Outtake extends SubsystemBase {
         carry.set(vel);
     }
 
-    public void launcher(double vel) {
-        launcher1.set(vel);
-        launcher2.set(-vel);
-    }
+    // public void launcher(double vel) {
+    //     launcher1.set(-vel);
+    //     launcher2.set(vel);
+    // }
 
     // public void turret(double pos) {
     //     this.turret.getClosedLoopController().setSetpoint(MathUtil.clamp(pos, -5400, 5400), ControlType.kPosition);

@@ -4,7 +4,6 @@ public class TurretConstants
 {
     public static final int LAUNCHER_MOTOR_ID_1 = -1;
     public static final int LAUNCHER_MOTOR_ID_2 = -1;
-    public static final int TURRET_MOTOR_ID = -1;
 
     public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
 
@@ -17,7 +16,7 @@ public class TurretConstants
 
     public static final double KS = 0; // Static friction constant
 
-    public static final int MOTOR_ID = 26;
+    public static final int MOTOR_ID = 27;
     public static final boolean IS_INVERTED =false;
     public static final double MAX_VEL = Math.toRadians(720.0);
     public static final double MAX_ACCEL = Math.toRadians(720.0);

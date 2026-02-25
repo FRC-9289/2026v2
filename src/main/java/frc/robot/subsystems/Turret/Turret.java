@@ -72,6 +72,10 @@ public double getAbsoluteHeadingRadians() {
           .setSetpoint(motorRotations, ControlType.kPosition);
   }
 
+  public void runTest(double speed){
+    motor.set(speed);
+  }
+
 
   public void setDesiredVelocity(double velocityRadPerSec) {
     double rpm = velocityRadPerSec * 60.0 / (2.0 * Math.PI);
