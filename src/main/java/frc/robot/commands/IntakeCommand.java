@@ -22,7 +22,7 @@ public class IntakeCommand extends Command {
     @Override
     public void execute() {
         if(d.getRawButton(3)){
-         module.roller(-1);
+         module.roller(-.7);
 
         }
         else{

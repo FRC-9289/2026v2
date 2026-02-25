@@ -47,26 +47,26 @@ public class RobotContainer {
         String test = "MF1m";
         Pose2d rt;
         //Test poses for auto testing, will be replaced with actual auto paths later
-        switch (test) {
-            case "MF1m":
-                rt = new Pose2d(new Translation2d(0.0, 1.0), Rotation2d.fromDegrees(0));
-                break;
-            case "MF2m":
-                rt = new Pose2d(new Translation2d(0.0, 2.0), Rotation2d.fromDegrees(0));
-                break;
-            case "R90":
-                rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(90));
-                break;
-            case "R180":
-                rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(180));
-                break;
-            default:
-                rt = new Pose2d(); // default pose at origin
-        }
+        // switch (test) {
+        //     case "MF1m":
+        //         rt = new Pose2d(new Translation2d(0.0, 1.0), Rotation2d.fromDegrees(0));
+        //         break;
+        //     case "MF2m":
+        //         rt = new Pose2d(new Translation2d(0.0, 2.0), Rotation2d.fromDegrees(0));
+        //         break;
+        //     case "R90":
+        //         rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(90));
+        //         break;
+        //     case "R180":
+        //         rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(180));
+        //         break;
+        //     default:
+        //         rt = new Pose2d(); // default pose at origin
+        // }
 
         // Initialize drivetrain with target pose
         swerve = new Swerve();
-        swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(1) * -0.3, () -> driver.getRawAxis(0) * .3, () -> driver.getRawAxis(4) * .5, () -> true));
+        swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(1) * -0.3, () -> driver.getRawAxis(0) * .3, () -> driver.getRawAxis(4) * .3, () -> true));
 
 
         //intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawAxis(ControllerConstants.AxisRightTrigger)));
