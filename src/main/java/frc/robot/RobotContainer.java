@@ -60,7 +60,14 @@ public class RobotContainer {
         swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(0) * .3, () -> driver.getRawAxis(1) * .3, () -> -driver.getRawAxis(2) * .2, () -> true));
 
         intake = new Intake();
-        intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawButton(ControllerConstants.ButtonLeft), () -> driver.getRawAxis(ControllerConstants.AxisRightTrigger)));
+        new JoystickButton(driver, ControllerConstants.AxisRightTrigger)
+            .whileTrue(
+                new IntakeCommand(
+                    intake,
+                    () -> driver.getRawButton(3),
+                    () -> driver.getRawAxis(ControllerConstants.AxisRightTrigger)
+                )
+            );
 
         outtake = new Outtake();
         outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () -> driver.getRawButton(ControllerConstants.ButtonTop)));
