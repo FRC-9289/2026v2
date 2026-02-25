@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.TurretTCs.TurretPositionCommand;
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Outtake.Outtake;
-import frc.robot.subsystems.Outtake.shooter;
+import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Roller.Arm;
 import frc.robot.subsystems.Roller.Roller;
 import frc.robot.subsystems.Turret.Turret;
@@ -41,7 +41,7 @@ public class RobotContainer {
     /* Subsystems */
     public static Swerve swerve;
     public static Outtake outtake;
-    public static shooter shoot;
+    public static Shooter shooter;
     public static Intake intake;
     public static Hang hang;
     public static Turret turret;
@@ -87,8 +87,8 @@ public class RobotContainer {
         //outtake.setDefaultCommand(new ShooterCommand(outtake, () -> driver.getRawAxis(3)));
         outtake.setDefaultCommand(new CarrierCommand(outtake, () -> driver.getRawAxis(2)));
         //outtake.setDefaultCommand(new PullCommand(outtake, () -> driver.getRawAxis(3)));
-        shoot = new shooter();
-        shoot.setDefaultCommand(new ShooterCommand(shoot, () -> driver.getRawAxis(3)));
+        shooter = new Shooter();
+        shooter.setDefaultCommand(new ShooterCommand(shooter, () -> driver.getRawAxis(3)));
 
         Roller roller = new Roller();
         roller.setDefaultCommand(new IntakeCommand(roller, driver));

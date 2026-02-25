@@ -19,15 +19,15 @@ public class CarrierCommand extends Command{
 
     @Override
     public void execute(){
-        outtake.pull(speed.getAsDouble());
-        outtake.carry(speed.getAsDouble());
+        outtake.setPullRotation(speed.getAsDouble());
+        outtake.setCarryVelocity(speed.getAsDouble());
         
         
     }
 
     @Override
     public void end(boolean interrupted){
-        outtake.carry(0.0);
+        outtake.setCarryVelocity(0.0);
     }
 }
 
