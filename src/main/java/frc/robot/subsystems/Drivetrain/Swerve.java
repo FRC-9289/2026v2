@@ -39,6 +39,11 @@ public class Swerve extends SubsystemBase {
     public SwerveDrivePoseEstimator poseEstimator;
     public RobotConfig config;
 
+    private static Swerve instance=new Swerve();
+    public static Swerve getInstance() {
+        return instance;
+    }
+
     // private final NetworkTable limelight =
     // NetworkTableInstance.getDefault().getTable("photonvision/Limelight");
 

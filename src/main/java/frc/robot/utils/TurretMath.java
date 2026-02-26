@@ -1,7 +1,6 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.Turret.TurretConstants;
 
 public class TurretMath {
@@ -11,8 +10,7 @@ public class TurretMath {
     double dy = TurretConstants.HUB_Y - robotPose.getY();
 
     double target = Math.atan2(dy, dx);
-    double robotHeading = robotPose.getRotation().getRadians();
 
-    return MathUtil.angleModulus(target - robotHeading);
+    return target;
   }
 }

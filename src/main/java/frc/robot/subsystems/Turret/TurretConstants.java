@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Turret;
 
+import edu.wpi.first.math.util.Units;
+
 public class TurretConstants
 {
     public static final int LAUNCHER_MOTOR_ID_1 = -1;
@@ -8,8 +10,8 @@ public class TurretConstants
     public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
 
 
-    public static final double HUB_X = 182.11; // in inches
-    public static final double HUB_Y = 158.84; // in inches
+    public static final double HUB_X = Units.inchesToMeters(182.11); // TODO: measure this (in inches)
+    public static final double HUB_Y = Units.inchesToMeters(158.84); // TODO: measure this (in inches)
 
     public static final double GEAR_RATIO = 5*(200/25);
     public static final double J_TURRET = (1.0/2.0)*(3.3)*(8.5*8.5+12.5*12.5);
