@@ -40,8 +40,14 @@ public class shooter extends SubsystemBase {
     // }
 
     public void launcher(double vel) {
-        launcher1.set(-vel);
-        launcher2.set(vel);
+        if (vel < 0){
+            launcher1.getClosedLoopController().setSetpoint(0, ControlType.kVelocity);
+            launcher2.getClosedLoopController().setSetpoint(0, ControlType.kVelocity);
+        }
+        else{
+            launcher1.getClosedLoopController().setSetpoint(vel, ControlType.kVelocity);
+            launcher2.getClosedLoopController().setSetpoint(-vel, ControlType.kVelocity);
+        }
     }
 
     // public void turret(double pos) {

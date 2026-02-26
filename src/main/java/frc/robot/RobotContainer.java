@@ -66,7 +66,7 @@ public class RobotContainer {
 
         // Initialize drivetrain with target pose
         swerve = new Swerve();
-        swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(1) * -0.3, () -> driver.getRawAxis(0) * .3, () -> driver.getRawAxis(4) * .3, () -> true));
+        swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> driver.getRawAxis(1) * -0.3*0.8, () -> driver.getRawAxis(0) * .3*0.8, () -> -driver.getRawAxis(4) * .3*0.8, () -> true));
 
 
         //intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawAxis(ControllerConstants.AxisRightTrigger)));
@@ -79,11 +79,15 @@ public class RobotContainer {
         turret.setDefaultCommand(new frc.robot.commands.TurretTCs.RunTest(turret, driver));
 
         outtake = new Outtake();
-        //outtake.setDefaultCommand(new ShooterCommand(outtake, () -> driver.getRawAxis(3)));
-        outtake.setDefaultCommand(new CarrierCommand(outtake, () -> driver.getRawAxis(2)));
-        //outtake.setDefaultCommand(new PullCommand(outtake, () -> driver.getRawAxis(3)));
         shoot = new shooter();
-        shoot.setDefaultCommand(new ShooterCommand(shoot, () -> driver.getRawAxis(3)));
+        //outtake.setDefaultCommand(new ShooterCommand(outtake, () -> driver.getRawAxis(3)));
+        if (driver.getRawAxis(3) > 0.2){
+            outtake.setDefaultCommand(new CarrierCommand(outtake, .7));
+            shoot.setDefaultCommand(new ShooterCommand(shoot, getSwerve().getPose()));
+
+        }
+        //outtake.setDefaultCommand(new PullCommand(outtake, () -> driver.getRawAxis(3)));
+        
 
         Roller roller = new Roller();
         roller.setDefaultCommand(new IntakeCommand(roller, driver));
