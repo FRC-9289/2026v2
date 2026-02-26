@@ -30,7 +30,7 @@ public class RobotContainer {
     /* Axis mappings */
     private final int translationAxis = 1; // forward/back
     private final int strafeAxis = 0;      // left/right
-    private final int rotationAxis = 2;    // twist
+    private final int rotationAxis = 4;    // twist
 
     /* Buttons */
     private final JoystickButton zeroGyro =
@@ -76,31 +76,31 @@ public class RobotContainer {
             .withTimeout(3)
         );
 
-        /* Setup auton chooser */
-        autonChooser.setDefaultOption(
-            "RunTest MF1m",
-            new RunTest("MF1m")
-        );
+        // /* Setup auton chooser */
+        // autonChooser.setDefaultOption(
+        //     "RunTest MF1m",
+        //     new RunTest("MF1m")
+        // );
 
-        autonChooser.addOption(
-            "RunTest MF2m",
-            new RunTest("MF2m")
-        );
+        // autonChooser.addOption(
+        //     "RunTest MF2m",
+        //     new RunTest("MF2m")
+        // );
 
-        autonChooser.addOption(
-            "RunTest R90",
-            new RunTest("R90")
-        );
+        // autonChooser.addOption(
+        //     "RunTest R90",
+        //     new RunTest("R90")
+        // );
 
-        autonChooser.addOption(
-            "RunTest R180",
-            new RunTest("R180")
-        );
+        // autonChooser.addOption(
+        //     "RunTest R180",
+        //     new RunTest("R180")
+        // );
 
-        autonChooser.addOption(
-            "PathPlanner MidReefAuto",
-            new PathPlannerAuto("MidReefAuto")
-        );
+        // autonChooser.addOption(
+        //     "PathPlanner MidReefAuto",
+        //     new PathPlannerAuto("MidReefAuto")
+        // );
 
         SmartDashboard.putData("Auton Chooser", autonChooser);
 

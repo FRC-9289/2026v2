@@ -48,12 +48,7 @@ public class Robot extends TimedRobot{
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-
-    Logger.recordMetadata("ProjectName", "TBD"); // Set a metadata value
-    Logger.addDataReceiver(new WPILOGWriter(Filesystem.getOperatingDirectory().getAbsolutePath() + "/logs")); // Record to a WPILOG file
-    Logger.addDataReceiver(new NT4Publisher());
-    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+    // autonomous chooser on the dashboard. // Start logging! No more data receivers, replay sources, or metadata values may be added.
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
 

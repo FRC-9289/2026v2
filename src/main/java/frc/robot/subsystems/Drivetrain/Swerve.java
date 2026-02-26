@@ -30,10 +30,6 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.LoggedPowerDistribution;
-
 public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
@@ -50,38 +46,33 @@ public class Swerve extends SubsystemBase {
         e.printStackTrace();
         }
 
-    AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(SwerveConstants.AutoConstants.PPtranslationkP, SwerveConstants.AutoConstants.PPtranslationkI, SwerveConstants.AutoConstants.PPtranslationkD), // Translation PID constants
-                    new PIDConstants(SwerveConstants.AutoConstants.PProtationalkP, SwerveConstants.AutoConstants.PProtationalkI, SwerveConstants.AutoConstants.PProtationalkD) // Rotation PID constants
-            ),
-            config, // The robot configuration
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    // AutoBuilder.configure(
+    //         this::getPose, // Robot pose supplier
+    //         this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
+    //         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+    //         (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+    //         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+    //                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+    //                 new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+    //         ),
+    //         config, // The robot configuration
+    //         () -> {
+    //           // Boolean supplier that controls when the path will be mirrored for the red alliance
+    //           // This will flip the path being followed to the red side of the field.
+    //           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
-    );
+    //           var alliance = DriverStation.getAlliance();
+    //           if (alliance.isPresent()) {
+    //             return alliance.get() == DriverStation.Alliance.Red;
+    //           }
+    //           return false;
+    //         },
+    //         this // Reference to this subsystem to set requirements
+    // );
         // Gyro setup
         gyro = new Pigeon2(SwerveConstants.Swerve.pigeonID, "Drivetrain");
-        gyro
-            .getConfigurator()
-            .apply(
-                new Pigeon2Configuration()
-                .withMountPose(new MountPoseConfigs().withMountPoseYaw(180)
-                                )
-                );
+        gyro.getConfigurator().apply(new Pigeon2Configuration()
+                .withMountPose(new MountPoseConfigs().withMountPoseYaw(180)));
         gyro.setYaw(0);
         Timer.delay(1);
 
@@ -95,7 +86,12 @@ public class Swerve extends SubsystemBase {
 
         // Odometry
         poseEstimator = new SwerveDrivePoseEstimator(
-            SwerveConstants.Swerve.swerveKinematics,
+            new SwerveDriveKinematics(
+                new Translation2d(-0.347,0.347),
+                new Translation2d(0.347,0.347),
+                new Translation2d(-0.347,-0.347),
+                new Translation2d(0.347,-0.347)
+            ),
             getGyroYaw(),
             getModulePositions(),
             new Pose2d()
@@ -213,14 +209,5 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Desired X", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Desired Y", poseEstimator.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Desired Heading", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
-
-        Logger.recordOutput("Pose (X)", pose.getX());
-        Logger.recordOutput("Pose (Y)", pose.getY());
-        Logger.recordOutput("Pose (Rotation)", pose.getRotation().getDegrees());
-        Logger.recordOutput("Setpoint (X)", SwerveConstants.AutoConstants.setPointTranslation.getX());
-        Logger.recordOutput("Setpoint (Y)", SwerveConstants.AutoConstants.setPointTranslation.getY());
-        Logger.recordOutput("Setpoint (Rotation)", SwerveConstants.AutoConstants.setpointTheta);
-        Logger.recordOutput("RobotPose", pose);  
     }
 }
-
