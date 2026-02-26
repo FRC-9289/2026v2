@@ -20,10 +20,10 @@ public class Roller extends SubsystemBase {
     public static Roller getInstance() {
         return rollerInstance;
     }
-    
+
 
     public Roller() {
-
+        rollerInstance = this;
         SparkMaxConfig cfg = new SparkMaxConfig();
        // cfg.closedLoop.pid(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
         //cfg.encoder.positionConversionFactor(360);

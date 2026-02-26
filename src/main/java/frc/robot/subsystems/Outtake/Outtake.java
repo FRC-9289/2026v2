@@ -16,7 +16,15 @@ public class Outtake extends SubsystemBase {
     private WolfSparkMax launcher1;
     private WolfSparkMax launcher2;
 
+
+    public static Outtake getInstance() {
+        return outtake;
+    }
+
+    private static Outtake outtake;
+
     public Outtake() {
+        outtake = this;
         // this.turret = new WolfSparkMax(26, true, false);
         // SparkMaxConfig cfg = new SparkMaxConfig();
         // cfg.closedLoop.pid(OuttakeConstants.kP, OuttakeConstants.kI, OuttakeConstants.kD);
@@ -39,11 +47,6 @@ public class Outtake extends SubsystemBase {
 
     public void setCarryVelocity(double vel) {
         carry.set(vel);
-    }
-
-    public static Outtake getInstance() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getInstance'");
     }
 
     // public void launcher(double vel) {

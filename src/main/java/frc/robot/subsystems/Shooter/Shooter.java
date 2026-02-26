@@ -13,47 +13,52 @@ public class Shooter extends SubsystemBase {
     // private WolfSparkMax turret;
     private WolfSparkMax launcher1;
     private WolfSparkMax launcher2;
+    public static Shooter getInstance() {
+        return shooter;
+    }
 
     private static Shooter shooter;
 
     public Shooter() {
-        // this.turret = new WolfSparkMax(26, true, false);
-        // SparkMaxConfig cfg = new SparkMaxConfig();
-        // cfg.closedLoop.pid(OuttakeConstants.kP, OuttakeConstants.kI, OuttakeConstants.kD);
-        // cfg.encoder.positionConversionFactor(360);
-        // cfg.softLimit.forwardSoftLimit(5400);
-        // cfg.softLimit.reverseSoftLimit(-5400);
-        // cfg.softLimit.forwardSoftLimitEnabled(true);
-        // cfg.softLimit.reverseSoftLimitEnabled(true);
-        // turret.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        // this.pull = new WolfSparkMax(OuttakeConstants.PULL_MOTOR_ID, false, false);
-        // this.carry = new WolfSparkMax(OuttakeConstants.CARRY_MOTOR_ID, false, false);
+        shooter = this;
         this.launcher1 = new WolfSparkMax(ShooterConstants.LAUNCHER_MOTOR_1_ID, false, false);
         this.launcher2 = new WolfSparkMax(ShooterConstants.LAUNCHER_MOTOR_2_ID, false, false);
+
+        SparkMaxConfig cfg = new SparkMaxConfig();
+        cfg.closedLoop.pid(
+            ShooterConstants.kP, 
+            ShooterConstants.kI, 
+            ShooterConstants.kD
+        );
+        launcher1.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        launcher2.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    // public void pull(double vel) {
-    //     pull.set(vel);
-    // }
-
-    // public void carry(double vel) {
-    //     carry.set(vel);
-    // }
-
     public void setShooterAngularVelocity(double radPerSec) {
-        launcher1.set(-radPerSec);
-        launcher2.set(radPerSec);
+        launcher1.getClosedLoopController().setSetpoint(-radPerSec, ControlType.kVelocity);
+        launcher2.getClosedLoopController().setSetpoint(radPerSec, ControlType.kVelocity);
     }
 
     public void calculateShooterVelocity(double distance) {
 
-        double velocity = 0.0; // Replace with your calculation
-        setShooterAngularVelocity(velocity);
+        double angularVelocity = calculateAngularVelocityFromDistanceToHub(distance); // Replace with your calculation
+        double rpm = angularVelocity * 60 / (2 * Math.PI); // Convert rad/s to RPM
+        rpm = MathUtil.clamp(rpm, 0, 5676); //
+        setShooterAngularVelocity(rpm);
     }
 
-    public static Shooter getInstance() {
-        return shooter;
+    public static double calculateAngularVelocityFromDistanceToHub(double distanceMeters) {
+        double g = 9.81;
+        double theta = ShooterConstants.SHOOTER_ANGLE_RAD;
+        double deltaH = ShooterConstants.CHANGE_IN_HEIGHT;
+
+        double numerator = g * Math.pow(distanceMeters, 2);
+        double denominator = 2 * Math.pow(Math.cos(theta), 2) *
+            (distanceMeters * Math.tan(theta) - deltaH);
+
+        double escapeVelocity = Math.sqrt(numerator / denominator);
+        double angularVelocity = escapeVelocity / ShooterConstants.ROTATOR_RADIUS;
+        return angularVelocity;
     }
 
     // public void turret(double pos) {

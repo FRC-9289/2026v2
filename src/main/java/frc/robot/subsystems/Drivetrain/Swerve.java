@@ -30,11 +30,17 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+// import edu.wpi.first.networktables.NetworkTable;
+// import edu.wpi.first.networktables.NetworkTableInstance;
+
 public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
     public SwerveDrivePoseEstimator poseEstimator;
     public RobotConfig config;
+
+    // private final NetworkTable limelight =
+    // NetworkTableInstance.getDefault().getTable("photonvision/Limelight");
 
 
     public Swerve() {
@@ -198,9 +204,39 @@ public class Swerve extends SubsystemBase {
         poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
+    // private void updateVision() {
+    //     // Check if we have a target
+    //     boolean hasTarget = limelight.getEntry("targetPresent").getBoolean(false);
+    //     if (!hasTarget) return;
+
+    //     // Alliance-aware botpose
+    //     String poseKey = DriverStation.getAlliance().get()==Alliance.Red
+    //         ? "botpose_wpired"
+    //         : "botpose_wpiblue";
+
+    //     double[] botpose = limelight.getEntry(poseKey).getDoubleArray(new double[7]);
+    //     if (botpose.length < 6) return;
+
+    //     // Convert PhotonVision Pose3d to 2D Pose2d
+    //     Pose2d visionPose = new Pose2d(
+    //         botpose[0], // X in meters
+    //         botpose[1], // Y in meters
+    //         Rotation2d.fromDegrees(botpose[5]) // Yaw
+    //     );
+
+    //     // Subtract pipeline latency
+    //     double latencySec = limelight.getEntry("pipelineLatencyMillis").getDouble(0) / 1000.0;
+    //     double timestamp = Timer.getFPGATimestamp() - latencySec;
+
+    //     // Add to pose estimator
+    //     poseEstimator.addVisionMeasurement(visionPose, timestamp);
+    // }
+
     @Override
     public void periodic() {
         poseEstimator.update(getGyroYaw(), getModulePositions());
+
+        // updateVision();
 
         Pose2d pose = getPose();
         SmartDashboard.putNumber("Pose X", pose.getX());

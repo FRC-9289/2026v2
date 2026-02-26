@@ -21,6 +21,7 @@ public class Arm extends SubsystemBase {
 
     public Arm() {
 
+        armInstance = this;
         SparkMaxConfig cfg = new SparkMaxConfig();
        // cfg.closedLoop.pid(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
         //cfg.encoder.positionConversionFactor(360);
