@@ -12,8 +12,10 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
-public final class Constants {
+
+public final class SwerveConstants {
     public static final double stickDeadband = 0.005;
+
 
     public final class PoseFilter {
         public static final double POSE_HEIGHT_TOLERANCE = 0.05;
@@ -78,16 +80,6 @@ public final class Constants {
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
-
-        /* PathPlanner translational PID Values */
-        public static final double PPtranslationkP = 0.0;
-        public static final double PPtranslationkI = 0.0;
-        public static final double PPtranslationkD = 0.0;
-
-        /* PathPlanner rotational PID Values */
-        public static final double PProtationalkP = 0.0;
-        public static final double PProtationalkI = 0.0;
-        public static final double PProtationalkD = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
         public static final double driveKS = 0.32; //TODO: This must be tuned to specific robot
@@ -155,11 +147,24 @@ public final class Constants {
         public static final double kPXController = 1;
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
+
+        public static final double setpointTheta = 0.0;
+        public static final Translation2d setPointTranslation = new Translation2d(0.0, 1.0);
     
         /* Constraint for the motion profilied robot angle controller */
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+        
+                /* PathPlanner translational PID Values */
+        public static final double PPtranslationkP = 0.0;
+        public static final double PPtranslationkI = 0.0;
+        public static final double PPtranslationkD = 0.0;
+
+        /* PathPlanner rotational PID Values */
+        public static final double PProtationalkP = 0.0;
+        public static final double PProtationalkI = 0.0;
+        public static final double PProtationalkD = 0.0;
     }
 }
 

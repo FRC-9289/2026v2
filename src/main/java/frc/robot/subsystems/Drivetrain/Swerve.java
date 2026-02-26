@@ -30,6 +30,10 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.LoggedPowerDistribution;
+
 public class Swerve extends SubsystemBase {
     public SwerveModule[] mSwerveMods;
     public Pigeon2 gyro;
@@ -52,8 +56,8 @@ public class Swerve extends SubsystemBase {
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(SwerveConstants.AutoConstants.PPtranslationkP, SwerveConstants.AutoConstants.PPtranslationkI, SwerveConstants.AutoConstants.PPtranslationkD), // Translation PID constants
+                    new PIDConstants(SwerveConstants.AutoConstants.PProtationalkP, SwerveConstants.AutoConstants.PProtationalkI, SwerveConstants.AutoConstants.PProtationalkD) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -70,28 +74,28 @@ public class Swerve extends SubsystemBase {
             this // Reference to this subsystem to set requirements
     );
         // Gyro setup
-        gyro = new Pigeon2(Constants.Swerve.pigeonID, "Drivetrain");
-        gyro.getConfigurator().apply(new Pigeon2Configuration()
-                .withMountPose(new MountPoseConfigs().withMountPoseYaw(180)));
+        gyro = new Pigeon2(SwerveConstants.Swerve.pigeonID, "Drivetrain");
+        gyro
+            .getConfigurator()
+            .apply(
+                new Pigeon2Configuration()
+                .withMountPose(new MountPoseConfigs().withMountPoseYaw(180)
+                                )
+                );
         gyro.setYaw(0);
         Timer.delay(1);
 
         // Swerve Modules
         mSwerveMods = new SwerveModule[]{
-            new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod1.constants),
-            new SwerveModule(2, Constants.Swerve.Mod2.constants),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants)
+            new SwerveModule(0, SwerveConstants.Swerve.Mod0.constants),
+            new SwerveModule(1, SwerveConstants.Swerve.Mod1.constants),
+            new SwerveModule(2, SwerveConstants.Swerve.Mod2.constants),
+            new SwerveModule(3, SwerveConstants.Swerve.Mod3.constants)
         };
 
         // Odometry
         poseEstimator = new SwerveDrivePoseEstimator(
-            new SwerveDriveKinematics(
-                new Translation2d(-0.347,0.347),
-                new Translation2d(0.347,0.347),
-                new Translation2d(-0.347,-0.347),
-                new Translation2d(0.347,-0.347)
-            ),
+            SwerveConstants.Swerve.swerveKinematics,
             getGyroYaw(),
             getModulePositions(),
             new Pose2d()
@@ -110,7 +114,7 @@ public class Swerve extends SubsystemBase {
      */
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
-        return Constants.Swerve.swerveKinematics.toChassisSpeeds(
+        return SwerveConstants.Swerve.swerveKinematics.toChassisSpeeds(
             getModuleStates()
         );
     }
@@ -121,7 +125,7 @@ public class Swerve extends SubsystemBase {
                 ? new Rotation2d(Math.PI)
                 : new Rotation2d();
 
-        SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+        SwerveModuleState[] swerveModuleStates = SwerveConstants.Swerve.swerveKinematics.toSwerveModuleStates(
             fieldRelative
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(
                     translation.getX(),
@@ -133,7 +137,7 @@ public class Swerve extends SubsystemBase {
         );
 
         // Scale wheel speeds to max speed
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.Swerve.maxSpeed);
 
         for (SwerveModule mod : mSwerveMods) {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -142,10 +146,10 @@ public class Swerve extends SubsystemBase {
 
     public void driveRobotRelative(ChassisSpeeds speeds) {
         SwerveModuleState[] states =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(speeds);
+            SwerveConstants.Swerve.swerveKinematics.toSwerveModuleStates(speeds);
 
         SwerveDriveKinematics.desaturateWheelSpeeds(
-            states, Constants.Swerve.maxSpeed
+            states, SwerveConstants.Swerve.maxSpeed
         );
 
         for (SwerveModule mod : mSwerveMods) {
@@ -209,6 +213,14 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Desired X", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Desired Y", poseEstimator.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Desired Heading", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+
+        Logger.recordOutput("Pose (X)", pose.getX());
+        Logger.recordOutput("Pose (Y)", pose.getY());
+        Logger.recordOutput("Pose (Rotation)", pose.getRotation().getDegrees());
+        Logger.recordOutput("Setpoint (X)", SwerveConstants.AutoConstants.setPointTranslation.getX());
+        Logger.recordOutput("Setpoint (Y)", SwerveConstants.AutoConstants.setPointTranslation.getY());
+        Logger.recordOutput("Setpoint (Rotation)", SwerveConstants.AutoConstants.setpointTheta);
+        Logger.recordOutput("RobotPose", pose);  
     }
 }
 

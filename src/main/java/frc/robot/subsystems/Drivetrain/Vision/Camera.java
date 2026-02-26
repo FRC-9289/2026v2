@@ -27,7 +27,7 @@ import edu.wpi.first.util.datalog.DoubleArrayLogEntry;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.Drivetrain.Constants;
+import frc.robot.subsystems.Drivetrain.SwerveConstants;
 import frc.robot.subsystems.Drivetrain.FieldLayout;
 import frc.robot.subsystems.Drivetrain.Vision.VisionSubsystem.PoseAndTimestampAndDev;
 
@@ -167,7 +167,7 @@ public class Camera {
         Translation2d prevPoseTranslation = prevPose.getTranslation();
         Translation2d newPoseTranslation = newPose.getTranslation();
         
-        double maxDist = Constants.PoseFilter.MAX_DIST_BETWEEN_POSE;
+        double maxDist = SwerveConstants.PoseFilter.MAX_DIST_BETWEEN_POSE;
 
         return Math.abs(prevPoseTranslation.getDistance(newPoseTranslation)) < maxDist;
     }
@@ -184,7 +184,7 @@ public class Camera {
             return true;
         } else if (pose.getY() < 0 || pose.getY() > FieldLayout.FIELD_WIDTH) {
             return true;
-        } else if (Math.abs(pose.getZ()) > Constants.PoseFilter.POSE_HEIGHT_TOLERANCE) {
+        } else if (Math.abs(pose.getZ()) > SwerveConstants.PoseFilter.POSE_HEIGHT_TOLERANCE) {
             return true;
         } else {
             return false;
