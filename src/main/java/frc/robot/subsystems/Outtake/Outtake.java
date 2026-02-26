@@ -33,11 +33,11 @@ public class Outtake extends SubsystemBase {
         // this.launcher2 = new WolfSparkMax(OuttakeConstants.LAUNCHER_MOTOR_2_ID, false, false);
     }
 
-    public void pull(double vel) {
+    public void setPullRotation(double vel) {
         pull.set(vel);
     }
 
-    public void carry(double vel) {
+    public void setCarryVelocity(double vel) {
         carry.set(vel);
     }
 

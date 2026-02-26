@@ -8,26 +8,31 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.auton.RunTest;
-import frc.robot.autos.*;
-import frc.robot.commands.*;
+
 import frc.robot.commands.TurretTCs.TurretPositionCommand;
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Outtake.Outtake;
-import frc.robot.subsystems.Outtake.shooter;
+import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Roller.Arm;
 import frc.robot.subsystems.Roller.Roller;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Hang.Hang;
 import frc.robot.utils.Constants;
-import frc.robot.utils.Constants.ControllerConstants;
+
+import frc.robot.commands.TurretTCs.RunTurretTest;
+import frc.auton.RunTest;
+import frc.robot.commands.*;
+import frc.robot.commands.ShooterCommand;
+import frc.robot.commands.ArmCommand;
+
 
 public class RobotContainer {
     
@@ -36,7 +41,7 @@ public class RobotContainer {
     /* Subsystems */
     public static Swerve swerve;
     public static Outtake outtake;
-    public static shooter shoot;
+    public static Shooter shooter;
     public static Intake intake;
     public static Hang hang;
     public static Turret turret;
@@ -76,10 +81,10 @@ public class RobotContainer {
         // hang = new Hang();
         // hang.setDefaultCommand(new HangCommand(hang, () -> driver.getRawButton(2)));
 
-        turret.setDefaultCommand(new frc.robot.commands.TurretTCs.RunTest(turret, driver));
+        turret.setDefaultCommand(new RunTurretTest(turret, driver));
 
         outtake = new Outtake();
-        shoot = new shooter();
+        Shooter shoot = new Shooter();
         //outtake.setDefaultCommand(new ShooterCommand(outtake, () -> driver.getRawAxis(3)));
         if (driver.getRawAxis(3) > 0.2){
             outtake.setDefaultCommand(new CarrierCommand(outtake, .7));

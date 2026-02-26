@@ -28,7 +28,7 @@ public class Arm extends SubsystemBase {
         //storage = new WolfSparkMax(IntakeConstants.MOTOR_ID, true, false);
     }
 
-    public void arm(double speed) {
+    public void rotateArm(double speed) {
         this.arm.set(speed);
     }
 

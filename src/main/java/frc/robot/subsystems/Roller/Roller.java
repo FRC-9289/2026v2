@@ -24,7 +24,7 @@ public class Roller extends SubsystemBase {
         //arm = new WolfSparkMax(50, true, false);
         //arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        roller = new WolfSparkMax(22, false, false);
+        roller = new WolfSparkMax(RollerConstants.ROLLER_MOTOR_ID, false, false);
         roller.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         //storage = new WolfSparkMax(IntakeConstants.MOTOR_ID, true, false);

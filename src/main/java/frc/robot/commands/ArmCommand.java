@@ -20,18 +20,18 @@ public class ArmCommand extends Command{
     @Override
     public void execute(){
         if(j.getRawButton(1)){
-            arm.arm(0.3);
+            arm.rotateArm(0.3);
         }
         else if(j.getRawButton(4)){
-            arm.arm(-0.3);
+            arm.rotateArm(-0.3);
         }
         else{
-            arm.arm(0.0);
+            arm.rotateArm(0.0);
         }
     }
 
     @Override
     public void end(boolean interrupted){
-        arm.arm(0.0);
+        arm.rotateArm(0.0);
     }
 }

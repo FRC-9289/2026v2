@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Outtake;
+package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
@@ -9,12 +9,12 @@ import com.revrobotics.PersistMode;
 
 import frc.robot.utils.WolfSparkMax;
 
-public class shooter extends SubsystemBase {
+public class Shooter extends SubsystemBase {
     // private WolfSparkMax turret;
     private WolfSparkMax launcher1;
     private WolfSparkMax launcher2;
 
-    public shooter() {
+    public Shooter() {
         // this.turret = new WolfSparkMax(26, true, false);
         // SparkMaxConfig cfg = new SparkMaxConfig();
         // cfg.closedLoop.pid(OuttakeConstants.kP, OuttakeConstants.kI, OuttakeConstants.kD);
@@ -27,8 +27,8 @@ public class shooter extends SubsystemBase {
 
         // this.pull = new WolfSparkMax(OuttakeConstants.PULL_MOTOR_ID, false, false);
         // this.carry = new WolfSparkMax(OuttakeConstants.CARRY_MOTOR_ID, false, false);
-        this.launcher1 = new WolfSparkMax(OuttakeConstants.LAUNCHER_MOTOR_1_ID, false, false);
-        this.launcher2 = new WolfSparkMax(OuttakeConstants.LAUNCHER_MOTOR_2_ID, false, false);
+        this.launcher1 = new WolfSparkMax(ShooterConstants.LAUNCHER_MOTOR_1_ID, false, false);
+        this.launcher2 = new WolfSparkMax(ShooterConstants.LAUNCHER_MOTOR_2_ID, false, false);
     }
 
     // public void pull(double vel) {
