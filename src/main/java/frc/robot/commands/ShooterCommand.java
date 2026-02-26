@@ -1,8 +1,10 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Shooter.Shooter;
@@ -11,20 +13,35 @@ import frc.robot.subsystems.Turret.Turret;
 public class ShooterCommand extends Command{
     private DoubleSupplier speed;
     private Shooter outtake;
+    private BooleanSupplier active;
+    private Timer timer;
+    private double duration = 3.0; // Duration in seconds for which the shooter should run
     
-        public ShooterCommand(Shooter outtake, DoubleSupplier speed){
-            this.speed=speed;
-            this.outtake=outtake;
+    public ShooterCommand(Shooter outtake, BooleanSupplier active){
+        this.speed=speed;
+        this.outtake=outtake;
+        this.active=active;
+        this.timer = new Timer();
         addRequirements(outtake);
     }
-
+    
+    @Override
+    public void initialize(){
+        timer.start();
+    }
+    
     @Override
     public void execute(){
-        outtake.setShooterVelocity(speed.getAsDouble());
+        if (active.getAsBoolean() && timer.get() < duration) {
+            outtake.setShooterAngularVelocity(0.8);
+            
+        } else {
+            outtake.setShooterAngularVelocity(0.0);
+        }
     }
 
     @Override
     public void end(boolean interrupted){
-        outtake.setShooterVelocity(0.0);
+        outtake.setShooterAngularVelocity(0.0);
     }
 }

@@ -41,6 +41,11 @@ public class Outtake extends SubsystemBase {
         carry.set(vel);
     }
 
+    public static Outtake getInstance() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getInstance'");
+    }
+
     // public void launcher(double vel) {
     //     launcher1.set(-vel);
     //     launcher2.set(vel);

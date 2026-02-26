@@ -14,6 +14,8 @@ public class Shooter extends SubsystemBase {
     private WolfSparkMax launcher1;
     private WolfSparkMax launcher2;
 
+    private static Shooter shooter;
+
     public Shooter() {
         // this.turret = new WolfSparkMax(26, true, false);
         // SparkMaxConfig cfg = new SparkMaxConfig();
@@ -39,9 +41,19 @@ public class Shooter extends SubsystemBase {
     //     carry.set(vel);
     // }
 
-    public void setShooterVelocity(double vel) {
-        launcher1.set(-vel);
-        launcher2.set(vel);
+    public void setShooterAngularVelocity(double radPerSec) {
+        launcher1.set(-radPerSec);
+        launcher2.set(radPerSec);
+    }
+
+    public void calculateShooterVelocity(double distance) {
+
+        double velocity = 0.0; // Replace with your calculation
+        setShooterAngularVelocity(velocity);
+    }
+
+    public static Shooter getInstance() {
+        return shooter;
     }
 
     // public void turret(double pos) {

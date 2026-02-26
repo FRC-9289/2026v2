@@ -15,6 +15,13 @@ public class Roller extends SubsystemBase {
     private WolfSparkMax roller;
     private WolfSparkMax storage;
 
+    private static Roller rollerInstance;
+
+    public static Roller getInstance() {
+        return rollerInstance;
+    }
+    
+
     public Roller() {
 
         SparkMaxConfig cfg = new SparkMaxConfig();

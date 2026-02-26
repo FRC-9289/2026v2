@@ -10,33 +10,25 @@ import java.util.function.DoubleSupplier;
 
 public class IntakeCommand extends Command {
     private final Roller module;
-    private final double speed = 1.0;
-    private final Joystick d;
+    private final BooleanSupplier intakeButton;
 
-    public IntakeCommand(Roller module, Joystick d) {
+    public IntakeCommand(Roller module, BooleanSupplier intakeButton) {
         this.module = module;
-        this.d= d;
+        this.intakeButton = intakeButton;
         addRequirements(module);
     }
 
     @Override
     public void execute() {
-        if(d.getRawButton(3)){
-         module.roller(-1);
-
-        }
-        else{
-            module.roller(0);
+        if (intakeButton.getAsBoolean()) {
+            module.roller(-1.0);
+        } else {
+            module.roller(0.0);
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        module.roller(0);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false; // Button will control when it ends
+        module.roller(0.0);
     }
 }

@@ -12,6 +12,12 @@ import frc.robot.utils.WolfSparkMax;
 
 public class Arm extends SubsystemBase {
     private WolfSparkMax arm;
+    private static Arm armInstance;
+
+    public static Arm getInstance() {
+        return armInstance;
+    }
+    
 
     public Arm() {
 
