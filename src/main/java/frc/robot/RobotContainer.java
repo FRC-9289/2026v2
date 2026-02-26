@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.auton.RunTest;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
-import frc.robot.subsystems.*;
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Drivetrain.Vision.Camera;
 import frc.robot.subsystems.Drivetrain.Vision.VisionSubsystem;
@@ -95,9 +94,9 @@ public class RobotContainer {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis) * .3, 
-                () -> driver.getRawAxis(strafeAxis) * .3, 
-                () -> -driver.getRawAxis(rotationAxis) * .2, 
+                () -> -driver.getRawAxis(translationAxis) * .3*0.8, 
+                () -> driver.getRawAxis(strafeAxis) * .3*0.8, 
+                () -> -driver.getRawAxis(rotationAxis) * .2*0.8, 
                 () -> robotCentric.getAsBoolean()
             )
         );
