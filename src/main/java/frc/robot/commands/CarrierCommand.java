@@ -8,10 +8,10 @@ import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Turret.Turret;
 
 public class CarrierCommand extends Command{
-    private DoubleSupplier speed;
+    private Double speed;
     private Outtake outtake;
     
-        public CarrierCommand(Outtake outtake, DoubleSupplier speed){
+        public CarrierCommand(Outtake outtake, Double speed){
             this.speed=speed;
             this.outtake=outtake;
         addRequirements(outtake);
@@ -19,8 +19,8 @@ public class CarrierCommand extends Command{
 
     @Override
     public void execute(){
-        outtake.setPullRotation(speed.getAsDouble());
-        outtake.setCarryVelocity(speed.getAsDouble());
+        outtake.setPullRotation(speed);
+        outtake.setCarryVelocity(speed);
         
         
     }

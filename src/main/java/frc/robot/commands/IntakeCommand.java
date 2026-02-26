@@ -21,7 +21,7 @@ public class IntakeCommand extends Command {
     @Override
     public void execute() {
         if (intakeButton.getAsBoolean()) {
-            module.roller(-1.0);
+            module.roller(-0.7);
         } else {
             module.roller(0.0);
         }

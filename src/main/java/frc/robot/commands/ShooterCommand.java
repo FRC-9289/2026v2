@@ -3,6 +3,7 @@ package frc.robot.commands;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,7 +19,6 @@ public class ShooterCommand extends Command{
     private double duration = 3.0; // Duration in seconds for which the shooter should run
     
     public ShooterCommand(Shooter outtake, BooleanSupplier active){
-        this.speed=speed;
         this.outtake=outtake;
         this.active=active;
         this.timer = new Timer();
