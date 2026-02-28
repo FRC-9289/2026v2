@@ -33,14 +33,18 @@ public class Turret extends SubsystemBase {
     motor = new WolfSparkMax(
         TurretConstants.MOTOR_ID,
         true,
-        false
-    );
+        false);
 
     SparkMaxConfig config = new SparkMaxConfig();
     config.softLimit.forwardSoftLimit(TurretConstants.limitCW);
     config.softLimit.reverseSoftLimit(TurretConstants.limitCCW);
-    config.softLimit.forwardSoftLimitEnabled(true);
-    config.softLimit.reverseSoftLimitEnabled(true);
+
+    // sets limits on rotation distance, not angle, as sparkmaxes with encoder.getPosition() return rotations instead
+    double forwardLimitRot = TurretConstants.limitCW / (2.0 * Math.PI) * TurretConstants.GEAR_RATIO;
+    double reverseLimitRot = TurretConstants.limitCCW / (2.0 * Math.PI) * TurretConstants.GEAR_RATIO;
+    config.softLimit.forwardSoftLimit(forwardLimitRot);
+    config.softLimit.reverseSoftLimit(reverseLimitRot);
+
     config.closedLoop.pid(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -49,11 +53,11 @@ public class Turret extends SubsystemBase {
     resetHeading();
   }
 
-public double getAbsoluteHeadingRadians() { 
-  double motorRotations = encoder.getPosition();
-  double turretRotations = motorRotations / TurretConstants.GEAR_RATIO;
-  return (turretRotations * 2.0 * Math.PI)%(2.0 * Math.PI);
-}
+  public double getAbsoluteHeadingRadians() {
+    double motorRotations = encoder.getPosition();
+    double turretRotations = motorRotations / TurretConstants.GEAR_RATIO;
+    return turretRotations * 2.0 * Math.PI; // keeps turret angle as continuous
+  }
 
   public double getAngularVelocityRadPerSec() {
     double rpm = encoder.getVelocity() / TurretConstants.GEAR_RATIO;
@@ -64,49 +68,43 @@ public double getAbsoluteHeadingRadians() {
     encoder.setPosition(0.0);
   }
 
-  public void setDesiredAngle(double angleRad) {
-      double current = getAbsoluteHeadingRadians();
-      double target = angleRad;
+  public void setDesiredAngle(double targetRad) {
 
-      // Determine direction
-      double error = target - current;
+    double current = getAbsoluteHeadingRadians();
 
-      // Prevent moving past CCW limit
-      if (error < 0 && current <= TurretConstants.limitCCW) {
-          return; // stop, can't go further CCW
-      }
+    // Shortest path error - allows turret to turn shortest path to face something,
+    // for example 20º CW instead of 340º CCW to face a direction
+    double error = MathUtil.angleModulus(targetRad - current);
 
-      // Prevent moving past CW limit
-      if (error > 0 && current >= TurretConstants.limitCW) {
-          return; // stop, can't go further CW
-      }
+    // Final continuous target
+    double finalTarget = current + error;
 
-      // Command the motor
-      double motorRotations = target / (2.0 * Math.PI) * TurretConstants.GEAR_RATIO;
-      motor.getClosedLoopController()
-          .setSetpoint(motorRotations, ControlType.kPosition);
+    // Convert to motor rotations
+    double motorRotations = finalTarget / (2.0 * Math.PI) * TurretConstants.GEAR_RATIO;
+
+    motor.getClosedLoopController()
+        .setSetpoint(motorRotations, ControlType.kPosition);
   }
 
-  public void runTest(double speed){
+  public void runTest(double speed) {
     motor.set(speed);
   }
-
 
   public void setDesiredVelocity(double velocityRadPerSec) {
     double rpm = velocityRadPerSec * 60.0 / (2.0 * Math.PI);
     double motorRpm = rpm * TurretConstants.GEAR_RATIO;
 
     motor
-      .getClosedLoopController()
-      .setSetpoint(motorRpm, ControlType.kVelocity);
+        .getClosedLoopController()
+        .setSetpoint(motorRpm, ControlType.kVelocity);
   }
 
   @Override
   public void periodic() {
-    Rotation2d angle = TurretMath.getDesiredTurretAngle(Swerve.getInstance().getPose(), new Translation2d(0.0,0.0));
+    Rotation2d angle = TurretMath.getDesiredTurretAngle(Swerve.getInstance().getPose(), new Translation2d(0.0, 0.0));
     // this.setDesiredAngle(angle);
     SmartDashboard.putNumber("Angle 2 Hub", angle.getRadians());
-    
+
     SmartDashboard.putNumber("Turret-Position", getAbsoluteHeadingRadians());
     SmartDashboard.putNumber("Turret-Velocity", getAngularVelocityRadPerSec());
   }
