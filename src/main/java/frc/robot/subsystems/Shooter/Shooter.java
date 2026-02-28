@@ -2,6 +2,10 @@ package frc.robot.subsystems.Shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.ResetMode;
@@ -13,11 +17,12 @@ public class Shooter extends SubsystemBase {
     // private WolfSparkMax turret;
     private WolfSparkMax launcher1;
     private WolfSparkMax launcher2;
+
+    private static Shooter shooter=new Shooter();
+
     public static Shooter getInstance() {
         return shooter;
     }
-
-    private static Shooter shooter;
 
     public Shooter() {
         shooter = this;

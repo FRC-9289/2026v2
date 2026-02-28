@@ -16,13 +16,14 @@ public class Outtake extends SubsystemBase {
     private WolfSparkMax launcher1;
     private WolfSparkMax launcher2;
 
+    private static Outtake outtake = new Outtake();
+
 
     public static Outtake getInstance() {
         return outtake;
     }
 
-    private static Outtake outtake;
-
+    
     public Outtake() {
         outtake = this;
         // this.turret = new WolfSparkMax(26, true, false);

@@ -38,7 +38,7 @@ public class Turret extends SubsystemBase {
 public double getAbsoluteHeadingRadians() {
   double motorRotations = encoder.getPosition();
   double turretRotations = motorRotations / TurretConstants.GEAR_RATIO;
-  return turretRotations * 2.0 * Math.PI;
+  return (turretRotations * 2.0 * Math.PI)%(2.0 * Math.PI);
 }
 
   public double getAngularVelocityRadPerSec() {
@@ -92,6 +92,7 @@ public double getAbsoluteHeadingRadians() {
     double angle = TurretMath.getAngleToHub(Swerve.getInstance().getPose());
     // this.setDesiredAngle(angle);
     SmartDashboard.putNumber("Angle 2 Hub", angle);
+    
     SmartDashboard.putNumber("Turret-Position", getAbsoluteHeadingRadians());
     SmartDashboard.putNumber("Turret-Velocity", getAngularVelocityRadPerSec());
   }

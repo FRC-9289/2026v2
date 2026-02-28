@@ -11,9 +11,9 @@ public class PullCommand extends Command{
     private DoubleSupplier speed;
     private Outtake outtake;
     
-        public PullCommand(Outtake outtake, DoubleSupplier speed){
-            this.speed=speed;
-            this.outtake=outtake;
+    public PullCommand(Outtake outtake, DoubleSupplier speed){
+        this.speed=speed;
+        this.outtake=outtake;
         addRequirements(outtake);
     }
 

@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Shooter.Shooter;
@@ -54,7 +55,7 @@ public class RobotContainer {
         // }
 
         // Initialize drivetrain with target pose
-        swerve = new Swerve();
+        swerve = Swerve.getInstance();
 
 
         //intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawAxis(ControllerConstants.AxisRightTrigger)));
@@ -118,6 +119,16 @@ public class RobotContainer {
         shooter.setDefaultCommand(
             new ShooterCommand(
                 shooter, () -> driver.getRawButton(7)
+            )
+        );
+
+        new JoystickButton(driver, 8).onTrue(
+            new SetInitialPose(
+                swerve, 
+                0, 
+                0, 
+                Math.toRadians(0), 
+                () -> driver.getRawButton(8)
             )
         );
 

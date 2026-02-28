@@ -15,7 +15,7 @@ public class Roller extends SubsystemBase {
     private WolfSparkMax roller;
     private WolfSparkMax storage;
 
-    private static Roller rollerInstance;
+    private static Roller rollerInstance=new Roller();
 
     public static Roller getInstance() {
         return rollerInstance;

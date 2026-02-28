@@ -38,6 +38,7 @@ public class Swerve extends SubsystemBase {
     public Pigeon2 gyro;
     public SwerveDrivePoseEstimator poseEstimator;
     public RobotConfig config;
+    private Pose2d intialPose=new Pose2d(new Translation2d(0.0,0.0), new Rotation2d(0.0));
 
     private static Swerve instance=new Swerve();
     public static Swerve getInstance() {
@@ -250,5 +251,9 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Desired X", poseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("Desired Y", poseEstimator.getEstimatedPosition().getY());
         SmartDashboard.putNumber("Desired Heading", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+    }
+
+    public void setInitialPose(Pose2d pose) {
+        this.intialPose=pose;
     }
 }

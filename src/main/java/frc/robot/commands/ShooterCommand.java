@@ -4,9 +4,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Outtake.Outtake;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Turret.Turret;
@@ -32,8 +34,10 @@ public class ShooterCommand extends Command{
     
     @Override
     public void execute(){
-        if (active.getAsBoolean() && timer.get() < duration) {
-            outtake.setShooterAngularVelocity(0.8);
+        Pose2d currentPose = Swerve.getInstance().getPose();
+        double distance = currentPose.getTranslation().getDistance(new Translation2d(0,0));
+        if (active.getAsBoolean()) {
+            outtake.calculateShooterVelocity(distance);
             
         } else {
             outtake.setShooterAngularVelocity(0.0);

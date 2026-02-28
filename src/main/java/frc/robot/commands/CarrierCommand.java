@@ -12,9 +12,9 @@ public class CarrierCommand extends Command{
     private DoubleSupplier speed;
     private Outtake outtake;
     
-        public CarrierCommand(Outtake outtake, DoubleSupplier speed){
-            this.speed=speed;
-            this.outtake=outtake;
+    public CarrierCommand(Outtake outtake, DoubleSupplier speed){
+        this.speed=speed;
+        this.outtake=outtake;
         addRequirements(outtake);
     }
 

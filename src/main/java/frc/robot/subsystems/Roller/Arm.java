@@ -12,7 +12,7 @@ import frc.robot.utils.WolfSparkMax;
 
 public class Arm extends SubsystemBase {
     private WolfSparkMax arm;
-    private static Arm armInstance;
+    private static Arm armInstance=new Arm();
 
     public static Arm getInstance() {
         return armInstance;
@@ -20,8 +20,6 @@ public class Arm extends SubsystemBase {
     
 
     public Arm() {
-
-        armInstance = this;
         SparkMaxConfig cfg = new SparkMaxConfig();
        // cfg.closedLoop.pid(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
         //cfg.encoder.positionConversionFactor(360);
