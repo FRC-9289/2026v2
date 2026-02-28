@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Turret;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Drivetrain.Swerve;
@@ -9,7 +11,11 @@ import frc.robot.utils.WolfSparkMax;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SoftLimitConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class Turret extends SubsystemBase {
@@ -30,12 +36,20 @@ public class Turret extends SubsystemBase {
         false
     );
 
+    SparkMaxConfig config = new SparkMaxConfig();
+    config.softLimit.forwardSoftLimit(TurretConstants.limitCW);
+    config.softLimit.reverseSoftLimit(TurretConstants.limitCCW);
+    config.softLimit.forwardSoftLimitEnabled(true);
+    config.softLimit.reverseSoftLimitEnabled(true);
+    config.closedLoop.pid(TurretConstants.kP, TurretConstants.kI, TurretConstants.kD);
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     encoder = motor.getEncoder();
 
     resetHeading();
   }
 
-public double getAbsoluteHeadingRadians() {
+public double getAbsoluteHeadingRadians() { 
   double motorRotations = encoder.getPosition();
   double turretRotations = motorRotations / TurretConstants.GEAR_RATIO;
   return (turretRotations * 2.0 * Math.PI)%(2.0 * Math.PI);
@@ -89,9 +103,9 @@ public double getAbsoluteHeadingRadians() {
 
   @Override
   public void periodic() {
-    double angle = TurretMath.getAngleToHub(Swerve.getInstance().getPose());
+    Rotation2d angle = TurretMath.getDesiredTurretAngle(Swerve.getInstance().getPose(), new Translation2d(0.0,0.0));
     // this.setDesiredAngle(angle);
-    SmartDashboard.putNumber("Angle 2 Hub", angle);
+    SmartDashboard.putNumber("Angle 2 Hub", angle.getRadians());
     
     SmartDashboard.putNumber("Turret-Position", getAbsoluteHeadingRadians());
     SmartDashboard.putNumber("Turret-Velocity", getAngularVelocityRadPerSec());
