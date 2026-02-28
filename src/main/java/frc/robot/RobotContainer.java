@@ -5,7 +5,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Drivetrain.Swerve;
-import frc.robot.subsystems.Outtake.Outtake;
+// import frc.robot.subsystems.Outtake.Outtake;
+import frc.robot.subsystems.Outtake2.Outtake;
 import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Roller.Arm;
 import frc.robot.subsystems.Roller.Roller;
@@ -16,6 +17,8 @@ import frc.robot.subsystems.Hang.Hang;
 import frc.robot.commands.TurretTCs.RunTurretTest;
 import frc.auton.RunTest;
 import frc.robot.commands.*;
+
+import frc.robot.utils.Logitech;
 
 
 public class RobotContainer {
@@ -64,10 +67,10 @@ public class RobotContainer {
 
         // hang = new Hang();
         // hang.setDefaultCommand(new HangCommand(hang, () -> driver.getRawButton(2)));
-        turret=Turret.getInstance();
+        // turret=Turret.getInstance();
         arm = Arm.getInstance();
-        outtake = Outtake.getInstance();
-        shooter = Shooter.getInstance();
+        // outtake = Outtake.getInstance();
+        // shooter = Shooter.getInstance();
         roller = Roller.getInstance();
 
         configureButtonBindings();
@@ -86,13 +89,13 @@ public class RobotContainer {
             )
         );
 
-        turret.setDefaultCommand(
-            new RunTurretTest(
-                turret,
-                () -> driver.getRawButton(6),
-                () -> driver.getRawButton(5)
-            )
-        );
+        // turret.setDefaultCommand(
+        //     new RunTurretTest(
+        //         turret,
+        //         () -> driver.getRawButton(6),
+        //         () -> driver.getRawButton(5)
+        //     )
+        // );
 
         
         arm.setDefaultCommand(
@@ -103,11 +106,11 @@ public class RobotContainer {
             )
         );
 
-        outtake.setDefaultCommand(
-            new CarrierCommand(
-                outtake, () -> driver.getRawAxis(2)
-            )
-        );
+        // outtake.setDefaultCommand(
+        //     new CarrierCommand(
+        //         outtake, () -> driver.getRawAxis(2)
+        //     )
+        // );
 
         roller.setDefaultCommand(
             new IntakeCommand(
@@ -116,11 +119,13 @@ public class RobotContainer {
             )
         );
 
-        shooter.setDefaultCommand(
-            new ShooterCommand(
-                shooter, () -> driver.getRawButton(7)
-            )
-        );
+        // shooter.setDefaultCommand(
+        //     new ShooterCommand(
+        //         shooter, () -> driver.getRawButton(7)
+        //     )
+        // );
+
+        Outtake.get().setDefaultCommand(new OuttakeCommand2(Outtake.get(), swerve, () -> driver.getRawButton(8)));
 
         new JoystickButton(driver, 8).onTrue(
             new SetInitialPose(
