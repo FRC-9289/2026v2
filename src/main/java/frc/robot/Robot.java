@@ -29,11 +29,8 @@ public class Robot extends TimedRobot{
  // Start logging! No more data receivers, replay sources, or metadata values may be added.
     DriverStation.startDataLog(DataLogManager.getLog());
 
-    RobotContainer.swerve.gyro.setYaw(0.0);
-
+    RobotContainer.swerve.zeroHeading();
     m_robotContainer = new RobotContainer();
-
-    SwerveModuleState[] states = m_robotContainer.swerve.getModuleStates();
 
     // Constants.Swerve.Mod0.angleOffset = Rotation2d.fromDegrees(states[0].angle.getDegrees());
     // Constants.Swerve.Mod1.angleOffset = Rotation2d.fromDegrees(states[1].angle.getDegrees());

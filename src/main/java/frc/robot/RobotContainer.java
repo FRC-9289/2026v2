@@ -67,10 +67,10 @@ public class RobotContainer {
 
         // hang = new Hang();
         // hang.setDefaultCommand(new HangCommand(hang, () -> driver.getRawButton(2)));
-        // turret=Turret.getInstance();
+        turret=Turret.getInstance();
         arm = Arm.getInstance();
-        // outtake = Outtake.getInstance();
-        // shooter = Shooter.getInstance();
+        outtake = Outtake.get();
+        shooter = Shooter.getInstance();
         roller = Roller.getInstance();
 
         configureButtonBindings();
@@ -89,13 +89,13 @@ public class RobotContainer {
             )
         );
 
-        // turret.setDefaultCommand(
-        //     new RunTurretTest(
-        //         turret,
-        //         () -> driver.getRawButton(6),
-        //         () -> driver.getRawButton(5)
-        //     )
-        // );
+        turret.setDefaultCommand(
+            new RunTurretTest(
+                turret,
+                () -> driver.getRawButton(6),
+                () -> driver.getRawButton(5)
+            )
+        );
 
         
         arm.setDefaultCommand(
