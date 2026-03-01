@@ -19,6 +19,7 @@ import frc.robot.subsystems.Drivetrain.Swerve;
 public class Robot extends TimedRobot{
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -28,6 +29,7 @@ public class Robot extends TimedRobot{
  // Start logging! No more data receivers, replay sources, or metadata values may be added.
     DriverStation.startDataLog(DataLogManager.getLog());
 
+    RobotContainer.swerve.gyro.setYaw(0.0);
 
     m_robotContainer = new RobotContainer();
 

@@ -5,6 +5,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -47,8 +48,8 @@ public class Shooter extends SubsystemBase {
     public void calculateShooterVelocity(double distance) {
 
         double angularVelocity = calculateAngularVelocityFromDistanceToHub(distance); // Replace with your calculation
-        double rpm = angularVelocity * 60 / (2 * Math.PI); // Convert rad/s to RPM
-        rpm = MathUtil.clamp(rpm, 0, 5676); //
+        double rpm = Units.radiansPerSecondToRotationsPerMinute(angularVelocity);
+        rpm = MathUtil.clamp(rpm*3.0, 0, 5676); //
         setShooterAngularVelocity(rpm);
     }
 

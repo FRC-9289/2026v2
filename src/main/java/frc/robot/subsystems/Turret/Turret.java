@@ -3,6 +3,7 @@ package frc.robot.subsystems.Turret;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Drivetrain.Swerve;
@@ -103,11 +104,11 @@ public double getAbsoluteHeadingRadians() {
 
   @Override
   public void periodic() {
-    Rotation2d angle = TurretMath.getDesiredTurretAngle(Swerve.getInstance().getPose(), new Translation2d(0.0,0.0));
+    // double angle = TurretMath.getDesiredTurretAngle(Swerve.getInstance().getPose(), new Translation2d(0.0,0.0));
     // this.setDesiredAngle(angle);
-    SmartDashboard.putNumber("Angle 2 Hub", angle.getRadians());
+    // SmartDashboard.putNumber("Angle 2 Hub", angle);
     
-    SmartDashboard.putNumber("Turret-Position", getAbsoluteHeadingRadians());
+    SmartDashboard.putNumber("Turret-Position", Units.radiansToDegrees(getAbsoluteHeadingRadians()));
     SmartDashboard.putNumber("Turret-Velocity", getAngularVelocityRadPerSec());
   }
 }

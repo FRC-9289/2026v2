@@ -82,9 +82,8 @@ public class Swerve extends SubsystemBase {
     //         this // Reference to this subsystem to set requirements
     // );
         // Gyro setup
-        gyro = new Pigeon2(Constants.Swerve.pigeonID, "Drivetrain");
-        gyro.getConfigurator().apply(new Pigeon2Configuration()
-                .withMountPose(new MountPoseConfigs().withMountPoseYaw(180)));
+        gyro = new Pigeon2(Constants.Swerve.pigeonID);
+        gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
         Timer.delay(1);
 
@@ -129,9 +128,12 @@ public class Swerve extends SubsystemBase {
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         // Alliance mirroring
-        Rotation2d allianceOffset = (DriverStation.getAlliance().equals(Alliance.Red))
-                ? new Rotation2d(Math.PI)
-                : new Rotation2d();
+        Rotation2d allianceOffset = new Rotation2d();
+
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+            allianceOffset = new Rotation2d(Math.PI);
+        }
 
         SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
             fieldRelative
@@ -247,10 +249,7 @@ public class Swerve extends SubsystemBase {
         Pose2d pose = getPose();
         SmartDashboard.putNumber("Pose X", pose.getX());
         SmartDashboard.putNumber("Pose Y", pose.getY());
-        SmartDashboard.putNumber("Heading", pose.getRotation().getDegrees());
-        SmartDashboard.putNumber("Desired X", poseEstimator.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Desired Y", poseEstimator.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("Desired Heading", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+        SmartDashboard.putNumber("Heading", gyro.getYaw().getValueAsDouble());
     }
 
     public void setInitialPose(Pose2d pose) {

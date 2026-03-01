@@ -33,8 +33,8 @@ public class OuttakeCommand extends Command {
             this.module.
             setPullRotation(1);
             this.module.setCarryVelocity(1);
-            // this.module.turret(30 * (Math.atan2(blueHub.getY() - this.swerve.getPose().getY(), blueHub.getX() - this.swerve.getPose().getX()) * 180 / Math.PI - this.swerve.getGyroYaw().getDegrees()));
-            // this.module.wheel(blueHub.getDistance(this.swerve.getPose().getTranslation()) / blueHub.getDistance(new Translation2d(0, 0)));
+            // 
+            //this.module.wheel(blueHub.getDistance(this.swerve.getPose().getTranslation()) / blueHub.getDistance(new Translation2d(0, 0)));
 
             /*Table of true scores:
              * 115 in, .92

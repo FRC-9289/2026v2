@@ -84,8 +84,8 @@ public class RobotContainer {
                 swerve, 
                 () -> -driver.getRawAxis(1) * -0.3, 
                 () -> driver.getRawAxis(0) * .3, 
-                () -> driver.getRawAxis(4) * .5, 
-                () -> true
+                () -> driver.getRawAxis(4) * .2, 
+                () -> false
             )
         );
 
@@ -119,13 +119,15 @@ public class RobotContainer {
             )
         );
 
+
+
         // shooter.setDefaultCommand(
         //     new ShooterCommand(
         //         shooter, () -> driver.getRawButton(7)
         //     )
         // );
 
-        Outtake.get().setDefaultCommand(new OuttakeCommand2(Outtake.get(), swerve, () -> driver.getRawButton(8)));
+        // Outtake.get().setDefaultCommand(new OuttakeCommand2(Outtake.get(), swerve, () -> driver.getRawButton(8)));
 
         new JoystickButton(driver, 8).onTrue(
             new SetInitialPose(

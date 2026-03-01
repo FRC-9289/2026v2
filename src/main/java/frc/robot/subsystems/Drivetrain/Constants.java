@@ -13,7 +13,7 @@ import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
-    public static final double stickDeadband = 0.005;
+    public static final double stickDeadband = 0.1;
 
     public final class PoseFilter {
         public static final double POSE_HEIGHT_TOLERANCE = 0.05;

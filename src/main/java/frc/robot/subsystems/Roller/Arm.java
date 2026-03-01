@@ -27,7 +27,7 @@ public class Arm extends SubsystemBase {
         //arm = new WolfSparkMax(50, true, false);
         //arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        arm = new WolfSparkMax(26, true, false);
+        arm = new WolfSparkMax(21, true, false);
         arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         //storage = new WolfSparkMax(IntakeConstants.MOTOR_ID, true, false);
