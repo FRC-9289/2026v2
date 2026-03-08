@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -132,6 +134,8 @@ public class RobotContainer {
             )
         );
 
+        new JoystickButton(driver, 9).onTrue(getHangAuto()); // runs hang
+
         // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
     }
     public Command getAutonomousCommand() {
@@ -139,6 +143,11 @@ public class RobotContainer {
         String test = "MF1m";
         return new RunTest(test);
     }
+
+    public Command getHangAuto() {
+        return new PathPlannerAuto("Hang Auto"); // runs path planner hang auto
+    }
+
 
     public static Swerve getSwerve() {
         return swerve;
