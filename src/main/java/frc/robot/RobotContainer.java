@@ -122,7 +122,7 @@ public class RobotContainer {
                         () -> driver.getRawButton(8)));
 
         new JoystickButton(driver, 9)
-                .onTrue(new DriveToHang(swerve));
+                .onTrue(new DriveToHang(swerve, hang));
 
         // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
     }
