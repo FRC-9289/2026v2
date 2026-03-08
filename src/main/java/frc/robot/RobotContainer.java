@@ -19,9 +19,8 @@ import frc.robot.commands.TurretTCs.RunTurretTest;
 import frc.auton.RunTest;
 import frc.robot.commands.*;
 
-
 public class RobotContainer {
-    
+
     private final Joystick driver = new Joystick(0);
 
     /* Subsystems */
@@ -34,39 +33,42 @@ public class RobotContainer {
     public static Roller roller;
     public static Arm arm;
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
     public RobotContainer() {
         String test = "MF1m";
         Pose2d rt;
-        //Test poses for auto testing, will be replaced with actual auto paths later
+        // Test poses for auto testing, will be replaced with actual auto paths later
         // switch (test) {
-        //     case "MF1m":
-        //         rt = new Pose2d(new Translation2d(0.0, 1.0), Rotation2d.fromDegrees(0));
-        //         break;
-        //     case "MF2m":
-        //         rt = new Pose2d(new Translation2d(0.0, 2.0), Rotation2d.fromDegrees(0));
-        //         break;
-        //     case "R90":
-        //         rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(90));
-        //         break;
-        //     case "R180":
-        //         rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(180));
-        //         break;
-        //     default:
-        //         rt = new Pose2d(); // default pose at origin
+        // case "MF1m":
+        // rt = new Pose2d(new Translation2d(0.0, 1.0), Rotation2d.fromDegrees(0));
+        // break;
+        // case "MF2m":
+        // rt = new Pose2d(new Translation2d(0.0, 2.0), Rotation2d.fromDegrees(0));
+        // break;
+        // case "R90":
+        // rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(90));
+        // break;
+        // case "R180":
+        // rt = new Pose2d(new Translation2d(0.0, 0.0), Rotation2d.fromDegrees(180));
+        // break;
+        // default:
+        // rt = new Pose2d(); // default pose at origin
         // }
 
         // Initialize drivetrain with target pose
         swerve = Swerve.getInstance();
 
-
-        //intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawAxis(ControllerConstants.AxisRightTrigger)));
+        // intake.setDefaultCommand(new IntakeCommand(intake, () ->
+        // driver.getRawAxis(ControllerConstants.AxisRightTrigger)));
         // outtake = new Outtake();
-        // outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () -> driver.getRawButton(3)));
+        // outtake.setDefaultCommand(new OuttakeCommand(outtake, swerve, () ->
+        // driver.getRawButton(3)));
 
         // hang = new Hang();
         // hang.setDefaultCommand(new HangCommand(hang, () -> driver.getRawButton(2)));
-        turret=Turret.getInstance();
+        turret = Turret.getInstance();
         arm = Arm.getInstance();
         outtake = Outtake.getInstance();
         shooter = Shooter.getInstance();
@@ -79,75 +81,61 @@ public class RobotContainer {
         /* Driver Buttons */
 
         swerve.setDefaultCommand(
-            new TeleopSwerve(
-                swerve, 
-                () -> -driver.getRawAxis(1) * -0.3, 
-                () -> driver.getRawAxis(0) * .3, 
-                () -> driver.getRawAxis(4) * .5, 
-                () -> true
-            )
-        );
+                new TeleopSwerve(
+                        swerve,
+                        () -> -driver.getRawAxis(1) * -0.3,
+                        () -> driver.getRawAxis(0) * .3,
+                        () -> driver.getRawAxis(4) * .5,
+                        () -> true));
 
         turret.setDefaultCommand(
-            new RunTurretTest(
-                turret,
-                () -> driver.getRawButton(6),
-                () -> driver.getRawButton(5)
-            )
-        );
+                new RunTurretTest(
+                        turret,
+                        () -> driver.getRawButton(6),
+                        () -> driver.getRawButton(5)));
 
-        
         arm.setDefaultCommand(
-            new ArmCommand(
-                arm,
-                () -> driver.getRawButton(1),
-                () -> driver.getRawButton(4)
-            )
-        );
+                new ArmCommand(
+                        arm,
+                        () -> driver.getRawButton(1),
+                        () -> driver.getRawButton(4)));
 
         outtake.setDefaultCommand(
-            new CarrierCommand(
-                outtake, () -> driver.getRawAxis(2)
-            )
-        );
+                new CarrierCommand(
+                        outtake, () -> driver.getRawAxis(2)));
 
         roller.setDefaultCommand(
-            new IntakeCommand(
-                roller, 
-                () -> driver.getRawButton(3)
-            )
-        );
+                new IntakeCommand(
+                        roller,
+                        () -> driver.getRawButton(3)));
 
         shooter.setDefaultCommand(
-            new ShooterCommand(
-                shooter, () -> driver.getRawButton(7)
-            )
-        );
+                new ShooterCommand(
+                        shooter, () -> driver.getRawButton(7)));
 
         new JoystickButton(driver, 8).onTrue(
-            new SetInitialPose(
-                swerve, 
-                0, 
-                0, 
-                Math.toRadians(0), 
-                () -> driver.getRawButton(8)
-            )
-        );
+                new SetInitialPose(
+                        swerve,
+                        0,
+                        0,
+                        Math.toRadians(0),
+                        () -> driver.getRawButton(8)));
 
-        new JoystickButton(driver, 9).onTrue(getHangAuto()); // runs hang
+        new JoystickButton(driver, 9)
+                .onTrue(new DriveToHang(swerve));
 
         // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
     }
+
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         String test = "MF1m";
         return new RunTest(test);
     }
 
-    public Command getHangAuto() {
-        return new PathPlannerAuto("Hang Auto"); // runs path planner hang auto
-    }
-
+    // public Command getHangAuto() {
+    // return new PathPlannerAuto("Hang Auto"); // runs path planner hang auto
+    // }
 
     public static Swerve getSwerve() {
         return swerve;
