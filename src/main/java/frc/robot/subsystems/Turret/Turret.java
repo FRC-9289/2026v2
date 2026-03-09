@@ -75,6 +75,12 @@ public class Turret extends SubsystemBase {
     motor.set(speed);
   }
 
+  // redundant but wtv
+  public void setPower(double speed) 
+  {
+    motor.set(speed);
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Turret-Position",
