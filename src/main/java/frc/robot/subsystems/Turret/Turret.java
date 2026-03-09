@@ -51,7 +51,6 @@ public class Turret extends SubsystemBase {
 
     resetHeading();
   }
-
   public double getHeadingOfMotorRad() {
     return encoder.getPosition();
   }

@@ -21,7 +21,7 @@ public class SetInitialPose extends Command{
     @Override
     public void initialize() {
         SmartDashboard.putString("reset: ", "Yes");
-        swerve.setPose(new Pose2d(
+        swerve.setInitialPose(new Pose2d(
             new Translation2d(0.45, 0.45),
             swerve.getGyroYaw()
         ));

@@ -14,16 +14,17 @@ public class Roller extends SubsystemBase {
     private WolfSparkMax arm;
     private WolfSparkMax roller;
     private WolfSparkMax storage;
-
-    // private static Roller rollerInstance;
-
-    // public static Roller getInstance() {
-    //     return rollerInstance;
-    // }
+    private Roller rollerInstance;
     
-
-    public Roller() {
-
+        // private static Roller rollerInstance;
+    
+        // public static Roller getInstance() {
+        //     return rollerInstance;
+        // }
+    
+    
+        public Roller() {
+            rollerInstance = this;
         SparkMaxConfig cfg = new SparkMaxConfig();
         // cfg.closedLoop.pid(RollerConstants.kP, RollerConstants.kI, RollerConstants.kD);
         //cfg.encoder.positionConversionFactor(360);

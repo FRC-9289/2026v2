@@ -18,7 +18,7 @@ import com.revrobotics.PersistMode;
 import edu.wpi.first.math.util.Units;
 
 import frc.robot.subsystems.Drivetrain.Swerve;
-
+import frc.robot.utils.ShooterMath;
 import frc.robot.utils.WolfSparkMax;
 
 public class Shooter extends SubsystemBase {
@@ -43,6 +43,7 @@ public class Shooter extends SubsystemBase {
         this.launcher2 = new WolfSparkMax(ShooterConstants.LAUNCHER_MOTOR_2_ID, false, false);
 
         SparkMaxConfig cfg = new SparkMaxConfig();
+
         cfg.closedLoop.pid(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD);
         cfg.smartCurrentLimit(100);
         launcher1.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -63,39 +64,22 @@ public class Shooter extends SubsystemBase {
         launcher2.set(MathUtil.clamp(-speed/5676,-1,1));
     }
 
-
-
-    
-    public void autoShoot(double distanceToHub) {
-        double velocity = calculateAngularVelocityFromDistanceToHub(distanceToHub, 2.65);
-        runShooterAtSpeed(Units.radiansPerSecondToRotationsPerMinute(velocity));
-    }
-
-    public static double calculateAngularVelocityFromDistanceToHub(double distanceMeters, double param) {
-        double g = 9.81;
-        double theta = ShooterConstants.SHOOTER_ANGLE_RAD;
-        double deltaH = ShooterConstants.CHANGE_IN_HEIGHT;
-
-        double numerator = g * Math.pow(distanceMeters, 2);
-        double denominator = 2 * Math.pow(Math.cos(theta), 2) *
-            (distanceMeters * Math.tan(theta) - deltaH);
-
-        double escapeVelocity = Math.sqrt(numerator / denominator);
-        double angularVelocity = escapeVelocity / ShooterConstants.ROTATOR_RADIUS;
-        return angularVelocity*param;
+    public void autoShoot() {
+        Pose2d pose = Swerve.getInstance().getPose();
+        Pose2d initialPose = Swerve.getInstance().getInitialPose();
+        double distance = pose.getTranslation().getDistance(initialPose.getTranslation());
+        double velocity = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance, 2.65);
+        setShooterAngularVelocity(velocity);
     }
 
     @Override
     public void periodic() {
         Pose2d pose = Swerve.getInstance().getPose();
+        Pose2d initialPose = Swerve.getInstance().getInitialPose();
         SmartDashboard.putNumber("Shooter Velocity", Units.rotationsPerMinuteToRadiansPerSecond(Math.abs(launcher2.getEncoder().getVelocity())));
-        double distance = pose.getTranslation().getDistance(new Translation2d(0.45, 0.45));
-        double velocity = calculateAngularVelocityFromDistanceToHub(distance, 2.65);
+        double distance = pose.getTranslation().getDistance(initialPose.getTranslation());
+        double velocity = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance, 2.65);
         SmartDashboard.putNumber("Calculated Shooter Velocity", velocity);
-
-        final Joystick driver = new Joystick(0);
-        Trigger trigger = new Trigger(() -> driver.getRawButton(7));
-        SmartDashboard.putNumber("reset button: ", trigger.getAsBoolean() ? 1 : 0);
     }
 }
 //Wolfram121

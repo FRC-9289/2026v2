@@ -20,14 +20,12 @@ public class Arm extends SubsystemBase {
     
 
     public Arm() {
-
         SparkMaxConfig cfg = new SparkMaxConfig();
         // cfg.closedLoop.pid(RollerConstants.kP, RollerConstants.kI, RollerConstants.kD);
 
         arm = new WolfSparkMax(RollerConstants.ARM_MOTOR_ID, true, false);
         arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
-
     public void rotateArm(double pos) {
         // arm.getClosedLoopController().setSetpoint(pos, ControlType.kPosition);
         arm.set(pos);

@@ -27,8 +27,14 @@ public class ArmCommand extends Command{
         if (left.getAsBoolean()) {
             arm.rotateArmToSetpoint(1.5);
         }
+        else if (up.getAsBoolean()) {
+            arm.rotateArm(0.3);
+        } 
+        else if (down.getAsBoolean()) {
+            arm.rotateArm(-0.3);
+        } 
         else {
-            arm.rotateArmToSetpoint(0.0);
+            arm.rotateArm(0.0);
         }
     }
 
