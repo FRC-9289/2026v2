@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Outtake.Outtake;
@@ -24,9 +25,11 @@ import frc.robot.subsystems.Hang.Hang;
 import frc.robot.utils.Constants;
 import frc.auton.RunTest;
 import frc.robot.commands.*;
+import frc.robot.commands.TurretTCs.AutoAlignTurret;
 
 
-public class RobotContainer {
+public class RobotContainer 
+{
     
     private final Joystick driver = new Joystick(0);
     private final Joystick driver2 = new Joystick(1);
@@ -42,7 +45,8 @@ public class RobotContainer {
     public Arm arm;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
+    public RobotContainer() 
+    {
         String test = "MF1m";
         Pose2d rt;
         //Test poses for auto testing, will be replaced with actual auto paths later
@@ -82,7 +86,8 @@ public class RobotContainer {
         configureButtonBindings();
     }
 
-    private void configureButtonBindings() {
+    private void configureButtonBindings() 
+    {
         /* Driver Buttons */
 
         swerve.setDefaultCommand(
@@ -144,14 +149,21 @@ public class RobotContainer {
         // );
 
         // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
+
+        new POVButton(driver, 0).whileTrue(
+            new AutoAlignTurret(turret)
+        );
     }
-    public Command getAutonomousCommand() {
+    
+    public Command getAutonomousCommand() 
+    {
         // An ExampleCommand will run in autonomous
         String test = "MF1m";
         return new RunTest(test);
     }
 
-    public Swerve getSwerve() {
+    public Swerve getSwerve() 
+    {
         return swerve;
     }
 }
