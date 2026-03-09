@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -19,15 +20,20 @@ public class CarrierCommand extends Command{
 
     @Override
     public void execute(){
-        outtake.pull(speed.getAsDouble());
-        outtake.carry(speed.getAsDouble());
-        
+        if(speed.getAsDouble()>0){
+        outtake.setPullRotation(-1);
+        outtake.setCarryVelocity(1);
+        }
+        else{
+            outtake.setCarryVelocity(0.0);
+            outtake.setPullRotation(0.0);
+        }
         
     }
 
     @Override
     public void end(boolean interrupted){
-        outtake.carry(0.0);
+        outtake.setCarryVelocity(0.0);
     }
 }
 

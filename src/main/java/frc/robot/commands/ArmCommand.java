@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -8,30 +9,31 @@ import frc.robot.subsystems.Roller.Arm;
 import frc.robot.subsystems.Turret.Turret;
 
 public class ArmCommand extends Command{
-    private Joystick j;
-    private Arm arm;
-    
-        public ArmCommand(Arm arm, Joystick j){
-            this.j=j;
-            this.arm=arm;
+    private final Arm arm;
+    private BooleanSupplier up;
+    private BooleanSupplier down;
+    private BooleanSupplier left;
+
+    public ArmCommand(Arm arm, BooleanSupplier up, BooleanSupplier down, BooleanSupplier left) {
+        this.arm = arm;
+        this.up = up;
+        this.down = down;
+        this.left = left;
         addRequirements(arm);
     }
 
     @Override
-    public void execute(){
-        if(j.getRawButton(1)){
-            arm.arm(0.3);
+    public void execute() {
+        if (left.getAsBoolean()) {
+            arm.rotateArmToSetpoint(1.5);
         }
-        else if(j.getRawButton(4)){
-            arm.arm(-0.3);
-        }
-        else{
-            arm.arm(0.0);
+        else {
+            arm.rotateArmToSetpoint(0.0);
         }
     }
 
     @Override
-    public void end(boolean interrupted){
-        arm.arm(0.0);
+    public void end(boolean interrupted) {
+        arm.rotateArm(0.0);
     }
 }

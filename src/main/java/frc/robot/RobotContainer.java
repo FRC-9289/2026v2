@@ -8,42 +8,46 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.auton.RunTest;
-import frc.robot.autos.*;
-import frc.robot.commands.*;
-import frc.robot.commands.TurretTCs.TurretPositionCommand;
+
+
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.subsystems.Outtake.Outtake;
-import frc.robot.subsystems.Outtake.shooter;
+import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Roller.Arm;
 import frc.robot.subsystems.Roller.Roller;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Hang.Hang;
 import frc.robot.utils.Constants;
-import frc.robot.utils.Constants.ControllerConstants;
+import frc.auton.RunTest;
+import frc.robot.commands.*;
+
 
 public class RobotContainer {
     
     private final Joystick driver = new Joystick(0);
+    private final Joystick driver2 = new Joystick(1);
 
     /* Subsystems */
-    public static Swerve swerve;
-    public static Outtake outtake;
-    public static shooter shoot;
-    public static Intake intake;
-    public static Hang hang;
-    public static Turret turret;
+    public Swerve swerve;
+    public Outtake outtake;
+    public Shooter shooter;
+    public Intake intake;
+    public Hang hang;
+    public Turret turret;
+    public Roller roller;
+    public Arm arm;
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        turret=Turret.getInstance();
         String test = "MF1m";
         Pose2d rt;
         //Test poses for auto testing, will be replaced with actual auto paths later
@@ -65,8 +69,7 @@ public class RobotContainer {
         // }
 
         // Initialize drivetrain with target pose
-        swerve = new Swerve();
-        swerve.setDefaultCommand(new TeleopSwerve(swerve, () -> -driver.getRawAxis(1) * -0.3, () -> driver.getRawAxis(0) * .3, () -> driver.getRawAxis(4) * .3, () -> true));
+        swerve = Swerve.getInstance();
 
 
         //intake.setDefaultCommand(new IntakeCommand(intake, () -> driver.getRawAxis(ControllerConstants.AxisRightTrigger)));
@@ -75,27 +78,76 @@ public class RobotContainer {
 
         // hang = new Hang();
         // hang.setDefaultCommand(new HangCommand(hang, () -> driver.getRawButton(2)));
-
-        turret.setDefaultCommand(new frc.robot.commands.TurretTCs.RunTest(turret, driver));
-
+        turret=new Turret();
+        arm = new Arm();
         outtake = new Outtake();
-        //outtake.setDefaultCommand(new ShooterCommand(outtake, () -> driver.getRawAxis(3)));
-        outtake.setDefaultCommand(new CarrierCommand(outtake, () -> driver.getRawAxis(2)));
-        //outtake.setDefaultCommand(new PullCommand(outtake, () -> driver.getRawAxis(3)));
-        shoot = new shooter();
-        shoot.setDefaultCommand(new ShooterCommand(shoot, () -> driver.getRawAxis(3)));
-
-        Roller roller = new Roller();
-        roller.setDefaultCommand(new IntakeCommand(roller, driver));
+        shooter = new Shooter();
+        roller = new Roller();
+        hang = new Hang();
 
         configureButtonBindings();
-
-        Arm arm = new Arm();
-        arm.setDefaultCommand(new ArmCommand(arm, driver));
     }
 
     private void configureButtonBindings() {
         /* Driver Buttons */
+
+        swerve.setDefaultCommand(
+            new TeleopSwerve(
+                swerve, 
+                () -> -driver.getRawAxis(1) * 0.7, 
+                () -> driver.getRawAxis(0) * .7, 
+                () -> -driver.getRawAxis(4) * .4, 
+                () -> false
+            )
+        );
+
+        turret.setDefaultCommand(
+            new TurretCommand(
+                turret,
+                () -> driver.getRawButton(6),
+                () -> driver.getRawButton(5)
+            )
+        );
+
+        
+        arm.setDefaultCommand(
+            new ArmCommand(
+                arm,
+                () -> driver.getRawButton(1),
+                () -> driver.getRawButton(4),
+                () -> driver.getRawButton(3)
+            )
+        );
+
+        outtake.setDefaultCommand(
+            new CarrierCommand(
+                outtake, () -> driver.getRawAxis(2)
+            )
+        );
+
+        roller.setDefaultCommand(
+            new IntakeCommand(
+                roller, 
+                () -> driver.getRawButton(3)
+            )
+        );
+
+        shooter.setDefaultCommand(
+            new ShooterCommand(
+                shooter, driver
+            )
+        );
+
+        hang.setDefaultCommand(
+            new HangCommand(hang,
+            () -> driver.getRawAxis(3), 
+            () -> driver.getRawButton(2))
+        );
+
+        // Trigger trigger = new Trigger(() -> driver.getRawButton(10));
+        // trigger.onTrue(
+        //     new SetInitialPose(swerve, turret)
+        // );
 
         // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
     }
@@ -105,7 +157,7 @@ public class RobotContainer {
         return new RunTest(test);
     }
 
-    public static Swerve getSwerve() {
+    public Swerve getSwerve() {
         return swerve;
     }
 }

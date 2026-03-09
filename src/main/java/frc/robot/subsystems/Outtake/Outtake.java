@@ -27,18 +27,27 @@ public class Outtake extends SubsystemBase {
         // cfg.softLimit.reverseSoftLimitEnabled(true);
         // turret.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+        SparkMaxConfig cfg = new SparkMaxConfig();
+        cfg.closedLoop.pid(0.5,0,0);
+
         this.pull = new WolfSparkMax(OuttakeConstants.PULL_MOTOR_ID, false, false);
+        this.pull.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         this.carry = new WolfSparkMax(OuttakeConstants.CARRY_MOTOR_ID, false, false);
         // this.launcher1 = new WolfSparkMax(OuttakeConstants.LAUNCHER_MOTOR_1_ID, false, false);
         // this.launcher2 = new WolfSparkMax(OuttakeConstants.LAUNCHER_MOTOR_2_ID, false, false);
     }
 
-    public void pull(double vel) {
+    public void setPullRotation(double vel) {
         pull.set(vel);
     }
 
-    public void carry(double vel) {
+    public void setCarryVelocity(double vel) {
         carry.set(vel);
+    }
+
+    public static Outtake getInstance() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getInstance'");
     }
 
     // public void launcher(double vel) {

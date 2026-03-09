@@ -19,12 +19,12 @@ public class PullCommand extends Command{
 
     @Override
     public void execute(){
-        outtake.pull(speed.getAsDouble());
+        outtake.setPullRotation(speed.getAsDouble());
     }
 
     @Override
     public void end(boolean interrupted){
-        outtake.pull(0.0);
+        outtake.setPullRotation(0.0);
     }
 }
 

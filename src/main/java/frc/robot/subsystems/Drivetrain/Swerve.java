@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.units.Units;
+import frc.robot.subsystems.Shooter.ShooterConstants;
+import frc.robot.utils.TurretMath;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VoltageUnit;
 
@@ -35,6 +37,11 @@ public class Swerve extends SubsystemBase {
     public Pigeon2 gyro;
     public SwerveDrivePoseEstimator poseEstimator;
     public RobotConfig config;
+    public static Swerve swerve=new Swerve();
+
+    public static Swerve getInstance(){
+        return swerve;
+    }
 
 
     public Swerve() {
@@ -46,33 +53,33 @@ public class Swerve extends SubsystemBase {
         e.printStackTrace();
         }
 
-    // AutoBuilder.configure(
-    //         this::getPose, // Robot pose supplier
-    //         this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
-    //         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-    //         (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-    //         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-    //                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-    //                 new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-    //         ),
-    //         config, // The robot configuration
-    //         () -> {
-    //           // Boolean supplier that controls when the path will be mirrored for the red alliance
-    //           // This will flip the path being followed to the red side of the field.
-    //           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    AutoBuilder.configure(
+            this::getPose, // Robot pose supplier
+            this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(0.5, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(0.5, 0.0, 0.0) // Rotation PID constants
+            ),
+            config, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-    //           var alliance = DriverStation.getAlliance();
-    //           if (alliance.isPresent()) {
-    //             return alliance.get() == DriverStation.Alliance.Red;
-    //           }
-    //           return false;
-    //         },
-    //         this // Reference to this subsystem to set requirements
-    // );
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+    );
         // Gyro setup
-        gyro = new Pigeon2(Constants.Swerve.pigeonID, "Drivetrain");
+        gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration()
-                .withMountPose(new MountPoseConfigs().withMountPoseYaw(180)));
+                .withMountPose(new MountPoseConfigs()));
         gyro.setYaw(0);
         Timer.delay(1);
 
@@ -117,6 +124,7 @@ public class Swerve extends SubsystemBase {
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         // Alliance mirroring
+        fieldRelative=true;
         Rotation2d allianceOffset = (DriverStation.getAlliance().equals(Alliance.Red))
                 ? new Rotation2d(Math.PI)
                 : new Rotation2d();
@@ -127,7 +135,7 @@ public class Swerve extends SubsystemBase {
                     translation.getX(),
                     translation.getY(),
                     rotation,
-                    getGyroYaw().rotateBy(allianceOffset)
+                    getGyroYaw()
                   )
                 : new ChassisSpeeds(translation.getX(), translation.getY(), rotation)
         );
@@ -203,11 +211,7 @@ public class Swerve extends SubsystemBase {
         poseEstimator.update(getGyroYaw(), getModulePositions());
 
         Pose2d pose = getPose();
-        SmartDashboard.putNumber("Pose X", pose.getX());
-        SmartDashboard.putNumber("Pose Y", pose.getY());
-        SmartDashboard.putNumber("Heading", pose.getRotation().getDegrees());
-        SmartDashboard.putNumber("Desired X", poseEstimator.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("Desired Y", poseEstimator.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("Desired Heading", poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+        
+
     }
 }

@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
         roller.set(vel);
     }
 
-    public void arm(double pos) {
+    public void rotateArm(double pos) {
         this.storage.getClosedLoopController().setSetpoint(MathUtil.clamp(pos, -180, 180), ControlType.kPosition);
     }
 

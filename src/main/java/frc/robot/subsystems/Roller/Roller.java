@@ -15,23 +15,30 @@ public class Roller extends SubsystemBase {
     private WolfSparkMax roller;
     private WolfSparkMax storage;
 
+    // private static Roller rollerInstance;
+
+    // public static Roller getInstance() {
+    //     return rollerInstance;
+    // }
+    
+
     public Roller() {
 
         SparkMaxConfig cfg = new SparkMaxConfig();
-       // cfg.closedLoop.pid(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
+        // cfg.closedLoop.pid(RollerConstants.kP, RollerConstants.kI, RollerConstants.kD);
         //cfg.encoder.positionConversionFactor(360);
 
         //arm = new WolfSparkMax(50, true, false);
         //arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        roller = new WolfSparkMax(22, false, false);
+        roller = new WolfSparkMax(RollerConstants.ROLLER_MOTOR_ID, false, false);
         roller.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         //storage = new WolfSparkMax(IntakeConstants.MOTOR_ID, true, false);
     }
 
     public void roller(double vel) {
-        roller.set(vel);
+        roller.set(vel);;
     }
 
     // public void arm(double pos) {

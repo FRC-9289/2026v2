@@ -5,41 +5,38 @@ import frc.robot.subsystems.Hang.Hang;
 import frc.robot.subsystems.Hang.HangConstants;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class HangCommand extends Command {
 
     private final Hang hang;
-    private final BooleanSupplier toggleButton;
+    private BooleanSupplier goUp;
+    private DoubleSupplier goDown;
 
     private double targetPos = 0.0;
     private boolean lastButtonState = false;
     private boolean currentState = false;
 
-    public HangCommand(Hang hang, BooleanSupplier toggleButton) {
+    public HangCommand(Hang hang, DoubleSupplier goDown, BooleanSupplier goUp) {
         this.hang = hang;
-        this.toggleButton = toggleButton;
+        this.goUp = goUp;
+        this.goDown = goDown;
 
         addRequirements(hang);
     }
 
     @Override
 public void execute() {
-
-    boolean pressed = toggleButton.getAsBoolean();
-
-    if (pressed && !lastButtonState) {
-        currentState = !currentState;
+    if(goUp.getAsBoolean()){
+        hang.moveToPos(-143);
     }
-
-    lastButtonState = pressed;
-
-    targetPos = currentState ? HangConstants.MAX_POSITION : HangConstants.MIN_POSITION;
-
-    hang.move(targetPos);
+    else if(goDown.getAsDouble()>0){
+        hang.moveToPos(0.0);
+    }
 }
 
     @Override
-    public boolean isFinished() {
-        return hang.atSetpoint();
+    public void end(boolean interrupted){
+        hang.runTest(0);
     }
 }

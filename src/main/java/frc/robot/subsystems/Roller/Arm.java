@@ -7,29 +7,39 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.WolfSparkMax;
 
 public class Arm extends SubsystemBase {
     private WolfSparkMax arm;
+    // private static Arm armInstance;
+
+    // public static Arm getInstance() {
+    //     return armInstance;
+    // }
+    
 
     public Arm() {
 
         SparkMaxConfig cfg = new SparkMaxConfig();
-       // cfg.closedLoop.pid(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
-        //cfg.encoder.positionConversionFactor(360);
+        // cfg.closedLoop.pid(RollerConstants.kP, RollerConstants.kI, RollerConstants.kD);
 
-        //arm = new WolfSparkMax(50, true, false);
-        //arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        arm = new WolfSparkMax(26, true, false);
+        arm = new WolfSparkMax(RollerConstants.ARM_MOTOR_ID, true, false);
         arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        //storage = new WolfSparkMax(IntakeConstants.MOTOR_ID, true, false);
     }
 
-    public void arm(double speed) {
-        this.arm.set(speed);
+    public void rotateArm(double pos) {
+        // arm.getClosedLoopController().setSetpoint(pos, ControlType.kPosition);
+        arm.set(pos);
+    }
+
+    public void rotateArmToSetpoint(double pos) {
+        double error = arm.getEncoder().getPosition() - pos;
+        if(Math.abs(error) < 0.1) {
+            arm.set(0);
+        } else {
+            arm.set(error/1.61);
+        }
     }
 
     // public void storage(double pos) {
@@ -39,5 +49,10 @@ public class Arm extends SubsystemBase {
     // public boolean atSetpoint() {
     //     return arm.getClosedLoopController().isAtSetpoint() && storage.getClosedLoopController().isAtSetpoint();
     // }
+
+    @Override
+    public void periodic(){
+        SmartDashboard.putNumber("Roller Position", arm.getEncoder().getPosition());
+    }
 }
 //Wolfram121
