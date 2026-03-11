@@ -68,8 +68,8 @@ public class Shooter extends SubsystemBase {
         Pose2d pose = Swerve.getInstance().getPose();
         Pose2d initialPose = Swerve.getInstance().getInitialPose();
         double distance = pose.getTranslation().getDistance(initialPose.getTranslation());
-        double velocity = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance, 2.65);
-        setShooterAngularVelocity(velocity);
+        // double velocity = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance, 2.65);
+        // setShooterAngularVelocity(velocity);
     }
 
     @Override
@@ -78,8 +78,8 @@ public class Shooter extends SubsystemBase {
         Pose2d initialPose = Swerve.getInstance().getInitialPose();
         SmartDashboard.putNumber("Shooter Velocity", Units.rotationsPerMinuteToRadiansPerSecond(Math.abs(launcher2.getEncoder().getVelocity())));
         double distance = pose.getTranslation().getDistance(initialPose.getTranslation());
-        double velocity = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance, 2.65);
-        SmartDashboard.putNumber("Calculated Shooter Velocity", velocity);
+        // double velocity = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance, 2.65);
+        // SmartDashboard.putNumber("Calculated Shooter Velocity", velocity);
     }
 }
 //Wolfram121
