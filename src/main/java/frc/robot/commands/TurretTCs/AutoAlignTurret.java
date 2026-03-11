@@ -18,7 +18,7 @@ public class AutoAlignTurret extends Command
     public AutoAlignTurret(Turret turret) 
     {
         this.turret = turret;
-        this.limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
+        this.limelightTable = NetworkTableInstance.getDefault().getTable("limelight-vikings");
         
         // idk the pids so something something goes here
         this.pidController = new PIDController(0.015, 0.0, 0.001); 

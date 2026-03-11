@@ -150,9 +150,6 @@ public class RobotContainer
 
         // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
-        new POVButton(driver, 0).whileTrue(
-            new AutoAlignTurret(turret)
-        );
     }
     
     public Command getAutonomousCommand() 
