@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Arm;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -25,16 +25,10 @@ public class ArmCommand extends Command{
     @Override
     public void execute() {
         if (left.getAsBoolean()) {
-            arm.rotateArmToSetpoint(1.5);
-        }
-        else if (up.getAsBoolean()) {
             arm.rotateArm(0.3);
         } 
-        else if (down.getAsBoolean()) {
-            arm.rotateArm(-0.3);
-        } 
-        else {
-            arm.rotateArm(0.0);
+        else if(up.getAsBoolean()) {
+            arm.rotateArm(-0.4);
         }
     }
 

@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase {
 
     public Arm() {
         SparkMaxConfig cfg = new SparkMaxConfig();
-        // cfg.closedLoop.pid(RollerConstants.kP, RollerConstants.kI, RollerConstants.kD);
+        cfg.closedLoop.pid(RollerConstants.kP, RollerConstants.kI, RollerConstants.kD);
 
         arm = new WolfSparkMax(RollerConstants.ARM_MOTOR_ID, true, false);
         arm.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -32,12 +32,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void rotateArmToSetpoint(double pos) {
-        double error = arm.getEncoder().getPosition() - pos;
-        if(Math.abs(error) < 0.1) {
-            arm.set(0);
-        } else {
-            arm.set(error/1.61);
-        }
+        arm.getClosedLoopController().setSetpoint(pos, ControlType.kPosition);
     }
 
     // public void storage(double pos) {

@@ -23,7 +23,14 @@ import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Hang.Hang;
 import frc.robot.utils.Constants;
 import frc.auton.RunTest;
-import frc.robot.commands.*;
+import frc.robot.autos.PPAuto;
+import frc.robot.commands.Arm.ArmCommand;
+import frc.robot.commands.Hang.HangCommand;
+import frc.robot.commands.Intake.IntakeCommand;
+import frc.robot.commands.Outtake.CarrierCommand;
+import frc.robot.commands.Shooter.ShooterCommand;
+import frc.robot.commands.Swerve.TeleopSwerve;
+import frc.robot.commands.TurretTCs.TurretCommand;
 
 
 public class RobotContainer {
@@ -147,8 +154,7 @@ public class RobotContainer {
     }
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        String test = "MF1m";
-        return new RunTest(test);
+        return new PPAuto(shooter, outtake);
     }
 
     public Swerve getSwerve() {

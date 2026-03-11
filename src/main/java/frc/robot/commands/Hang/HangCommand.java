@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Hang;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hang.Hang;
@@ -26,14 +26,17 @@ public class HangCommand extends Command {
     }
 
     @Override
-public void execute() {
-    if(goUp.getAsBoolean()){
-        hang.moveToPos(-143);
+    public void execute() {
+        if(goUp.getAsBoolean()){
+            hang.runTest(-0.7);
+        }
+        else if(goDown.getAsDouble()>0){
+            hang.runTest(0.7);
+        }
+        else {
+            hang.runTest(0.0);
+        }
     }
-    else if(goDown.getAsDouble()>0){
-        hang.moveToPos(0.0);
-    }
-}
 
     @Override
     public void end(boolean interrupted){
