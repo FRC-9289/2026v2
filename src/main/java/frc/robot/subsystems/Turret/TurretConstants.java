@@ -10,22 +10,18 @@ public class TurretConstants
     public static final double CHANGE_IN_HEIGHT = 149.86; // in cm
 
 
-    public static final double HUB_X = Units.inchesToMeters(182.11); // TODO: measure this (in inches)
-    public static final double HUB_Y = Units.inchesToMeters(158.84); // TODO: measure this (in inches)
+    public static final double RED_HUB_X = Units.inchesToMeters(492.88); // TODO: measure this (in inches)
+    public static final double RED_HUB_Y = Units.inchesToMeters(158.84); // TODO: measure this (in inches)
+
+    public static final double BLUE_HUB_X = Units.inchesToMeters(158.34); // TODO: measure this (in inches)
+    public static final double BLUE_HUB_Y = Units.inchesToMeters(158.84); // TODO: measure this (in inches)
 
     public static final double GEAR_RATIO = (200/25);
-    public static final double J_TURRET = (1.0/2.0)*(3.3)*(8.5*8.5+12.5*12.5);
+
 
     public static final int MOTOR_ID = 26;
     public static final boolean IS_INVERTED =false;
     public static final double MAX_VEL = Math.toRadians(720.0);
     public static final double MAX_ACCEL = Math.toRadians(720.0);
-
-    public static final double kP = 100;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
-
-    public static final double limitCW = -1;
-    public static final double limitCCW = -1;
 
 }

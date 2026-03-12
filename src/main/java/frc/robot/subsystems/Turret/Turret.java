@@ -2,15 +2,19 @@ package frc.robot.subsystems.Turret;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.utils.TurretMath;
 import frc.robot.utils.WolfSparkMax;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import java.nio.file.ClosedFileSystemException;
+import java.util.Optional;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -93,13 +97,31 @@ public class Turret extends SubsystemBase
     motor.set(speed);
   }
 
+  public double autoRotateToHub(){
+
+    Pose2d robotPose = Swerve.getInstance().getPose();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    Translation2d hubLocation = new Translation2d(0.0,0.0);
+
+
+
+
+    if(alliance.isPresent() && alliance.get().equals(Alliance.Red)) {
+      hubLocation = new Translation2d(TurretConstants.RED_HUB_X, TurretConstants.RED_HUB_Y);
+    } else if(alliance.isPresent() && alliance.get().equals(Alliance.Blue)) {
+      hubLocation = new Translation2d(TurretConstants.BLUE_HUB_X, TurretConstants.BLUE_HUB_Y);
+    }
+    double angleToHub = TurretMath.getAngleToHubAdih(robotPose, hubLocation);
+    return angleToHub;
+  }
+
   @Override
   public void periodic() 
   {
     SmartDashboard.putNumber("Turret-Position",
         Units.rotationsToDegrees(getHeadingOfMotorRad() / -TurretConstants.GEAR_RATIO));
     Pose2d robotPose = Swerve.getInstance().getPose();
-    double angleToHub = TurretMath.getAngleToHubAdih(robotPose);
+    double angleToHub = autoRotateToHub();
     //this.setDesiredAngle(Units.degreesToRotations(angleToHub * (-TurretConstants.GEAR_RATIO)));
     SmartDashboard.putNumber("Pose X", robotPose.getX());
     SmartDashboard.putNumber("Pose Y", robotPose.getY());
