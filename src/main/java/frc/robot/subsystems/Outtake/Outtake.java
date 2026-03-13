@@ -2,6 +2,8 @@ package frc.robot.subsystems.Outtake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.ResetMode;
@@ -56,5 +58,10 @@ public class Outtake extends SubsystemBase {
     // public void turret(double pos) {
     //     this.turret.getClosedLoopController().setSetpoint(MathUtil.clamp(pos, -5400, 5400), ControlType.kPosition);
     // }
+
+    @Override
+    public void periodic(){
+        SmartDashboard.putNumber("Carry velocity", carry.getEncoder().getVelocity());
+    }
 }
 //Wolfram121
