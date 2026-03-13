@@ -2,21 +2,28 @@ package frc.robot.commands.TurretTCs;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Turret.Turret;
 import java.util.Optional;
 
 public class AutoAlignTurret extends Command 
 {
     private final Turret turret;
+    private final Shooter shooter;
     private final PIDController pidController;
+    private final Joystick joystick;
 
-    public AutoAlignTurret(Turret turret) 
+    public AutoAlignTurret(Turret turret, Shooter shooter, Joystick joystick) 
     {
         this.turret = turret;
-        
+        this.joystick = joystick;
+        this.shooter = shooter;
+
         // idk the pids so something something goes here
         this.pidController = new PIDController(0.015, 0.0, 0.001); 
         
@@ -32,26 +39,23 @@ public class AutoAlignTurret extends Command
     @Override
     public void execute() 
     {
-        boolean tv = LimelightHelpers.getTV("limelight");
-        double tid = LimelightHelpers.getFiducialID("limelight");
+        if (joystick.getPOV() == 180) {
+        double tx = LimelightHelpers.getTX("limelight");
+        double ty = LimelightHelpers.getTY("limelight");
+        // long tid = LimelightHelpers.getTV("limelight") == 1 ? LimelightHelpers.getTid("limelight") : -1;
         
-        // does the limelight spy with its little eye something that starts with the letter AprilTag?
-        if (tv && isTargetValidForAlliance((long)tid)) 
-        {
-            double tx = LimelightHelpers.getTX("limelight");
-            
-            // actual turret math
-            double steeringAdjust = pidController.calculate(tx, 0.0);
-            
-            // change this based off our turret velocities
-            steeringAdjust = Math.max(-0.4, Math.min(0.4, steeringAdjust));
-            
-            turret.setPower(steeringAdjust);
-        } else 
-        {
-            // this was an issue we had a lot in ftc, the turret would just start spinning out of control, so this should stop it if we ever lose sight of the tags
-            turret.setPower(0.0); 
+        if (7 < Math.abs(tx)){
+            turret.setPower(tx * .03);
+        }else if (4 < Math.abs(tx)){
+            turret.setPower(tx * .01);
         }
+        else{
+            turret.setPower(0.0);
+        }
+
+        shooter.setShooterAngularVelocity((4 - ty / 3.3) / 4 - .13);
+    }
+        
     }
 
     private boolean isTargetValidForAlliance(long tid) 

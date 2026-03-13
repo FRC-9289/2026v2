@@ -100,14 +100,6 @@ public class RobotContainer
             )
         );
 
-        turret.setDefaultCommand(
-            new TurretCommand(
-                turret,
-                () -> driver.getRawButton(6),
-                () -> driver.getRawButton(5)
-            )
-        );
-
         
         arm.setDefaultCommand(
             new ArmCommand(
@@ -131,16 +123,18 @@ public class RobotContainer
             )
         );
 
-        shooter.setDefaultCommand(
-            new ShooterCommand(
-                shooter, driver
-            )
-        );
-
         hang.setDefaultCommand(
             new HangCommand(hang,
             () -> driver.getRawAxis(3), 
             () -> driver.getRawButton(2))
+        );
+
+        turret.setDefaultCommand(
+            new TurretCommand(turret, () -> driver.getRawButton(5), () -> driver.getRawButton(6))
+        );
+
+        shooter.setDefaultCommand(
+            new ShooterCommand(shooter, driver)
         );
 
         // Trigger trigger = new Trigger(() -> driver.getRawButton(10));

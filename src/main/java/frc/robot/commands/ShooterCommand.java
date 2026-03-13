@@ -3,11 +3,13 @@ package frc.robot.commands;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ML.NN;
 import frc.robot.subsystems.Drivetrain.Swerve;
@@ -17,12 +19,13 @@ import frc.robot.subsystems.Turret.Turret;
 import frc.robot.utils.ShooterMath;
 
 public class ShooterCommand extends Command{
-    private DoubleSupplier speed;
     private Shooter outtake;
     private Joystick d;
     private double duration = 3.0; // Duration in seconds for which the shooter should run
     private double shooter=0.0;
+    private static double speed = 0;
     
+
     public ShooterCommand(Shooter outtake, Joystick d){
         this.outtake=outtake;
         this.d=d;
@@ -62,6 +65,6 @@ public class ShooterCommand extends Command{
 
     @Override
     public void end(boolean interrupted){
-        outtake.setShooterAngularVelocity(0.0);
+        outtake.setShooterAngularVelocity(0.0); 
     }
 }

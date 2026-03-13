@@ -43,9 +43,9 @@ public class Turret extends SubsystemBase
     encoder = motor.getEncoder();
     SparkMaxConfig config = new SparkMaxConfig();
 
-    config.softLimit.forwardSoftLimit(-0.276759 * -TurretConstants.GEAR_RATIO);
+    config.softLimit.forwardSoftLimit(3);
     config.softLimit.forwardSoftLimitEnabled(true);
-    config.softLimit.reverseSoftLimit(-2);
+    config.softLimit.reverseSoftLimit(-1.6);
     config.softLimit.reverseSoftLimitEnabled(true);
 
     // config.closedLoop.pid(
@@ -55,14 +55,11 @@ public class Turret extends SubsystemBase
     // );
 
     motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    resetHeading();
-
     // force the limelight to pipeline 8 as soon as the robot turns on
     LimelightHelpers.setPipelineIndex("limelight", 8);
   }
 
-  public double getHeadingOfMotorRad() 
+  public double getHeadingRotations() 
   {
     return encoder.getPosition();
   }
@@ -76,11 +73,9 @@ public class Turret extends SubsystemBase
   {
     double measuredRot = motor.getEncoder().getPosition();
     double error = setpointRot - measuredRot;
-    if (Math.abs(error) > Units.degreesToRotations(1) * TurretConstants.GEAR_RATIO) 
+    if (Math.abs(error) > 0.5)
     {
-      double error_rpm = error * 50 * 60;
-      double regularized_rpm = MathUtil.clamp(error_rpm, -5676, 5676);
-      motor.set(regularized_rpm / 5676);
+      motor.set(0.5);
     } else 
     {
       motor.set(0);
@@ -102,15 +97,6 @@ public class Turret extends SubsystemBase
     Pose2d robotPose = Swerve.getInstance().getPose();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     Translation2d hubLocation = new Translation2d(0.0,0.0);
-
-
-
-
-    if(alliance.isPresent() && alliance.get().equals(Alliance.Red)) {
-      hubLocation = new Translation2d(TurretConstants.RED_HUB_X, TurretConstants.RED_HUB_Y);
-    } else if(alliance.isPresent() && alliance.get().equals(Alliance.Blue)) {
-      hubLocation = new Translation2d(TurretConstants.BLUE_HUB_X, TurretConstants.BLUE_HUB_Y);
-    }
     double angleToHub = TurretMath.getAngleToHubAdih(robotPose, hubLocation);
     return angleToHub;
   }
@@ -118,18 +104,21 @@ public class Turret extends SubsystemBase
   @Override
   public void periodic() 
   {
-    SmartDashboard.putNumber("Turret-Position",
-        Units.rotationsToDegrees(getHeadingOfMotorRad() / -TurretConstants.GEAR_RATIO));
     Pose2d robotPose = Swerve.getInstance().getPose();
     double angleToHub = autoRotateToHub();
-    //this.setDesiredAngle(Units.degreesToRotations(angleToHub * (-TurretConstants.GEAR_RATIO)));
+    double motorRot = Units.degreesToRotations(angleToHub) * -TurretConstants.GEAR_RATIO;
+
+    if(Math.abs(motorRot - getHeadingRotations()) > 0.01){
+      setPower(0.5*Math.signum(motorRot - getHeadingRotations()));
+    } else {
+      setPower(0);
+    }
     SmartDashboard.putNumber("Pose X", robotPose.getX());
     SmartDashboard.putNumber("Pose Y", robotPose.getY());
     SmartDashboard.putNumber("Heading", robotPose.getRotation().getDegrees());
-    SmartDashboard.putNumber("Turret-Calculated-Heading", angleToHub);
-    // SmartDashboard.putNumber("ForwardLimit",
-    // -0.276759*-TurretConstants.GEAR_RATIO);
-    // SmartDashboard.putNumber("ReverseLimit",
-    // 0.28797*-TurretConstants.GEAR_RATIO);
+
+    SmartDashboard.putNumber("AngleToHub", angleToHub);
+    SmartDashboard.putNumber("TargetMotorRot", motorRot);
+    SmartDashboard.putNumber("EncoderRot", encoder.getPosition());
   }
 }

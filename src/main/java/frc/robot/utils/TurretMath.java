@@ -30,7 +30,7 @@ public class TurretMath {
   }
 
   public static double getAngleToHubAdih(Pose2d robotPose, Translation2d target) {
-      double requiredTurretHeading = Math.toDegrees(Math.atan2(target.getY() - robotPose.getY(), target.getX() - robotPose.getX()));
+      double requiredTurretHeading = Math.toDegrees(Math.atan2(robotPose.getY(), robotPose.getX()));
       double offset = (requiredTurretHeading > 0) ? -(requiredTurretHeading - 180) : -(requiredTurretHeading + 180);
       return offset + robotPose.getRotation().getDegrees();
   }

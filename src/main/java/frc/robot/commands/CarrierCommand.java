@@ -22,7 +22,7 @@ public class CarrierCommand extends Command{
     public void execute(){
         if(speed.getAsDouble()>0){
         outtake.setPullRotation(-1);
-        outtake.setCarryVelocity(1);
+        outtake.setCarryVelocity(0.7);
         }
         else{
             outtake.setCarryVelocity(0.0);
