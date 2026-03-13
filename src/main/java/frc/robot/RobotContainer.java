@@ -104,9 +104,9 @@ public class RobotContainer
         arm.setDefaultCommand(
             new ArmCommand(
                 arm,
-                () -> driver.getRawButton(1),
                 () -> driver.getRawButton(4),
-                () -> driver.getRawButton(3)
+                () -> driver.getRawButton(1),
+                () -> driver.getRawButton(2)
             )
         );
 
@@ -119,28 +119,28 @@ public class RobotContainer
         roller.setDefaultCommand(
             new IntakeCommand(
                 roller, 
-                () -> driver.getRawButton(3)
+                () -> driver.getRawButton(6)
             )
         );
 
         hang.setDefaultCommand(
             new HangCommand(hang,
             () -> driver.getRawAxis(3), 
-            () -> driver.getRawButton(2))
+            () -> driver.getRawButton(3))
         );
 
-        turret.setDefaultCommand(
-            new TurretCommand(turret, () -> driver.getRawButton(5), () -> driver.getRawButton(6))
-        );
+        // turret.setDefaultCommand(
+        //     new TurretCommand(turret, () -> driver.getRawButton(5), () -> driver.getRawButton(6))
+        // );
 
         shooter.setDefaultCommand(
             new ShooterCommand(shooter, driver)
         );
 
-        // Trigger trigger = new Trigger(() -> driver.getRawButton(10));
-        // trigger.onTrue(
-        //     new SetInitialPose(swerve, turret)
-        // );
+        Trigger trigger = new Trigger(() -> driver.getRawButton(10));
+        trigger.onTrue(
+            new SetInitialPose(swerve, turret)
+        );
 
         // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 

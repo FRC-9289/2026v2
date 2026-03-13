@@ -26,14 +26,14 @@ public class HangCommand extends Command {
     }
 
     @Override
-public void execute() {
-    if(goUp.getAsBoolean()){
-        hang.moveToPos(-143);
+    public void execute() {
+        if(goUp.getAsBoolean()){
+            hang.moveToPos(145);
+        }
+        else if(goDown.getAsDouble()>0){
+            hang.moveToPos(0.0);
+        }
     }
-    else if(goDown.getAsDouble()>0){
-        hang.moveToPos(0.0);
-    }
-}
 
     @Override
     public void end(boolean interrupted){

@@ -3,6 +3,7 @@ package frc.robot.utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.Shooter.Shooter;
 import frc.robot.subsystems.Shooter.ShooterConstants;
 
 public class ShooterMath 
@@ -91,16 +92,18 @@ public class ShooterMath
     }
 
     public static double calculateAngularVelocityFromDistanceToHub(double distanceMeters) {
-        double g = 9.81;
-        double theta = ShooterConstants.SHOOTER_ANGLE_RAD;
-        double deltaH = ShooterConstants.CHANGE_IN_HEIGHT;
+        double numerator = ShooterConstants.G*Math.pow(distanceMeters,2);
 
-        double numerator = g * Math.pow(distanceMeters, 2);
-        double denominator = 2 * Math.pow(Math.cos(theta), 2) *
-            (distanceMeters * Math.tan(theta) - deltaH);
+        double denominator = 2 * Math.pow(Math.cos(ShooterConstants.THETA_RAD), 2)*(
+            distanceMeters*Math.tan(ShooterConstants.THETA_RAD) - ShooterConstants.CHANGE_IN_HEIGHT
+        );
 
-        double escapeVelocity = Math.sqrt(numerator / denominator);
-        double angularVelocity = escapeVelocity / ShooterConstants.ROTATOR_RADIUS;
+        if(denominator<=0){
+            return Double.NaN;
+        }
+
+        double escapeVelocity = Math.sqrt(numerator/denominator);
+        double angularVelocity = escapeVelocity/ShooterConstants.ROTATOR_RADIUS;
         return angularVelocity;
     }
 }

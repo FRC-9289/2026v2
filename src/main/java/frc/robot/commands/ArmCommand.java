@@ -25,16 +25,13 @@ public class ArmCommand extends Command{
     @Override
     public void execute() {
         if (left.getAsBoolean()) {
-            arm.rotateArm(0.4);
+            arm.rotateArmToSetpoint(1.1);
         }
         else if (up.getAsBoolean()) {
-            arm.rotateArm(0.4);
+            arm.rotateArmToSetpoint(0.0);
         } 
         else if (down.getAsBoolean()) {
-            arm.rotateArm(-0.5);
-        } 
-        else {
-            arm.rotateArm(0.0);
+            arm.rotateArm(2.2);
         }
     }
 

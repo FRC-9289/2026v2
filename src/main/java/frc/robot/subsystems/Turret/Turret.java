@@ -43,9 +43,9 @@ public class Turret extends SubsystemBase
     encoder = motor.getEncoder();
     SparkMaxConfig config = new SparkMaxConfig();
 
-    config.softLimit.forwardSoftLimit(3);
+    config.softLimit.forwardSoftLimit(2.88);
     config.softLimit.forwardSoftLimitEnabled(true);
-    config.softLimit.reverseSoftLimit(-1.6);
+    config.softLimit.reverseSoftLimit(-2.04);
     config.softLimit.reverseSoftLimitEnabled(true);
 
     // config.closedLoop.pid(
@@ -107,10 +107,18 @@ public class Turret extends SubsystemBase
     Pose2d robotPose = Swerve.getInstance().getPose();
     double angleToHub = autoRotateToHub();
     double motorRot = Units.degreesToRotations(angleToHub) * -TurretConstants.GEAR_RATIO;
+    motorRot=(int)(motorRot*1000);
+    motorRot/=1000;
 
-    if(Math.abs(motorRot - getHeadingRotations()) > 0.01){
-      setPower(0.5*Math.signum(motorRot - getHeadingRotations()));
+    double kS = 0.05*Math.signum(motorRot - motor.getEncoder().getPosition());
+    double kV = 0.25*(motorRot - motor.getEncoder().getPosition());
+
+
+    if(Math.abs(motorRot - motor.getEncoder().getPosition()) > 0.12){
+      SmartDashboard.putBoolean("Adjusting turret", true);
+      setPower(kS+kV);
     } else {
+      SmartDashboard.putBoolean("Adjusting turret", false);
       setPower(0);
     }
     SmartDashboard.putNumber("Pose X", robotPose.getX());
@@ -118,7 +126,7 @@ public class Turret extends SubsystemBase
     SmartDashboard.putNumber("Heading", robotPose.getRotation().getDegrees());
 
     SmartDashboard.putNumber("AngleToHub", angleToHub);
-    SmartDashboard.putNumber("TargetMotorRot", motorRot);
-    SmartDashboard.putNumber("EncoderRot", encoder.getPosition());
+    SmartDashboard.putNumber("Turret TargetMotorRot", motorRot);
+    SmartDashboard.putNumber("Turret EncoderRot", motor.getEncoder().getPosition());
   }
 }
