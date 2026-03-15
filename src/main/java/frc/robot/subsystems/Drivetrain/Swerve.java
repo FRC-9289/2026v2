@@ -41,9 +41,12 @@ public class Swerve extends SubsystemBase {
     public Pigeon2 gyro;
     public SwerveDrivePoseEstimator poseEstimator;
     public RobotConfig config;
-    public static Swerve swerve=new Swerve();
+    public static Swerve swerve;
 
-    public static Swerve getInstance(){
+    public static Swerve getInstance() {
+        if (swerve == null) {
+            swerve = new Swerve();
+        }
         return swerve;
     }
     private Pose2d intialPose=new Pose2d(new Translation2d(0.0,0.0), new Rotation2d(0.0));
@@ -68,7 +71,7 @@ public class Swerve extends SubsystemBase {
             (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
                     new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(0.0, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -176,7 +179,8 @@ public class Swerve extends SubsystemBase {
 
     /** Get current gyro yaw as Rotation2d */
     public Rotation2d getGyroYaw() {
-        return Rotation2d.fromDegrees(-gyro.getYaw().getValueAsDouble());
+        // return Rotation2d.fromDegrees(-gyro.getYaw().getValueAsDouble());
+        return new Rotation2d(0);
     }
 
     /** Reset each module to its absolute encoder */

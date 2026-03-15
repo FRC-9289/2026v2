@@ -28,6 +28,7 @@ public class Turret extends SubsystemBase
 
   private final WolfSparkMax motor;
   private final RelativeEncoder encoder;
+  public static boolean operate=false;
 
   // public static Turret getInstance() {
   // return instance;
@@ -43,10 +44,12 @@ public class Turret extends SubsystemBase
     encoder = motor.getEncoder();
     SparkMaxConfig config = new SparkMaxConfig();
 
-    config.softLimit.forwardSoftLimit(2.88);
+    config.softLimit.forwardSoftLimit(1.8);
     config.softLimit.forwardSoftLimitEnabled(true);
-    config.softLimit.reverseSoftLimit(-2.04);
+    config.softLimit.reverseSoftLimit(-0.8);
     config.softLimit.reverseSoftLimitEnabled(true);
+
+    resetHeading();
 
     // config.closedLoop.pid(
     // TurretConstants.kP,
@@ -109,18 +112,23 @@ public class Turret extends SubsystemBase
     double motorRot = Units.degreesToRotations(angleToHub) * -TurretConstants.GEAR_RATIO;
     motorRot=(int)(motorRot*1000);
     motorRot/=1000;
+    if(operate){
+      double kS = 0.06*Math.signum(motorRot - motor.getEncoder().getPosition());
+      double kV = 0.1*(motorRot - motor.getEncoder().getPosition());
 
-    double kS = 0.05*Math.signum(motorRot - motor.getEncoder().getPosition());
-    double kV = 0.25*(motorRot - motor.getEncoder().getPosition());
 
-
-    if(Math.abs(motorRot - motor.getEncoder().getPosition()) > 0.12){
-      SmartDashboard.putBoolean("Adjusting turret", true);
-      setPower(kS+kV);
-    } else {
-      SmartDashboard.putBoolean("Adjusting turret", false);
-      setPower(0);
-    }
+      if(Math.abs(motorRot - motor.getEncoder().getPosition()) > 0.02
+      
+      
+      
+      ){
+        SmartDashboard.putBoolean("Adjusting turret", true);
+        setPower(kS+kV);
+      } else {
+        SmartDashboard.putBoolean("Adjusting turret", false);
+        setPower(0);
+      }
+  }
     SmartDashboard.putNumber("Pose X", robotPose.getX());
     SmartDashboard.putNumber("Pose Y", robotPose.getY());
     SmartDashboard.putNumber("Heading", robotPose.getRotation().getDegrees());

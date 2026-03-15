@@ -59,7 +59,7 @@ public class ShooterCommand extends Command{
         SmartDashboard.putNumber("Predicted radian speed", predictedVelocity);
         double maxNEOVelocity = Units.rotationsPerMinuteToRadiansPerSecond(5676);
 
-        if(d.getPOV()==90) outtake.setShooterAngularVelocity((predictedVelocity+10)/maxNEOVelocity);
+        if(d.getPOV()==90) outtake.setShooterAngularVelocity((predictedVelocity)/maxNEOVelocity);
         else if(d.getPOV()==270) outtake.setShooterAngularVelocity(0);
 
         SmartDashboard.putNumber("Motor speed", predictedVelocity/maxNEOVelocity);

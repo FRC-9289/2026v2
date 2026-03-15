@@ -100,38 +100,21 @@ public class RobotContainer
             )
         );
 
-        
-        arm.setDefaultCommand(
-            new ArmCommand(
-                arm,
-                () -> driver.getRawButton(4),
-                () -> driver.getRawButton(1),
-                () -> driver.getRawButton(2)
-            )
-        );
-
         outtake.setDefaultCommand(
             new CarrierCommand(
                 outtake, () -> driver.getRawAxis(2)
             )
         );
 
-        roller.setDefaultCommand(
-            new IntakeCommand(
-                roller, 
-                () -> driver.getRawButton(6)
-            )
-        );
+        Trigger trigger3 = new Trigger(() -> driver.getRawButton(6));
+        trigger3.onTrue(new IntakeCommand(arm, roller, trigger3));
+        trigger3.onFalse(new IntakeCommand(arm, roller, trigger3));
 
         hang.setDefaultCommand(
             new HangCommand(hang,
             () -> driver.getRawAxis(3), 
             () -> driver.getRawButton(3))
         );
-
-        // turret.setDefaultCommand(
-        //     new TurretCommand(turret, () -> driver.getRawButton(5), () -> driver.getRawButton(6))
-        // );
 
         shooter.setDefaultCommand(
             new ShooterCommand(shooter, driver)
