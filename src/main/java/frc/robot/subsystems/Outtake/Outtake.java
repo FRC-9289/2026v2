@@ -19,7 +19,6 @@ public class Outtake extends SubsystemBase {
     private WolfSparkMax launcher2;
 
     private static Outtake outtake;
-
     
     public Outtake() {
         // this.turret = new WolfSparkMax(26, true, false);

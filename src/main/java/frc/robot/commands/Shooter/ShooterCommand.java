@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Shooter;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -63,7 +63,6 @@ public class ShooterCommand extends Command{
         else if(d.getPOV()==270) outtake.setShooterAngularVelocity(0);
 
         SmartDashboard.putNumber("Motor speed", speed);
-
     }
 
     @Override

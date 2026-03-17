@@ -38,7 +38,6 @@ public class Arm extends SubsystemBase {
     public void setSetpoint(double pos){
         this.setpoint=pos;
     }
-
     public void rotateArmToSetpoint() {
         /**
          * rotate arm to a setpoint `pos`
@@ -51,10 +50,6 @@ public class Arm extends SubsystemBase {
         } else {
             arm.set(0.0);
         }
-    }
-
-    @Override
-    public void periodic(){
         
         SmartDashboard.putNumber("Arm setpoint", setpoint);
         SmartDashboard.putNumber("Arm Position", arm.getEncoder().getPosition());
