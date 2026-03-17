@@ -24,4 +24,8 @@ public class TurretConstants
     public static final double MAX_VEL = Math.toRadians(720.0);
     public static final double MAX_ACCEL = Math.toRadians(720.0);
 
+    public static final double ERROR_TOLERANCE = 0.3;
+    public static final double KS=0.06;
+    public static final double KV=0.1;
+
 }

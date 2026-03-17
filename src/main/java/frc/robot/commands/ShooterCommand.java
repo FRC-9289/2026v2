@@ -54,15 +54,15 @@ public class ShooterCommand extends Command{
         SmartDashboard.putNumber("Distance", distance);
 
         NN nn = new NN();
-        double physics = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance);
+        double physics = ShooterMath.calculateAngularVelocityFromDistanceToHub(MathUtil.clamp(Math.sqrt(distance/10),-1,1)*distance);
         double predictedVelocity = nn.predict(physics);
         SmartDashboard.putNumber("Predicted radian speed", predictedVelocity);
         double maxNEOVelocity = Units.rotationsPerMinuteToRadiansPerSecond(5676);
-
-        if(d.getPOV()==90) outtake.setShooterAngularVelocity((predictedVelocity)/maxNEOVelocity);
+        
+        if(d.getPOV()==90) outtake.setShooterAngularVelocity(predictedVelocity/maxNEOVelocity);
         else if(d.getPOV()==270) outtake.setShooterAngularVelocity(0);
 
-        SmartDashboard.putNumber("Motor speed", predictedVelocity/maxNEOVelocity);
+        SmartDashboard.putNumber("Motor speed", speed);
 
     }
 

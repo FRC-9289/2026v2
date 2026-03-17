@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -16,7 +17,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.PersistMode;
 
 import edu.wpi.first.math.util.Units;
-
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import frc.robot.subsystems.Drivetrain.Swerve;
 import frc.robot.utils.ShooterMath;
 import frc.robot.utils.WolfSparkMax;
@@ -25,6 +26,8 @@ public class Shooter extends SubsystemBase {
     // private WolfSparkMax turret;
     private WolfSparkMax launcher1;
     private WolfSparkMax launcher2;
+
+    DoubleLogEntry shooterRPMLog;
 
     public Shooter() {
         // this.turret = new WolfSparkMax(26, true, false);
@@ -45,9 +48,10 @@ public class Shooter extends SubsystemBase {
         SparkMaxConfig cfg = new SparkMaxConfig();
 
         cfg.closedLoop.pid(ShooterConstants.kP, ShooterConstants.kI, ShooterConstants.kD);
-        cfg.smartCurrentLimit(100);
         launcher1.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         launcher2.configure(cfg, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        shooterRPMLog = new DoubleLogEntry(DataLogManager.getLog(), "/shooter/rpm");
     }
 
     public void setShooterAngularVelocity(double radPerSec) {
@@ -68,8 +72,6 @@ public class Shooter extends SubsystemBase {
         Pose2d pose = Swerve.getInstance().getPose();
         Pose2d initialPose = Swerve.getInstance().getInitialPose();
         double distance = pose.getTranslation().getDistance(initialPose.getTranslation());
-        // double velocity = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance, 2.65);
-        // setShooterAngularVelocity(velocity);
     }
 
     @Override
@@ -78,8 +80,8 @@ public class Shooter extends SubsystemBase {
         Pose2d initialPose = Swerve.getInstance().getInitialPose();
         SmartDashboard.putNumber("Shooter Velocity", Units.rotationsPerMinuteToRadiansPerSecond(Math.abs(launcher2.getEncoder().getVelocity())));
         double distance = pose.getTranslation().getDistance(initialPose.getTranslation());
-        // double velocity = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance, 2.65);
-        // SmartDashboard.putNumber("Calculated Shooter Velocity", velocity);
+
+        shooterRPMLog.append(launcher2.getEncoder().getVelocity());
     }
 }
 //Wolfram121

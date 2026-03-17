@@ -28,7 +28,7 @@ public class Turret extends SubsystemBase
 
   private final WolfSparkMax motor;
   private final RelativeEncoder encoder;
-  public static boolean operate=false;
+  private static boolean autoRotate=false;
 
   // public static Turret getInstance() {
   // return instance;
@@ -44,9 +44,9 @@ public class Turret extends SubsystemBase
     encoder = motor.getEncoder();
     SparkMaxConfig config = new SparkMaxConfig();
 
-    config.softLimit.forwardSoftLimit(1.8);
+    config.softLimit.forwardSoftLimit(1.191);
     config.softLimit.forwardSoftLimitEnabled(true);
-    config.softLimit.reverseSoftLimit(-0.8);
+    config.softLimit.reverseSoftLimit(-0.976);
     config.softLimit.reverseSoftLimitEnabled(true);
 
     resetHeading();
@@ -95,7 +95,14 @@ public class Turret extends SubsystemBase
     motor.set(speed);
   }
 
-  public double autoRotateToHub(){
+  public static void enableTracking(){
+    autoRotate=true;
+  }
+  public static void disableTracking(){
+    autoRotate=false;
+  }
+
+  public double calculateRotationsToHub(){
 
     Pose2d robotPose = Swerve.getInstance().getPose();
     Optional<Alliance> alliance = DriverStation.getAlliance();
@@ -104,37 +111,41 @@ public class Turret extends SubsystemBase
     return angleToHub;
   }
 
-  @Override
-  public void periodic() 
-  {
+  public void autoRotateToHub(){
     Pose2d robotPose = Swerve.getInstance().getPose();
-    double angleToHub = autoRotateToHub();
-    double motorRot = Units.degreesToRotations(angleToHub) * -TurretConstants.GEAR_RATIO;
+    double angleToHub = calculateRotationsToHub();
+
+    double motorRot;
+    if(LimelightHelpers.getTV("limelight")) motorRot = LimelightHelpers.getTX("limelight");
+    else motorRot = Units.degreesToRotations(angleToHub) * -TurretConstants.GEAR_RATIO;
+
+
     motorRot=(int)(motorRot*1000);
     motorRot/=1000;
-    if(operate){
-      double kS = 0.06*Math.signum(motorRot - motor.getEncoder().getPosition());
-      double kV = 0.1*(motorRot - motor.getEncoder().getPosition());
+
+    
+    if(autoRotate){
+      double voltageFF = TurretConstants.KS*Math.signum(motorRot - motor.getEncoder().getPosition())
+                  + TurretConstants.KV*(motorRot - motor.getEncoder().getPosition());
 
 
-      if(Math.abs(motorRot - motor.getEncoder().getPosition()) > 0.02
-      
-      
-      
-      ){
+      if(Math.abs(motorRot - motor.getEncoder().getPosition()) > TurretConstants.ERROR_TOLERANCE){
         SmartDashboard.putBoolean("Adjusting turret", true);
-        setPower(kS+kV);
+        setPower(voltageFF);
       } else {
         SmartDashboard.putBoolean("Adjusting turret", false);
         setPower(0);
       }
-  }
-    SmartDashboard.putNumber("Pose X", robotPose.getX());
-    SmartDashboard.putNumber("Pose Y", robotPose.getY());
-    SmartDashboard.putNumber("Heading", robotPose.getRotation().getDegrees());
+    }
 
     SmartDashboard.putNumber("AngleToHub", angleToHub);
     SmartDashboard.putNumber("Turret TargetMotorRot", motorRot);
+  }
+
+  @Override
+  public void periodic() 
+  {
+    autoRotateToHub();
     SmartDashboard.putNumber("Turret EncoderRot", motor.getEncoder().getPosition());
   }
 }

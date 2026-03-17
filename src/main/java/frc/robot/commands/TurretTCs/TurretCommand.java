@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.TurretTCs;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -23,6 +23,7 @@ public class TurretCommand extends Command{
 
     @Override
     public void execute() {
+        Turret.disableTracking();
         if (forward.getAsBoolean()) {
             turret.runTest(0.1);
         } 

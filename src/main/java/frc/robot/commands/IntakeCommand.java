@@ -34,7 +34,6 @@ public class IntakeCommand extends Command {
         }
         else {
             this.roller.roller(0.0);
-            this.arm.setSetpoint(0);
             arm.rotateArmToSetpoint();
         }
     }

@@ -70,8 +70,8 @@ public class Swerve extends SubsystemBase {
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(0.0, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(5, 0, 0.0), // Translation PID constants
+                    new PIDConstants(0.4, 0.0, 0.01) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -133,6 +133,22 @@ public class Swerve extends SubsystemBase {
         );
     }
 
+    public void driveOpenLoop(double percent) {
+    // Apply same percent to all drive motors
+    for (SwerveModule m : mSwerveMods) {
+        m.mDriveMotor.set(percent);
+        m.mAngleMotor.set(0); // lock wheels forward
+    }
+    }
+
+    public double getAverageVelocity() {
+    double sum = 0;
+    for (SwerveModule m : mSwerveMods) {
+        sum += m.getDriveVelocityMetersPerSec();
+    }
+    return sum / mSwerveMods.length;
+    }
+
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         // Alliance mirroring
         fieldRelative=true;
@@ -179,8 +195,7 @@ public class Swerve extends SubsystemBase {
 
     /** Get current gyro yaw as Rotation2d */
     public Rotation2d getGyroYaw() {
-        // return Rotation2d.fromDegrees(-gyro.getYaw().getValueAsDouble());
-        return new Rotation2d(0);
+        return Rotation2d.fromDegrees(-gyro.getYaw().getValueAsDouble());
     }
 
     /** Reset each module to its absolute encoder */
@@ -252,6 +267,11 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Heading", getPose().getRotation().getDegrees());
 
         // double[] botPose = LimelightHelpers.getBotPose_wpiBlue("limelight");
+
+        ChassisSpeeds speeds = getRobotRelativeSpeeds();
+        double transV = Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+
+        SmartDashboard.putNumber("Chassis Speed", Math.abs(transV));
     }
 
     public void setInitialPose(Pose2d pose) {

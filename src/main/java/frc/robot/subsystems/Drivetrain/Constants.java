@@ -90,9 +90,9 @@ public final class Constants {
         public static final double PProtationalkD = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double driveKS = 0.32; //TODO: This must be tuned to specific robot
-        public static final double driveKV = 1.51;
-        public static final double driveKA = 0.27;
+        public static final double driveKS = 0.9; //TODO: This must be tuned to specific robot
+        public static final double driveKV = 2;
+        public static final double driveKA = 0.4;
 
         /* Swerve Profiling Values */
         /** Meters per Second */

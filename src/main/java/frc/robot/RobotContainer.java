@@ -9,8 +9,11 @@ import edu.wpi.first.math.geometry.Translation3d;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -24,6 +27,8 @@ import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Hang.Hang;
 import frc.robot.utils.Constants;
 import frc.auton.RunTest;
+import frc.robot.autos.PPAuto;
+import frc.robot.autos.Blue.LeftAuto;
 import frc.robot.commands.*;
 import frc.robot.commands.TurretTCs.AutoAlignTurret;
 
@@ -43,6 +48,8 @@ public class RobotContainer
     public Turret turret;
     public Roller roller;
     public Arm arm;
+
+    private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -84,6 +91,7 @@ public class RobotContainer
         roller = new Roller();
         hang = new Hang();
         configureButtonBindings();
+        configureAutons();
     }
 
     private void configureButtonBindings() 
@@ -93,8 +101,8 @@ public class RobotContainer
         swerve.setDefaultCommand(
             new TeleopSwerve(
                 swerve,
-                () -> -driver.getRawAxis(1) * 0.7, 
-                () -> driver.getRawAxis(0) * .7, 
+                () -> -driver.getRawAxis(1)*0.4, 
+                () -> driver.getRawAxis(0) * .4, 
                 () -> -driver.getRawAxis(4) * .4, 
                 () -> false
             )
@@ -106,14 +114,21 @@ public class RobotContainer
             )
         );
 
-        Trigger trigger3 = new Trigger(() -> driver.getRawButton(6));
+        Trigger trigger3 = new Trigger(() -> driver.getRawButton(1));
         trigger3.onTrue(new IntakeCommand(arm, roller, trigger3));
         trigger3.onFalse(new IntakeCommand(arm, roller, trigger3));
+
+
+
+        // turret.setDefaultCommand(
+        //     new TurretCommand(turret, () -> driver.getRawButton(5), () -> driver.getRawButton(6))
+        // );
 
         hang.setDefaultCommand(
             new HangCommand(hang,
             () -> driver.getRawAxis(3), 
-            () -> driver.getRawButton(3))
+            () -> driver.getRawButton(3),
+            turret)
         );
 
         shooter.setDefaultCommand(
@@ -128,12 +143,19 @@ public class RobotContainer
         // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
     }
+
+    private void configureAutons(){
+        autonChooser.setDefaultOption("Do Nothing", new InstantCommand());
+        autonChooser.addOption("MF1M", new PPAuto("MF1m"));
+        autonChooser.addOption("R180", new PPAuto("R180"));
+        autonChooser.addOption("Blue", new LeftAuto(shooter, outtake, turret));
+        SmartDashboard.putData("Auton: ", autonChooser);
+    }
     
     public Command getAutonomousCommand() 
     {
         // An ExampleCommand will run in autonomous
-        String test = "MF1m";
-        return new RunTest(test);
+        return autonChooser.getSelected();
     }
 
     public Swerve getSwerve() 
@@ -141,3 +163,4 @@ public class RobotContainer
         return swerve;
     }
 }
+

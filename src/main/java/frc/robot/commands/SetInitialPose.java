@@ -22,10 +22,10 @@ public class SetInitialPose extends Command{
     public void initialize() {
         SmartDashboard.putString("reset: ", "Yes");
         swerve.setInitialPose(new Pose2d(
-            new Translation2d(-0.45, 0),
+            new Translation2d(-1, -0.5),
             new Rotation2d(0.0)
         ));
-        Turret.operate=!Turret.operate;
+        Turret.enableTracking();
         turret.resetHeading();
     }
 
