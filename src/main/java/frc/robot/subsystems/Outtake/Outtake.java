@@ -2,6 +2,8 @@ package frc.robot.subsystems.Outtake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.ResetMode;
@@ -16,6 +18,7 @@ public class Outtake extends SubsystemBase {
     private WolfSparkMax launcher1;
     private WolfSparkMax launcher2;
 
+    private static Outtake outtake;
     
     public Outtake() {
         // this.turret = new WolfSparkMax(26, true, false);
@@ -46,11 +49,6 @@ public class Outtake extends SubsystemBase {
         carry.set(vel);
     }
 
-    public static Outtake getInstance() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getInstance'");
-    }
-
     // public void launcher(double vel) {
     //     launcher1.set(-vel);
     //     launcher2.set(vel);
@@ -59,5 +57,10 @@ public class Outtake extends SubsystemBase {
     // public void turret(double pos) {
     //     this.turret.getClosedLoopController().setSetpoint(MathUtil.clamp(pos, -5400, 5400), ControlType.kPosition);
     // }
+
+    @Override
+    public void periodic(){
+        SmartDashboard.putNumber("Carry velocity", carry.getEncoder().getVelocity());
+    }
 }
 //Wolfram121

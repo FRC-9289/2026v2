@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.utils.TurretMath;
 import edu.wpi.first.math.util.Units;
@@ -40,9 +41,12 @@ public class Swerve extends SubsystemBase {
     public Pigeon2 gyro;
     public SwerveDrivePoseEstimator poseEstimator;
     public RobotConfig config;
-    public static Swerve swerve=new Swerve();
+    public static Swerve swerve;
 
-    public static Swerve getInstance(){
+    public static Swerve getInstance() {
+        if (swerve == null) {
+            swerve = new Swerve();
+        }
         return swerve;
     }
     private Pose2d intialPose=new Pose2d(new Translation2d(0.0,0.0), new Rotation2d(0.0));
@@ -66,8 +70,8 @@ public class Swerve extends SubsystemBase {
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(0.5, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(0.5, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(5, 0, 0.0), // Translation PID constants
+                    new PIDConstants(0.4, 0.0, 0.01) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -127,6 +131,22 @@ public class Swerve extends SubsystemBase {
         return Constants.Swerve.swerveKinematics.toChassisSpeeds(
             getModuleStates()
         );
+    }
+
+    public void driveOpenLoop(double percent) {
+    // Apply same percent to all drive motors
+    for (SwerveModule m : mSwerveMods) {
+        m.mDriveMotor.set(percent);
+        m.mAngleMotor.set(0); // lock wheels forward
+    }
+    }
+
+    public double getAverageVelocity() {
+    double sum = 0;
+    for (SwerveModule m : mSwerveMods) {
+        sum += m.getDriveVelocityMetersPerSec();
+    }
+    return sum / mSwerveMods.length;
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -213,41 +233,45 @@ public class Swerve extends SubsystemBase {
         poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
-    // private void updateVision() {
-    //     // Check if we have a target
-    //     boolean hasTarget = limelight.getEntry("targetPresent").getBoolean(false);
-    //     if (!hasTarget) return;
+    public void addLimelightVisionPose() {
+        // Check if Limelight sees a valid target
+        boolean hasTarget = LimelightHelpers.getTV("limelight");
+        if (!hasTarget) return;
 
-    //     // Alliance-aware botpose
-    //     String poseKey = DriverStation.getAlliance().get()==Alliance.Red
-    //         ? "botpose_wpired"
-    //         : "botpose_wpiblue";
+        // Get bot pose from Limelight (field-relative, meters)
+        double[] botPose = LimelightHelpers.getBotPose("limelight");
+        if (botPose == null || botPose.length < 6) return;
 
-    //     double[] botpose = limelight.getEntry(poseKey).getDoubleArray(new double[7]);
-    //     if (botpose.length < 6) return;
+        // Create Pose2d from Limelight data
+        Pose2d visionPose = new Pose2d(
+            botPose[0], // X in meters
+            botPose[1], // Y in meters
+            Rotation2d.fromRadians(botPose[5]) // yaw in radians
+        );
 
-    //     // Convert PhotonVision Pose3d to 2D Pose2d
-    //     Pose2d visionPose = new Pose2d(
-    //         botpose[0], // X in meters
-    //         botpose[1], // Y in meters
-    //         Rotation2d.fromDegrees(botpose[5]) // Yaw
-    //     );
+        // Adjust timestamp for latency
+        double latencySec = LimelightHelpers.getLatency_Capture("limelight") / 1000.0;
+        double timestamp = Timer.getFPGATimestamp() - latencySec;
 
-    //     // Subtract pipeline latency
-    //     double latencySec = limelight.getEntry("pipelineLatencyMillis").getDouble(0) / 1000.0;
-    //     double timestamp = Timer.getFPGATimestamp() - latencySec;
-
-    //     // Add to pose estimator
-    //     poseEstimator.addVisionMeasurement(visionPose, timestamp);
-    // }
+        // Add vision measurement to pose estimator
+        poseEstimator.addVisionMeasurement(visionPose, timestamp);
+    }
 
     @Override
     public void periodic() {
         poseEstimator.update(getGyroYaw(), getModulePositions());
+        // addLimelightVisionPose();
 
         SmartDashboard.putNumber("Pose X", getPose().getX());
         SmartDashboard.putNumber("Pose Y", getPose().getY());
         SmartDashboard.putNumber("Heading", getPose().getRotation().getDegrees());
+
+        // double[] botPose = LimelightHelpers.getBotPose_wpiBlue("limelight");
+
+        ChassisSpeeds speeds = getRobotRelativeSpeeds();
+        double transV = Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+
+        SmartDashboard.putNumber("Chassis Speed", Math.abs(transV));
     }
 
     public void setInitialPose(Pose2d pose) {

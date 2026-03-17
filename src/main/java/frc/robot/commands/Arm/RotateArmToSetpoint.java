@@ -15,13 +15,11 @@ public class RotateArmToSetpoint extends Command{
 
     @Override
     public void execute() {
-        arm.rotateArmToSetpoint(pos);
+        arm.setSetpoint(pos);
     }
 
     @Override
     public void end(boolean interrupted) {
-        arm.rotateArmToSetpoint(0.1
-        
-        );
+        arm.setSetpoint(0.1);
     }
 }

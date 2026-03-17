@@ -3,32 +3,38 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Roller.Arm;
 import frc.robot.subsystems.Roller.Roller;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class IntakeCommand extends Command {
-    private final Roller module;
-    private final BooleanSupplier intakeButton;
+    private Arm arm;
+    private Roller roller;
+    private BooleanSupplier start;
 
-    public IntakeCommand(Roller module, BooleanSupplier intakeButton) {
-        this.module = module;
-        this.intakeButton = intakeButton;
-        addRequirements(module);
+    public IntakeCommand(Arm arm, Roller roller, BooleanSupplier start){
+        this.arm=arm;
+        this.roller=roller;
+        this.start=start;
     }
 
     @Override
-    public void execute() {
-        if (intakeButton.getAsBoolean()) {
-            module.roller(-1);
-        } else {
-            module.roller(0.0);
+    public void initialize(){
+        
+    }
+
+    @Override
+    public void execute(){
+        if(start.getAsBoolean()){
+            this.roller.roller(-1);
+            this.arm.setSetpoint(10);
+            arm.rotateArmToSetpoint();
         }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        module.roller(0.0);
+        else {
+            this.roller.roller(0.0);
+            arm.rotateArmToSetpoint();
+        }
     }
 }

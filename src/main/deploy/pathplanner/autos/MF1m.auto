@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "MF1m"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
-  "folder": "PID Tuning",
+  "resetOdom": true,
+  "folder": null,
   "choreoAuto": false
 }

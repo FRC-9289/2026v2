@@ -33,25 +33,8 @@ public class Robot extends TimedRobot{
 
     SwerveModuleState[] states = m_robotContainer.swerve.getModuleStates();
 
-    // Constants.Swerve.Mod0.angleOffset = Rotation2d.fromDegrees(states[0].angle.getDegrees());
-    // Constants.Swerve.Mod1.angleOffset = Rotation2d.fromDegrees(states[1].angle.getDegrees());
-    // Constants.Swerve.Mod2.angleOffset = Rotation2d.fromDegrees(states[2].angle.getDegrees());
-    // Constants.Swerve.Mod3.angleOffset = Rotation2d.fromDegrees(states[3].angle.getDegrees());
-
-    // SmartDashboard.putNumber("Initial 0", states[0].angle.getDegrees());
-    // SmartDashboard.putNumber("Initial 1", states[1].angle.getDegrees());
-    // SmartDashboard.putNumber("Initial 2", states[2].angle.getDegrees());
-    // SmartDashboard.putNumber("Initial 3", states[3].angle.getDegrees());
-
-    // Constants.Swerve.Mod0.angleOffset = Rotation2d.fromDegrees(states[0].angle.getDegrees());
-    // Constants.Swerve.Mod1.angleOffset = Rotation2d.fromDegrees(states[1].angle.getDegrees());
-    // Constants.Swerve.Mod2.angleOffset = Rotation2d.fromDegrees(states[2].angle.getDegrees());
-    // Constants.Swerve.Mod3.angleOffset = Rotation2d.fromDegrees(states[3].angle.getDegrees());
-
-    // SmartDashboard.putNumber("After 0", states[0].angle.getDegrees());
-    // SmartDashboard.putNumber("After 1", states[1].angle.getDegrees());
-    // SmartDashboard.putNumber("After 2", states[2].angle.getDegrees());
-    // SmartDashboard.putNumber("After 3", states[3].angle.getDegrees());
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
 

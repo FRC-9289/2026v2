@@ -13,7 +13,7 @@ import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
-    public static final double stickDeadband = 0.005;
+    public static final double stickDeadband = 0.06;
 
     public final class PoseFilter {
         public static final double POSE_HEIGHT_TOLERANCE = 0.05;
@@ -69,12 +69,12 @@ public final class Constants {
         public static final double closedLoopRamp = 0.0;
 
         /* Angle Motor PID Values */
-        public static final double angleKP = 40.0;
+        public static final double angleKP = 16;
         public static final double angleKI = chosenModule.angleKI;
         public static final double angleKD = chosenModule.angleKD;
 
         /* Drive Motor PID Values */
-        public static final double driveKP = 10; //TODO: This must be tuned to specific robot
+        public static final double driveKP = 0.4; //TODO: This must be tuned to specific robot
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
@@ -90,9 +90,9 @@ public final class Constants {
         public static final double PProtationalkD = 0.0;
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double driveKS = 0.32; //TODO: This must be tuned to specific robot
-        public static final double driveKV = 1.51;
-        public static final double driveKA = 0.27;
+        public static final double driveKS = 0.9; //TODO: This must be tuned to specific robot
+        public static final double driveKV = 2;
+        public static final double driveKA = 0.4;
 
         /* Swerve Profiling Values */
         /** Meters per Second */
