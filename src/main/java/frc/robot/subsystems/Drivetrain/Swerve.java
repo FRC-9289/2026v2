@@ -151,6 +151,7 @@ public class Swerve extends SubsystemBase {
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
         // Alliance mirroring
+
         fieldRelative=true;
         Rotation2d allianceOffset = (DriverStation.getAlliance().equals(Alliance.Red))
                 ? new Rotation2d(Math.PI)
@@ -266,12 +267,9 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("Pose Y", getPose().getY());
         SmartDashboard.putNumber("Heading", getPose().getRotation().getDegrees());
 
+        for(int i=0;i<4;i++) SmartDashboard.putNumber("module "+i+" speed", getModuleStates()[i].speedMetersPerSecond);
+
         // double[] botPose = LimelightHelpers.getBotPose_wpiBlue("limelight");
-
-        ChassisSpeeds speeds = getRobotRelativeSpeeds();
-        double transV = Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
-
-        SmartDashboard.putNumber("Chassis Speed", Math.abs(transV));
     }
 
     public void setInitialPose(Pose2d pose) {
