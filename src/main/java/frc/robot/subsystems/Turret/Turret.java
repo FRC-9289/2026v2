@@ -112,40 +112,46 @@ public class Turret extends SubsystemBase
   }
 
   public void autoRotateToHub(){
-    Pose2d robotPose = Swerve.getInstance().getPose();
-    double angleToHub = calculateRotationsToHub();
+    if(LimelightHelpers.getTV("limelight")){
+      double rot = LimelightHelpers.getTX("limelight");
+      double voltageFF = TurretConstants.KS*Math.signum(rot)
+                  + TurretConstants.KV*(rot);
+      if(Math.abs(rot)>0.1){
+        setPower(voltageFF);
+      }
+      else {
+        setPower(0.0);
+      }
+    }
+    else {
+      Pose2d robotPose = Swerve.getInstance().getPose();
+      double angleToHub = calculateRotationsToHub();
+      double motorRot = Units.degreesToRotations(angleToHub) * -TurretConstants.GEAR_RATIO;
 
-    double motorRot;
-    if(LimelightHelpers.getTV("limelight")) motorRot = LimelightHelpers.getTX("limelight");
-    else motorRot = Units.degreesToRotations(angleToHub) * -TurretConstants.GEAR_RATIO;
 
+      motorRot=(int)(motorRot*1000);
+      motorRot/=1000;
 
-    motorRot=(int)(motorRot*1000);
-    motorRot/=1000;
-
-    
-    if(autoRotate){
+      
       double voltageFF = TurretConstants.KS*Math.signum(motorRot - motor.getEncoder().getPosition())
                   + TurretConstants.KV*(motorRot - motor.getEncoder().getPosition());
 
 
       if(Math.abs(motorRot - motor.getEncoder().getPosition()) > TurretConstants.ERROR_TOLERANCE){
-        SmartDashboard.putBoolean("Adjusting turret", true);
         setPower(voltageFF);
       } else {
-        SmartDashboard.putBoolean("Adjusting turret", false);
         setPower(0);
       }
-    }
 
-    SmartDashboard.putNumber("AngleToHub", angleToHub);
-    SmartDashboard.putNumber("Turret TargetMotorRot", motorRot);
+      SmartDashboard.putNumber("AngleToHub", angleToHub);
+      SmartDashboard.putNumber("Turret TargetMotorRot", motorRot);
+    }
   }
 
   @Override
   public void periodic() 
   {
-    autoRotateToHub();
+    if(autoRotate) autoRotateToHub();
     SmartDashboard.putNumber("Turret EncoderRot", motor.getEncoder().getPosition());
   }
 }
