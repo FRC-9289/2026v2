@@ -23,7 +23,8 @@ public class ShooterCommand extends Command{
     private Joystick d;
     private double duration = 3.0; // Duration in seconds for which the shooter should run
     private double shooter=0.0;
-    private static double speed = 0;
+    private static double speed = 1;
+    private static boolean shoot = false;
     
 
     public ShooterCommand(Shooter outtake, Joystick d){
@@ -35,32 +36,45 @@ public class ShooterCommand extends Command{
     @Override
     public void execute(){
         // if(d.getPOV()==0){
-        //     outtake.setShooterAngularVelocity(0.6);
+        //     speed+=0.02;
         // }
         // else if(d.getPOV()==90){
-        //     outtake.setShooterAngularVelocity(0.5);
+        //     outtake.setShooterAngularVelocity(speed);
         // }
         // else if(d.getPOV()==180){
-        //     outtake.setShooterAngularVelocity(0.4);
+        //     speed-=0.02;
         // }
         // else if(d.getPOV()==270){
         //     outtake.setShooterAngularVelocity(0);
         // }
+        if(d.getPOV()==0){
+            speed+=0.002;
+        }
+        else if(d.getPOV()==180){
+            speed-=0.002;
+        }
 
-        double distance = Swerve.getInstance().getPose().getTranslation().getDistance(new Translation2d(
-            0.0,0.0
-        ));
+        Pose2d swervePose = Swerve.getInstance().getPose();
+        Translation2d newSwerveCoord = new Translation2d(
+            swervePose.getX(),
+            swervePose.getY()/* *1.002 */
+        );
+        double distance=newSwerveCoord.getDistance(new Translation2d(0,0));
 
         SmartDashboard.putNumber("Distance", distance);
+        SmartDashboard.putNumber("Motor speed", speed);
 
         NN nn = new NN();
-        double physics = ShooterMath.calculateAngularVelocityFromDistanceToHub(MathUtil.clamp(Math.sqrt(distance/10),-1,1)*distance);
+        double physics = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance);
         double predictedVelocity = nn.predict(physics);
         SmartDashboard.putNumber("Predicted radian speed", predictedVelocity);
         double maxNEOVelocity = Units.rotationsPerMinuteToRadiansPerSecond(5676);
         
-        if(d.getPOV()==90) outtake.setShooterAngularVelocity(predictedVelocity/maxNEOVelocity);
-        else if(d.getPOV()==270) outtake.setShooterAngularVelocity(0);
+        if(d.getPOV()==90) shoot=true;
+        else if(d.getPOV()==270) shoot=false;
+
+        if(shoot) outtake.setShooterAngularVelocity((predictedVelocity * .9)/maxNEOVelocity);
+        else outtake.setShooterAngularVelocity(0);
 
         SmartDashboard.putNumber("Motor speed", speed);
     }

@@ -1,3 +1,4 @@
+
 package frc.robot.subsystems.Turret;
 
 import edu.wpi.first.math.MathUtil;
@@ -28,7 +29,9 @@ public class Turret extends SubsystemBase
 
   private final WolfSparkMax motor;
   private final RelativeEncoder encoder;
-  private static boolean autoRotate=false;
+  private boolean autoRotate = false;
+  private double setpointRot = 0;
+  private boolean hasSetpoint = false;
 
   // public static Turret getInstance() {
   // return instance;
@@ -44,7 +47,7 @@ public class Turret extends SubsystemBase
     encoder = motor.getEncoder();
     SparkMaxConfig config = new SparkMaxConfig();
 
-    config.softLimit.forwardSoftLimit(1.191);
+    config.softLimit.forwardSoftLimit(1.8);
     config.softLimit.forwardSoftLimitEnabled(true);
     config.softLimit.reverseSoftLimit(-0.976);
     config.softLimit.reverseSoftLimitEnabled(true);
@@ -72,16 +75,25 @@ public class Turret extends SubsystemBase
     encoder.setPosition(0.0);
   }
 
-  public void setDesiredAngle(double setpointRot) 
+  public void setSetpoint(double s) {
+      hasSetpoint = true;
+      setpointRot = s;
+  }
+
+  public void turnSetpointOff() {
+      hasSetpoint = false;
+  }
+
+  public void setDesiredAngle() 
   {
-    double measuredRot = motor.getEncoder().getPosition();
-    double error = setpointRot - measuredRot;
-    if (Math.abs(error) > 0.5)
-    {
-      motor.set(0.5);
-    } else 
-    {
-      motor.set(0);
+    double voltageFF = TurretConstants.KS*Math.signum(setpointRot - motor.getEncoder().getPosition())
+                + TurretConstants.KV*(setpointRot - motor.getEncoder().getPosition());
+
+
+    if(Math.abs(setpointRot - motor.getEncoder().getPosition()) > TurretConstants.ERROR_TOLERANCE){
+      setPower(voltageFF);
+    } else {
+      setPower(0);
     }
   }
 
@@ -90,16 +102,24 @@ public class Turret extends SubsystemBase
     motor.set(speed);
   }
 
-  public void setPower(double speed) 
-  {
-    motor.set(speed);
+  public void setPower(double speed) {
+      double pos = encoder.getPosition();
+
+      if (pos >= 1.3 && speed > 0) {
+          speed = 0;
+      }
+      if (pos <= -0.976 && speed < 0) {
+          speed = 0;
+      }
+
+      motor.set(speed);
   }
 
-  public static void enableTracking(){
-    autoRotate=true;
+  public void enableTracking() {
+      autoRotate = true;
   }
-  public static void disableTracking(){
-    autoRotate=false;
+  public void disableTracking() {
+      autoRotate = false;
   }
 
   public double calculateRotationsToHub(){
@@ -112,46 +132,39 @@ public class Turret extends SubsystemBase
   }
 
   public void autoRotateToHub(){
-    if(LimelightHelpers.getTV("limelight")){
-      double rot = LimelightHelpers.getTX("limelight");
-      double voltageFF = TurretConstants.KS*Math.signum(rot)
-                  + TurretConstants.KV*(rot);
-      if(Math.abs(rot)>0.1){
-        setPower(voltageFF);
-      }
-      else {
-        setPower(0.0);
-      }
+    Pose2d robotPose = Swerve.getInstance().getPose();
+    double angleToHub = calculateRotationsToHub();
+    double motorRot = Units.degreesToRotations(angleToHub) * -TurretConstants.GEAR_RATIO;
+
+
+    motorRot=(int)(motorRot*1000);
+    motorRot/=1000;
+
+    
+    double voltageFF = TurretConstants.KS*Math.signum(motorRot - motor.getEncoder().getPosition())
+                + TurretConstants.KV*(motorRot - motor.getEncoder().getPosition());
+
+
+    if(Math.abs(motorRot - motor.getEncoder().getPosition()) > TurretConstants.ERROR_TOLERANCE){
+      setPower(voltageFF);
+    } else {
+      setPower(0);
     }
-    else {
-      Pose2d robotPose = Swerve.getInstance().getPose();
-      double angleToHub = calculateRotationsToHub();
-      double motorRot = Units.degreesToRotations(angleToHub) * -TurretConstants.GEAR_RATIO;
 
-
-      motorRot=(int)(motorRot*1000);
-      motorRot/=1000;
-
-      
-      double voltageFF = TurretConstants.KS*Math.signum(motorRot - motor.getEncoder().getPosition())
-                  + TurretConstants.KV*(motorRot - motor.getEncoder().getPosition());
-
-
-      if(Math.abs(motorRot - motor.getEncoder().getPosition()) > TurretConstants.ERROR_TOLERANCE){
-        setPower(voltageFF);
-      } else {
-        setPower(0);
-      }
-
-      SmartDashboard.putNumber("AngleToHub", angleToHub);
-      SmartDashboard.putNumber("Turret TargetMotorRot", motorRot);
-    }
+    SmartDashboard.putNumber("AngleToHub", angleToHub);
+    SmartDashboard.putNumber("Turret TargetMotorRot", motorRot);
   }
 
   @Override
-  public void periodic() 
-  {
-    if(autoRotate) autoRotateToHub();
-    SmartDashboard.putNumber("Turret EncoderRot", motor.getEncoder().getPosition());
+  public void periodic() {
+      if (autoRotate) {
+          autoRotateToHub();
+      } else if (hasSetpoint) {
+          setDesiredAngle();
+      } else {
+          setPower(0);
+      }
+
+      SmartDashboard.putNumber("Turret EncoderRot", motor.getEncoder().getPosition());
   }
 }

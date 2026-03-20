@@ -12,14 +12,14 @@ public class HangCommand extends Command {
 
     private final Hang hang;
     private BooleanSupplier goUp;
-    private DoubleSupplier goDown;
+    private BooleanSupplier goDown;
 
     private double targetPos = 0.0;
     private boolean lastButtonState = false;
     private boolean currentState = false;
     private Turret turret;
 
-    public HangCommand(Hang hang, DoubleSupplier goDown, BooleanSupplier goUp, Turret turret) {
+    public HangCommand(Hang hang, BooleanSupplier goDown, BooleanSupplier goUp, Turret turret) {
         this.hang = hang;
         this.goUp = goUp;
         this.goDown = goDown;
@@ -32,13 +32,13 @@ public class HangCommand extends Command {
     public void execute() {
         if(goUp.getAsBoolean()){
             hang.moveToPos(192);
-            Turret.disableTracking();
-            turret.setDesiredAngle(1);
+            turret.disableTracking();
+            turret.setSetpoint(1);
         }
-        else if(goDown.getAsDouble()>0){
+        else if(goDown.getAsBoolean()){
             hang.moveToPos(0.0);
-            Turret.disableTracking();
-            turret.setDesiredAngle(1);
+            turret.disableTracking();
+            turret.setSetpoint(1);
         }
     }
 

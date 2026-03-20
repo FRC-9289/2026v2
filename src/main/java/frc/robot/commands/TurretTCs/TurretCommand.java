@@ -23,7 +23,7 @@ public class TurretCommand extends Command{
 
     @Override
     public void execute() {
-        Turret.disableTracking();
+        turret.disableTracking();
         if (forward.getAsBoolean()) {
             turret.runTest(0.1);
         } 

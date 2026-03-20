@@ -11,6 +11,7 @@ import frc.robot.subsystems.Turret.Turret;
 public class SetInitialPose extends Command{
     private Swerve swerve;
     private Turret turret;
+    private static boolean isOn=false;
 
     public SetInitialPose(Swerve swerve, Turret turret){
         this.swerve=swerve;
@@ -20,13 +21,16 @@ public class SetInitialPose extends Command{
 
     @Override
     public void initialize() {
-        SmartDashboard.putString("reset: ", "Yes");
-        swerve.setInitialPose(new Pose2d(
-            new Translation2d(-1, -0.5),
-            new Rotation2d(0.0)
-        ));
-        Turret.enableTracking();
-        turret.resetHeading();
+        if(!isOn){
+            SmartDashboard.putString("reset: ", "Yes");
+            swerve.setInitialPose(new Pose2d(
+                new Translation2d(-1, -0.5),
+                new Rotation2d(0.0)
+            ));
+            turret.enableTracking();
+            isOn=true;
+        }
+        // turret.resetHeading();
     }
 
     @Override
