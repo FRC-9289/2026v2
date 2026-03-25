@@ -14,7 +14,7 @@ public class LeftAuto extends SequentialCommandGroup {
         addCommands(
 
             // Aim
-            new SetTurretPosition(turret, 1.85),
+            new SetTurretPosition(turret, 1.78),
 
             // Shoot sequence
             new ParallelCommandGroup(

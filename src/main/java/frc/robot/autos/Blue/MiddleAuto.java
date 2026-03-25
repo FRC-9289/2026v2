@@ -13,9 +13,9 @@ public class MiddleAuto extends SequentialCommandGroup{
     public MiddleAuto(Shooter shooter, Outtake outtake, Turret turret){
         addCommands(
             new ParallelCommandGroup(
-            new ShooterVelocity(shooter, 0.5).withTimeout(12),
-            new ParallelCommandGroup(
-                new WaitCommand(4),
+            new ShooterVelocity(shooter, 0.53).withTimeout(12),
+            new SequentialCommandGroup(
+                new WaitCommand(2.5),
                 new CarrierCommand(outtake, () -> 1).withTimeout(8)
             )
             )

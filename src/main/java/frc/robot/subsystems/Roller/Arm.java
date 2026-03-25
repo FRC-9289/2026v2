@@ -44,7 +44,7 @@ public class Arm extends SubsystemBase {
          */
         double error = this.setpoint - arm.getEncoder().getPosition();
         double kS = 0.1*Math.signum(error);
-        double kV = 0.0*error;
+        double kV = 0.01*error;
         if(Math.abs(error) > 0.4) {
             arm.set(kS+kV);
         } else {

@@ -21,6 +21,6 @@ public class SetTurretPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(turret.getHeadingRotations() - angle) < 0.05;
+        return true;
     }
 }

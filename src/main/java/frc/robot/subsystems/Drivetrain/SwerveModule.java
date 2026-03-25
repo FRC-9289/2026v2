@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Drivetrain;
 
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
+
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -10,6 +12,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Units;
 import frc.lib.math.Conversions;
 import frc.lib.util.SwerveModuleConstants;
 import frc.robot.subsystems.Drivetrain.Constants;
@@ -67,6 +70,14 @@ public class SwerveModule {
             driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
             mDriveMotor.setControl(driveVelocity);
         }
+    }
+
+    public double getAcceleration(){
+        double rps2 = mDriveMotor.getAcceleration().getValueAsDouble();
+        double rads2 = Units.RadiansPerSecondPerSecond.convertFrom(rps2, RotationsPerSecondPerSecond);
+        double accel = rads2*Constants.Swerve.wheelCircumference/(Math.PI*2);
+        return accel;
+
     }
 
     public Rotation2d getCANcoder(){

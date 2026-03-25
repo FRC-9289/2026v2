@@ -31,7 +31,9 @@ import frc.robot.autos.PPAuto;
 import frc.robot.autos.Blue.*;
 import frc.robot.commands.*;
 import frc.robot.commands.Hang.HangCommand;
-import frc.robot.commands.Intake.IntakeCommand;
+import frc.robot.commands.Intake.IntakeCommandDown;
+import frc.robot.commands.Intake.IntakeCommandUp;
+import frc.robot.commands.Intake.RunRoller;
 import frc.robot.commands.Outtake.CarrierCommand;
 import frc.robot.commands.Shooter.ShooterCommand;
 import frc.robot.commands.Swerve.SetInitialPose;
@@ -120,9 +122,11 @@ public class RobotContainer
             )
         );
 
-        Trigger trigger3 = new Trigger(() -> driver.getRawAxis(3)>0);
-        trigger3.onTrue(new IntakeCommand(arm, roller, trigger3));
-        trigger3.onFalse(new IntakeCommand(arm, roller, trigger3));
+        Trigger trigger3 = new Trigger(() -> driver.getRawButton(4));
+        trigger3.onTrue(new IntakeCommandDown(arm, roller, trigger3));
+
+        Trigger trigger5 = new Trigger(() -> driver.getPOV()==0);
+        trigger5.onTrue(new IntakeCommandUp(arm, roller, () -> driver.getPOV()==0));
 
 
 
@@ -146,6 +150,14 @@ public class RobotContainer
             new SetInitialPose(swerve, turret)
         );
 
+        Trigger trigger4 = new Trigger(() -> driver.getRawAxis(3)>0);
+        trigger4.onTrue(
+            new RunRoller(roller, () -> driver.getRawAxis(3)>0)
+        );
+        trigger4.onFalse(
+            new RunRoller(roller, () -> driver.getRawAxis(3)>0)
+        );
+
         // zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
     }
@@ -155,7 +167,8 @@ public class RobotContainer
         autonChooser.addOption("MF1M", new PPAuto("MF1m"));
         autonChooser.addOption("R180", new PPAuto("R180"));
         autonChooser.addOption("BlueL", new LeftAuto(shooter, outtake, turret));
-        autonChooser.addOption("BlueR", new RightAuto(shooter, outtake, turret));
+        autonChooser.addOption("BlueM", new MiddleAuto(shooter, outtake, turret));
+        autonChooser.addOption("BlueR", new RightAuto(shooter, outtake, turret, arm, roller));
         SmartDashboard.putData("Auton: ", autonChooser);
     }
     

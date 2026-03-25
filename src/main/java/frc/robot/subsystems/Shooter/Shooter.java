@@ -55,8 +55,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setShooterAngularVelocity(double radPerSec) {
-        launcher1.set(radPerSec);
-        launcher2.set(-radPerSec);
+        launcher1.set(radPerSec/Units.rotationsPerMinuteToRadiansPerSecond(5676));
+        launcher2.set(-radPerSec/Units.rotationsPerMinuteToRadiansPerSecond(5676));
     }
 
     // public void turret(double pos) {

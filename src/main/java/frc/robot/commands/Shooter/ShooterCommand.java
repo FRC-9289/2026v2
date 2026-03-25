@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,7 +58,7 @@ public class ShooterCommand extends Command{
         Pose2d swervePose = Swerve.getInstance().getPose();
         Translation2d newSwerveCoord = new Translation2d(
             swervePose.getX(),
-            swervePose.getY()/* *1.002 */
+            swervePose.getY()
         );
         double distance=newSwerveCoord.getDistance(new Translation2d(0,0));
 
@@ -68,13 +69,9 @@ public class ShooterCommand extends Command{
         double physics = ShooterMath.calculateAngularVelocityFromDistanceToHub(distance);
         double predictedVelocity = nn.predict(physics);
         SmartDashboard.putNumber("Predicted radian speed", predictedVelocity);
-        double maxNEOVelocity = Units.rotationsPerMinuteToRadiansPerSecond(5676);
         
-        if(d.getPOV()==90) shoot=true;
-        else if(d.getPOV()==270) shoot=false;
-
-        if(shoot) outtake.setShooterAngularVelocity((predictedVelocity * .9)/maxNEOVelocity);
-        else outtake.setShooterAngularVelocity(0);
+        if(d.getPOV()==90) outtake.setShooterAngularVelocity(predictedVelocity*1.05);
+        if(d.getPOV()==270) outtake.setShooterAngularVelocity(0);
 
         SmartDashboard.putNumber("Motor speed", speed);
     }

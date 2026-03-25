@@ -21,15 +21,15 @@ public class SetInitialPose extends Command{
 
     @Override
     public void initialize() {
-        if(!isOn){
+        // if(!isOn){
             SmartDashboard.putString("reset: ", "Yes");
             swerve.setInitialPose(new Pose2d(
-                new Translation2d(-1, -0.5),
+                new Translation2d(-0.83, -0.81),
                 new Rotation2d(0.0)
             ));
             turret.enableTracking();
-            isOn=true;
-        }
+        //     isOn=true;
+        // }
         // turret.resetHeading();
     }
 

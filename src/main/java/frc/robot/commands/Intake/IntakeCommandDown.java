@@ -9,12 +9,12 @@ import frc.robot.subsystems.Roller.Roller;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-public class IntakeCommand extends Command {
+public class IntakeCommandDown extends Command {
     private Arm arm;
     private Roller roller;
     private BooleanSupplier start;
 
-    public IntakeCommand(Arm arm, Roller roller, BooleanSupplier start){
+    public IntakeCommandDown(Arm arm, Roller roller, BooleanSupplier start){
         this.arm=arm;
         this.roller=roller;
         this.start=start;
@@ -28,13 +28,16 @@ public class IntakeCommand extends Command {
     @Override
     public void execute(){
         if(start.getAsBoolean()){
-            this.roller.roller(-1);
-            this.arm.setSetpoint(10);
+            this.arm.setSetpoint(15);
             arm.rotateArmToSetpoint();
         }
         else {
-            this.roller.roller(0.0);
             arm.rotateArmToSetpoint();
         }
+    }
+
+    @Override
+    public void end(boolean isInterrupted){
+        this.roller.roller(0);
     }
 }

@@ -21,8 +21,8 @@ public class CarrierCommand extends Command{
     @Override
     public void execute(){
         if(speed.getAsDouble()>0){
-        outtake.setPullRotation(-1);
-        outtake.setCarryVelocity(0.6);
+        outtake.setPullRotation(-0.7);
+        outtake.setCarryVelocity(.5);
         }
         else{
             outtake.setCarryVelocity(0.0);

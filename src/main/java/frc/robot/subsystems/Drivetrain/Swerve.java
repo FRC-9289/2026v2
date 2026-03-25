@@ -268,7 +268,19 @@ public class Swerve extends SubsystemBase {
 
         for(int i=0;i<4;i++) SmartDashboard.putNumber("module "+i+" speed", getModuleStates()[i].speedMetersPerSecond);
 
+        SmartDashboard.putNumber("MOI", calculateMOI(0.00001));
+
         // double[] botPose = LimelightHelpers.getBotPose_wpiBlue("limelight");
+    }
+
+    public double calculateMOI(double epsilon){
+        double sum=0;
+        for(SwerveModule module : mSwerveMods){
+            sum+=module.getAcceleration();
+        }
+        sum*=Math.hypot(0.347,0.347)*2.68;
+        double angularAcceleration = gyro.getAccelerationZ().getValueAsDouble();
+        return sum/(angularAcceleration+epsilon);
     }
 
     public void setInitialPose(Pose2d pose) {

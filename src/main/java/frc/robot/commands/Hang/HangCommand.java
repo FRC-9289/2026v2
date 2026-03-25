@@ -31,14 +31,17 @@ public class HangCommand extends Command {
     @Override
     public void execute() {
         if(goUp.getAsBoolean()){
-            hang.moveToPos(192);
+            hang.runTest(0.3);
             turret.disableTracking();
             turret.setSetpoint(1);
         }
         else if(goDown.getAsBoolean()){
-            hang.moveToPos(0.0);
+            hang.runTest(-0.3);
             turret.disableTracking();
             turret.setSetpoint(1);
+        }
+        else {
+            hang.runTest(0.0);
         }
     }
 

@@ -49,7 +49,7 @@ public class Turret extends SubsystemBase
 
     config.softLimit.forwardSoftLimit(1.8);
     config.softLimit.forwardSoftLimitEnabled(true);
-    config.softLimit.reverseSoftLimit(-0.976);
+    config.softLimit.reverseSoftLimit(-2);
     config.softLimit.reverseSoftLimitEnabled(true);
 
     resetHeading();
@@ -103,14 +103,6 @@ public class Turret extends SubsystemBase
   }
 
   public void setPower(double speed) {
-      double pos = encoder.getPosition();
-
-      if (pos >= 1.3 && speed > 0) {
-          speed = 0;
-      }
-      if (pos <= -0.976 && speed < 0) {
-          speed = 0;
-      }
 
       motor.set(speed);
   }

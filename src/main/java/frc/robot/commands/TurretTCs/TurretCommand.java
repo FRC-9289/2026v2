@@ -25,10 +25,10 @@ public class TurretCommand extends Command{
     public void execute() {
         turret.disableTracking();
         if (forward.getAsBoolean()) {
-            turret.runTest(0.1);
+            turret.runTest(0.05);
         } 
         else if (reverse.getAsBoolean()) {
-            turret.runTest(-0.1);
+            turret.runTest(-0.05);
         } 
         else {
             turret.runTest(0.0);
